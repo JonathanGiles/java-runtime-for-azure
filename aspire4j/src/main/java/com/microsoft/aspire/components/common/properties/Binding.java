@@ -1,10 +1,12 @@
-package com.microsoft.aspire.components.common;
+package com.microsoft.aspire.components.common.properties;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.microsoft.aspire.components.common.binding.Protocol;
-import com.microsoft.aspire.components.common.binding.Scheme;
-import com.microsoft.aspire.components.common.binding.Transport;
+import com.fasterxml.jackson.annotation.JsonValue;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 
 /*
  "additionalProperties": {
@@ -61,12 +63,66 @@ import com.microsoft.aspire.components.common.binding.Transport;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class Binding {
 
+    public enum Protocol {
+        TCP("tcp"),
+        UDP("udp");
+
+        private final String value;
+
+        Protocol(String value) {
+            this.value = value;
+        }
+
+        @JsonValue
+        public String toString() {
+            return value;
+        }
+    }
+
+    public enum Scheme {
+        HTTP("http"),
+        HTTPS("https"),
+        TCP("tcp"),
+        UDP("udp");
+
+        private final String value;
+
+        Scheme(String value) {
+            this.value = value;
+        }
+
+        @JsonValue
+        public String toString() {
+            return value;
+        }
+    }
+
+    public enum Transport {
+        HTTP("http"),
+        HTTP2("http2"),
+        TCP("tcp");
+
+        private final String value;
+
+        Transport(String value) {
+            this.value = value;
+        }
+
+        @JsonValue
+        public String toString() {
+            return value;
+        }
+    }
+
+    @NotNull(message = "Binding.scheme cannot be null")
     @JsonProperty("scheme")
     private final Scheme scheme;
 
+    @NotNull(message = "Binding.protocol cannot be null")
     @JsonProperty("protocol")
     private final Protocol protocol;
 
+    @NotNull(message = "Binding.transport cannot be null")
     @JsonProperty("transport")
     private final Transport transport;
 
@@ -74,9 +130,13 @@ public class Binding {
     private Boolean external;
 
     @JsonProperty("targetPort")
+    @Min(value = 0, message = "Binding.targetPort must be between 0 and 65535")
+    @Max(value = 65535, message = "Binding.targetPort must be between 0 and 65535")
     private Integer targetPort;
 
     @JsonProperty("port")
+    @Min(value = 0, message = "Binding.port must be between 0 and 65535")
+    @Max(value = 65535, message = "Binding.port must be between 0 and 65535")
     private Integer port;
 
     public Binding(Scheme scheme, Protocol protocol, Transport transport) {
@@ -98,5 +158,29 @@ public class Binding {
     public Binding withPort(Integer port) {
         this.port = port;
         return this;
+    }
+
+    public Scheme getScheme() {
+        return scheme;
+    }
+
+    public Protocol getProtocol() {
+        return protocol;
+    }
+
+    public Transport getTransport() {
+        return transport;
+    }
+
+    public Boolean getExternal() {
+        return external;
+    }
+
+    public Integer getTargetPort() {
+        return targetPort;
+    }
+
+    public Integer getPort() {
+        return port;
     }
 }

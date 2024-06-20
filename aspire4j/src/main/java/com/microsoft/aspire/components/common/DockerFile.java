@@ -1,8 +1,16 @@
 package com.microsoft.aspire.components.common;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import com.microsoft.aspire.components.common.properties.Binding;
+import com.microsoft.aspire.components.common.traits.ResourceWithBindings;
+import com.microsoft.aspire.components.common.traits.ResourceWithEnvironment;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 
-import java.util.Objects;
+import java.util.*;
 
 /*
  {
@@ -35,13 +43,38 @@ import java.util.Objects;
     "additionalProperties": false
 },
  */
-public class DockerFile extends Resource {
+@JsonPropertyOrder({"type", "path", "context", "env", "bindings"})
+@JsonInclude(JsonInclude.Include.NON_EMPTY)
+public class DockerFile extends Resource implements ResourceWithEnvironment<DockerFile>,
+                                                    ResourceWithBindings<DockerFile> {
 
+    @NotNull(message = "DockerFile.path cannot be null")
+    @NotEmpty(message = "DockerFile.path cannot be an empty string")
     @JsonProperty("path")
     private final String path;
 
-    public DockerFile(String type, String name, String path) {
-        super(type, name);
+    @JsonProperty("env")
+    @Valid
+    private final Map<String, String> environment = new LinkedHashMap<>();
+
+    @JsonProperty("bindings")
+    @Valid
+    private final List<Binding> bindings = new ArrayList<>();
+
+    public DockerFile(String name, String path) {
+        super("dockerfile.v0", name);
         this.path = Objects.requireNonNull(path);
+    }
+
+    @Override
+    public DockerFile withEnvironment(String name, String value) {
+        environment.put(name, value);
+        return this;
+    }
+
+    @Override
+    public DockerFile withBinding(Binding binding) {
+        bindings.add(binding);
+        return this;
     }
 }

@@ -3,9 +3,15 @@ package com.microsoft.aspire.components.common;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import com.microsoft.aspire.components.common.properties.BindMount;
+import com.microsoft.aspire.components.common.properties.Binding;
+import com.microsoft.aspire.components.common.properties.Volume;
 import com.microsoft.aspire.components.common.traits.ResourceWithArguments;
 import com.microsoft.aspire.components.common.traits.ResourceWithBindings;
 import com.microsoft.aspire.components.common.traits.ResourceWithEnvironment;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -83,28 +89,38 @@ For example:
 }
  */
 @JsonPropertyOrder({"type", "image", "entrypoint", "args", "connectionString", "env", "bindings", "bindMounts", "volumes"})
+@JsonInclude(JsonInclude.Include.NON_EMPTY)
 public class Container extends Resource implements ResourceWithArguments<Container>,
                                                    ResourceWithEnvironment<Container>,
                                                    ResourceWithBindings<Container> {
 
+    @NotNull(message = "Container.image cannot be null")
+    @NotEmpty(message = "Container.image cannot be an empty string")
     @JsonProperty("image")
     private final String image;
 
     @JsonProperty("entrypoint")
-    @JsonInclude(JsonInclude.Include.NON_NULL)
     private String entryPoint;
 
     @JsonProperty("args")
-    @JsonInclude(JsonInclude.Include.NON_EMPTY)
+    @Valid
     private final List<String> arguments = new ArrayList<>();
 
     @JsonProperty("volumes")
-    @JsonInclude(JsonInclude.Include.NON_EMPTY)
+    @Valid
     private final List<Volume> volumes = new ArrayList<>();
 
     @JsonProperty("env")
-    @JsonInclude(JsonInclude.Include.NON_EMPTY)
     private final Map<String, String> environment = new LinkedHashMap<>();
+
+    @JsonProperty("bindings")
+    @Valid
+    private final Map<Binding.Scheme, Binding> bindings = new LinkedHashMap<>();
+
+    @JsonProperty("bindMounts")
+    @Valid
+    private final List<BindMount> bindMounts = new ArrayList<>();
+
 
     public Container(String name, String image) {
         super("container.v0", name);
@@ -128,18 +144,27 @@ public class Container extends Resource implements ResourceWithArguments<Contain
     }
 
     public Container withDataVolume() {
+        // FIXME: hardcoded values
         // placeholder values from https://github.com/dotnet/aspire/blob/main/playground/TestShop/AppHost/aspire-manifest.json#L38
         volumes.add(new Volume("TestShop.AppHost-basketcache-data", "/data", false));
         return this;
     }
 
+    @Override
     public Container withEnvironment(String name, String value) {
         environment.put(name, value);
         return this;
     }
 
+    @Override
     public Container withBinding(Binding binding) {
-        // TODO
+        bindings.put(binding.getScheme(), binding);
+        return this;
+    }
+
+    // TODO should this be part of ResourceWithBindings?
+    public Container withBindMount(BindMount bindMount) {
+        bindMounts.add(bindMount);
         return this;
     }
 }

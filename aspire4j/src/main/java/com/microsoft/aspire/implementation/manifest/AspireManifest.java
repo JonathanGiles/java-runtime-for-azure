@@ -1,8 +1,8 @@
 package com.microsoft.aspire.implementation.manifest;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.microsoft.aspire.components.azure.AzureStorageResource;
 import com.microsoft.aspire.components.common.Resource;
+import jakarta.validation.Valid;
 
 import java.util.*;
 
@@ -11,6 +11,7 @@ public class AspireManifest {
     private final String schema = "https://json.schemastore.org/aspire-8.0.json";
 
     // Map from resource name to resource
+    @Valid
     @JsonProperty("resources")
     private final Map<String, Resource> resources;
 

@@ -1,6 +1,8 @@
-package com.microsoft.aspire.components.common;
+package com.microsoft.aspire.components.common.properties;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 
 /*
 {
@@ -28,13 +30,17 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 }
  */
 public class Volume {
-    @JsonProperty
+    @NotNull(message = "Volume.name cannot be null")
+    @NotEmpty(message = "Volume.name cannot be an empty string")
+    @JsonProperty("name")
     private final String name;
 
-    @JsonProperty
+    @NotNull(message = "Volume.target cannot be null")
+    @NotEmpty(message = "Volume.target cannot be an empty string")
+    @JsonProperty("target")
     private final String target;
 
-    @JsonProperty
+    @JsonProperty("readOnly")
     private final boolean readOnly;
 
     public Volume(String name, String target, boolean readOnly) {
