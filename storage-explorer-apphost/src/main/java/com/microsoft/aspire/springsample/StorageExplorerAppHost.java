@@ -21,11 +21,8 @@ public class StorageExplorerAppHost implements AppHost {
 //            .withExternalHttpEndpoints()
 //            .withReference(blobStorage);
 
-        app.addDockerFile("storage-explorer", "Dockerfile")
+        app.addDockerFile("storage-explorer", "../storage-explorer/Dockerfile", "../storage-explorer")
             .withExternalHttpEndpoints()
             .withReference(blobStorage);
-
-        // Wire up the aspire-dashboard container
-        app.addAspireDashboard();
     }
 }
