@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -106,27 +107,8 @@ public class ManifestGenerator {
 
             // Check if the URI is a jar URI
             if (resourceUri.getScheme().equals("jar")) {
-                // Convert the jar URI to a zip URI
-                String zipUri = resourceUri.toString().split("!")[0];
-
-                // Create a new file system (if needed) for the zip URI
-                Map<String, String> env = new HashMap<>();
-                env.put("create", "true");
-                try (FileSystem fs = FileSystems.newFileSystem(URI.create(zipUri), env)) {
-                    String path = resourceUri.getPath();
-                    if (path == null) {
-                        System.err.println("Path is null");
-                        System.exit(-1);
-                    }
-
-                    // Convert the URI to a Path in the new file system
-                    Path sourcePath = fs.getPath(path);
-
-                    // Copy the file
-                    Files.copy(sourcePath,
-                            Paths.get(OUTPUT_DIR  + "/storage.module.bicep"),
-                            StandardCopyOption.REPLACE_EXISTING);
-                }
+                InputStream resourceAsStream = ManifestGenerator.class.getResourceAsStream("storage.module.bicep");
+                writeToFile(resourceAsStream, Paths.get(OUTPUT_DIR  + "/storage.module.bicep"));
             } else {
                 // The URI is not a jar URI, so just copy the file
                 Files.copy(Paths.get(resourceUri),
@@ -136,6 +118,16 @@ public class ManifestGenerator {
 
             System.out.println("Done");
         } catch (IOException | URISyntaxException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void writeToFile(InputStream resourceAsStream, Path path) {
+        try {
+            System.out.println("Writing bicep file to " + path);
+            Files.copy(resourceAsStream, path, StandardCopyOption.REPLACE_EXISTING);
+            System.out.println("Done writing bicep file.");
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }

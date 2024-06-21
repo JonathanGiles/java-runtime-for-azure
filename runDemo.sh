@@ -9,4 +9,9 @@ mvn clean install
 # Execute the app host to generate the aspire-manifest.json and bicep files
 mvn -f storage-explorer-apphost/pom.xml exec:java
 
-# Feed these files into azd
+# azd
+
+
+# Start the container
+cd storage-explorer
+docker-compose up
