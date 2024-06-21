@@ -113,7 +113,7 @@ public class DistributedApplication {
         // from https://learn.microsoft.com/en-us/dotnet/aspire/fundamentals/dashboard/standalone?tabs=bash
         // FIXME creating a binding is too verbose
         return addContainer("aspire-dashboard", "mcr.microsoft.com/dotnet/aspire-dashboard:8.0.0")
-                .withBinding(new Binding(Binding.Scheme.HTTP, Binding.Protocol.TCP, Binding.Transport.HTTP)
+                .withBinding(new Binding(Binding.Scheme.TCP, Binding.Protocol.TCP, Binding.Transport.HTTP)
                         .withPort(4317)
                         .withTargetPort(18889))
                 .withBinding(new Binding(Binding.Scheme.HTTP, Binding.Protocol.TCP, Binding.Transport.HTTP)
