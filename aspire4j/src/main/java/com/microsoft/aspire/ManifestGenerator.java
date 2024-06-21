@@ -93,8 +93,6 @@ public class ManifestGenerator {
 
     private void writeBicep() {
         System.out.print("Writing Bicep files...");
-        // FIXME
-        // For now, copy the resources/storage.module.bicep file to the output directory
         try {
             // Get the URL of the 'storage.module.bicep' resource
             URL resourceUrl = ManifestGenerator.class.getResource("storage.module.bicep");
@@ -106,15 +104,32 @@ public class ManifestGenerator {
             // Convert the URL to a URI
             URI resourceUri = resourceUrl.toURI();
 
-            // Create a new file system (if needed) for the resource URI
-            Map<String, String> env = new HashMap<>();
-            env.put("create", "true");
-            try (FileSystem fs = FileSystems.newFileSystem(resourceUri, env)) {
-                // Convert the URI to a Path in the new file system
-                Path sourcePath = Paths.get(resourceUri);
+            // Check if the URI is a jar URI
+            if (resourceUri.getScheme().equals("jar")) {
+                // Convert the jar URI to a zip URI
+                String zipUri = resourceUri.toString().split("!")[0];
 
-                // Copy the file
-                Files.copy(sourcePath,
+                // Create a new file system (if needed) for the zip URI
+                Map<String, String> env = new HashMap<>();
+                env.put("create", "true");
+                try (FileSystem fs = FileSystems.newFileSystem(URI.create(zipUri), env)) {
+                    String path = resourceUri.getPath();
+                    if (path == null) {
+                        System.err.println("Path is null");
+                        System.exit(-1);
+                    }
+
+                    // Convert the URI to a Path in the new file system
+                    Path sourcePath = fs.getPath(path);
+
+                    // Copy the file
+                    Files.copy(sourcePath,
+                            Paths.get(OUTPUT_DIR  + "/storage.module.bicep"),
+                            StandardCopyOption.REPLACE_EXISTING);
+                }
+            } else {
+                // The URI is not a jar URI, so just copy the file
+                Files.copy(Paths.get(resourceUri),
                         Paths.get(OUTPUT_DIR  + "/storage.module.bicep"),
                         StandardCopyOption.REPLACE_EXISTING);
             }
