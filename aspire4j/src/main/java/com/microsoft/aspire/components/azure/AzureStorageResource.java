@@ -23,6 +23,6 @@ public final class AzureStorageResource extends AzureBicepResource
     @JsonIgnore
     public String getConnectionString() {
         // FIXME we've hardcoded the bicep output that we know
-        return "{storage.output.blobEndpoint}";
+        return "{storage.outputs.blobEndpoint}";
     }
 }
