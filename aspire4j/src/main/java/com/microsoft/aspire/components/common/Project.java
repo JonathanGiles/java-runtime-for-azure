@@ -88,12 +88,6 @@ public final class Project extends Resource implements ResourceWithArguments<Pro
         return this;
     }
 
-    public Project withReference(Resource resource) {
-        // TODO
-        // https://learn.microsoft.com/en-us/dotnet/api/aspire.hosting.resourcebuilderextensions.withreference?view=dotnet-aspire-8.0.1#aspire-hosting-resourcebuilderextensions-withreference-1(aspire-hosting-applicationmodel-iresourcebuilder((-0))-aspire-hosting-applicationmodel-iresourcebuilder((aspire-hosting-applicationmodel-iresourcewithconnectionstring))-system-string-system-boolean)
-        return this;
-    }
-
     @Override
     public Project withArgument(String argument) {
         arguments.add(argument);

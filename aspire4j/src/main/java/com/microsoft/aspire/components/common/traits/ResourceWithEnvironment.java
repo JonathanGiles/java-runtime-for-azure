@@ -15,8 +15,9 @@ public interface ResourceWithEnvironment<T extends ResourceWithEnvironment<T>> {
         return (T) this;
     }
 
-    default T withReference(Resource resource) {
+    default T withReference(ResourceWithConnectionString resource) {
         // FIXME! Somehow we need to know what the reference is
+        // https://learn.microsoft.com/en-us/dotnet/api/aspire.hosting.resourcebuilderextensions.withreference?view=dotnet-aspire-8.0.1#aspire-hosting-resourcebuilderextensions-withreference-1(aspire-hosting-applicationmodel-iresourcebuilder((-0))-aspire-hosting-applicationmodel-iresourcebuilder((aspire-hosting-applicationmodel-iresourcewithconnectionstring))-system-string-system-boolean)
         withEnvironment("ConnectionStrings__blobs", "{blobs.connectionString}");
         return (T) this;
     }

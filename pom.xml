@@ -17,6 +17,6 @@
 
     <modules>
         <module>aspire4j</module>
-        <module>spring-sample</module>
+        <module>storage-explorer-apphost</module>
     </modules>
 </project>

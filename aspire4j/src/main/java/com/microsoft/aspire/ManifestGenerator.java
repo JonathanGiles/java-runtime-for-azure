@@ -4,12 +4,13 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
+import java.nio.file.*;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.ServiceLoader;
 import java.util.Set;
 
 import com.microsoft.aspire.implementation.manifest.AspireManifest;
@@ -20,19 +21,34 @@ import jakarta.validation.Validator;
 public class ManifestGenerator {
     private static final String OUTPUT_DIR = "output";
 
-//    public static void main(String[] args) {
-//        ManifestGenerator manifestGenerator = new ManifestGenerator();
-//        manifestGenerator.run();
-//    }
-//
-//    private void run() {
-//        ServiceLoader<AppHost> serviceLoader = ServiceLoader.load(AppHost.class);
-//        for (AppHost appHost : serviceLoader) {
-//            DistributedApplication app = new DistributedApplication();
-//            appHost.configureApplication(app);
-//            writeManifest(app);
-//        }
-//    }
+    public static void main(String[] args) {
+        System.out.println("Starting Manifest Generator...");
+        ManifestGenerator manifestGenerator = new ManifestGenerator();
+        manifestGenerator.run();
+    }
+
+    private void run() {
+        System.out.println("Looking for AppHost implementations...");
+
+        int count = 0;
+        ServiceLoader<AppHost> serviceLoader = ServiceLoader.load(AppHost.class);
+        for (AppHost appHost : serviceLoader) {
+            count++;
+            System.out.println("Found " + appHost.getClass());
+            DistributedApplication app = new DistributedApplication();
+
+            System.out.print("Receiving configuration from AppHost...");
+            appHost.configureApplication(app);
+            System.out.println("Done");
+
+            writeManifest(app);
+        }
+
+        if (count == 0) {
+            System.out.println("No AppHost implementations found...exiting");
+            System.exit(-1);
+        }
+    }
 
     public void run(AppHost appHost) {
         DistributedApplication app = new DistributedApplication();
@@ -41,15 +57,19 @@ public class ManifestGenerator {
     }
 
     private void writeManifest(DistributedApplication app) {
+        System.out.println("Validating models...");
         Validator validator = Validation.buildDefaultValidatorFactory().getValidator();
 
         Set<ConstraintViolation<AspireManifest>> violations = validator.validate(app.manifest);
         if (!violations.isEmpty()) {
             for (ConstraintViolation<AspireManifest> violation : violations) {
-                System.out.println(violation.getMessage());
+                System.err.println(violation.getMessage());
             }
+            System.out.println("Failed...exiting");
+            System.exit(-1);
         } else {
             // object is valid, continue processing...
+            System.out.println("Models validated...Writing manifest to file");
         }
 
         File outputDir = new File(OUTPUT_DIR);
@@ -66,28 +86,40 @@ public class ManifestGenerator {
         } catch (IOException e) {
             e.printStackTrace();
         }
+        System.out.println("Manifest written to file");
 
         writeBicep();
     }
 
     private void writeBicep() {
+        System.out.print("Writing Bicep files...");
         // FIXME
         // For now, copy the resources/storage.module.bicep file to the output directory
         try {
             // Get the URL of the 'storage.module.bicep' resource
-            URL resourceUrl = ManifestGenerator.class.getResource("/storage.module.bicep");
+            URL resourceUrl = ManifestGenerator.class.getResource("storage.module.bicep");
             if (resourceUrl == null) {
-                System.out.println("Resource not found: storage.module.bicep");
-                return;
+                System.err.println("Resource not found: storage.module.bicep");
+                System.exit(-1);
             }
 
-            // Convert the URL to a URI, then to a Path
-            Path sourcePath = Paths.get(resourceUrl.toURI());
+            // Convert the URL to a URI
+            URI resourceUri = resourceUrl.toURI();
 
-            // Copy the file
-            Files.copy(sourcePath,
-                    Paths.get(OUTPUT_DIR  + "/storage.module.bicep"),
-                    StandardCopyOption.REPLACE_EXISTING);
+            // Create a new file system (if needed) for the resource URI
+            Map<String, String> env = new HashMap<>();
+            env.put("create", "true");
+            try (FileSystem fs = FileSystems.newFileSystem(resourceUri, env)) {
+                // Convert the URI to a Path in the new file system
+                Path sourcePath = Paths.get(resourceUri);
+
+                // Copy the file
+                Files.copy(sourcePath,
+                        Paths.get(OUTPUT_DIR  + "/storage.module.bicep"),
+                        StandardCopyOption.REPLACE_EXISTING);
+            }
+
+            System.out.println("Done");
         } catch (IOException | URISyntaxException e) {
             e.printStackTrace();
         }

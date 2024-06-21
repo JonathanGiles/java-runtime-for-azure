@@ -5,10 +5,10 @@ import com.microsoft.aspire.DistributedApplication;
 
 // Inspired by:
 // https://github.com/dotnet/aspire/blob/main/playground/AzureStorageEndToEnd/AzureStorageEndToEnd.AppHost/Program.cs
-public class SpringSampleAppHost implements AppHost {
+public class StorageExplorerAppHost implements AppHost {
 
     public static void main(String[] args) {
-        new SpringSampleAppHost().run();
+        new StorageExplorerAppHost().run();
     }
 
     @Override
