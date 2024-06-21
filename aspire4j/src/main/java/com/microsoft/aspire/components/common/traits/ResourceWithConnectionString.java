@@ -1,5 +1,7 @@
 package com.microsoft.aspire.components.common.traits;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 public interface ResourceWithConnectionString<T extends ResourceWithConnectionString<T>> {
 
 //    T withConnectionString(String connectionString);
@@ -10,9 +12,18 @@ public interface ResourceWithConnectionString<T extends ResourceWithConnectionSt
      */
     String getConnectionString();
 
+//    /**
+//     * The environment variable name to use for the connection string.
+//     * @return
+//     */
+//    String getConnectionStringEnvironmentVariable();
+
     /**
-     * The environment variable name to use for the connection string.
-     * @return
+     * An override of the source resource's name for the connection string. The resulting connection string will be
+     * "ConnectionStrings__connectionName" if this is not null.
      */
-    String getConnectionStringEnvironmentVariable();
+    @JsonIgnore
+    default String getConnectionName() {
+        return null;
+    }
 }

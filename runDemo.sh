@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Delete the output directory and its contents
-rm -r output/
+# rm -r output/
 
 # Compile all three codebases
 mvn clean install

@@ -14,13 +14,14 @@ public class StorageExplorerAppHost implements AppHost {
     @Override
     public void configureApplication(DistributedApplication app) {
         var azureStorage = app.addAzureStorage("storage");
-        var blobStorage = azureStorage.addBlobs("blobs");
+        var blobStorage = azureStorage.addBlobs("storage-explorer-blobs");
 
+        // If we could just point to a project (in the .net sense), we could do the following:
 //        app.addProject("spring-sample")
 //            .withExternalHttpEndpoints()
 //            .withReference(blobStorage);
 
-        app.addContainer("spring-storage-explorer", "image-file-TODO")
+        app.addDockerFile("storage-explorer", "Dockerfile")
             .withExternalHttpEndpoints()
             .withReference(blobStorage);
 

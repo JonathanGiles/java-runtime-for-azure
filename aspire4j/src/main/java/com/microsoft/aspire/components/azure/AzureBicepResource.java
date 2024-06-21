@@ -76,10 +76,6 @@ public class AzureBicepResource extends Resource implements ResourceWithParamete
     @JsonProperty("path")
     private final String path;
 
-    @JsonProperty("connectionString")
-    @JsonInclude(JsonInclude.Include.NON_NULL)
-    private String connectionString;
-
     @Valid
     @JsonProperty("params")
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
@@ -92,11 +88,6 @@ public class AzureBicepResource extends Resource implements ResourceWithParamete
 
     public AzureBicepResource withParameter(String name, String value) {
         parameters.put(name, value);
-        return this;
-    }
-
-    public AzureBicepResource withConnectionString(String connectionString) {
-        this.connectionString = connectionString;
         return this;
     }
 }

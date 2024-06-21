@@ -26,6 +26,10 @@ public class DistributedApplication {
      *
      **************************************************************************/
 
+    public <T extends Project> T addProject(T project) {
+        return manifest.addResource(project);
+    }
+
     public Project addProject(String name) {
         return manifest.addResource(new Project(name));
     }
@@ -37,8 +41,16 @@ public class DistributedApplication {
      *
      **************************************************************************/
 
+    public <T extends DockerFile> T addDockerFile(T dockerFile) {
+        return manifest.addResource(dockerFile);
+    }
+
     public DockerFile addDockerFile(String name, String path) {
-        return manifest.addResource(new DockerFile(name, path));
+        return addDockerFile(name, path, ".");
+    }
+
+    public DockerFile addDockerFile(String name, String path, String context) {
+        return manifest.addResource(new DockerFile(name, path, context));
     }
 
 
@@ -47,6 +59,11 @@ public class DistributedApplication {
      * Container
      *
      **************************************************************************/
+
+    public <T extends Container> T addContainer(T container) {
+        return manifest.addResource(container);
+    }
+
     public Container addContainer(String name, String image) {
         return manifest.addResource(new Container(name, image));
     }
@@ -58,6 +75,10 @@ public class DistributedApplication {
      *
      **************************************************************************/
 
+    public <T extends Executable> T addExecutable(T executable) {
+        return manifest.addResource(executable);
+    }
+
     public Executable addExecutable(String name, String command, String workingDirectory, String... args) {
         return manifest.addResource(new Executable(name, command, workingDirectory).withArguments(args));
     }
@@ -68,6 +89,10 @@ public class DistributedApplication {
      * Value
      *
      **************************************************************************/
+
+    public <T extends Value> T addValue(T value) {
+        return manifest.addResource(value);
+    }
 
     public Value addValue(String name, String key, String value) {
         return manifest.addResource(new Value(name, key, value));
