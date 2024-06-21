@@ -20,10 +20,9 @@ import java.util.stream.Stream;
  */
 @Service
 public class AzureBlobStorageService implements StorageService {
-    @Value("${azure.storage.blob.container-name}")
-    private String blobStorageContainerName;
+    private String blobStorageContainerName = "mycontainer";
 
-    @Value("${azure.storage.blob.connection-string}")
+    @Value("${CONNECTION_STRING}")
     private String blobStorageConnectionString;
 
     private BlobContainerClient blobContainerClient;
@@ -36,13 +35,8 @@ public class AzureBlobStorageService implements StorageService {
 
         boolean doInit = true;
 
-        if (blobStorageContainerName == null || blobStorageContainerName.isEmpty()) {
-            System.err.println("Error: Please set the azure.storage.blob.container property as outlined in this samples readme file");
-            doInit = false;
-        }
-
         if (blobStorageConnectionString == null || blobStorageConnectionString.isEmpty()) {
-            System.err.println("Error: Please set the azure.storage.blob.connection-string property as outlined in this samples readme file");
+            System.err.println("Error: Please set the CONNECTION_STRING property");
             doInit = false;
         }
 

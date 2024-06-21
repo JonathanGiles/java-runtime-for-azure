@@ -1,5 +1,8 @@
 services:
   storage-explorer:
+    environment:
+      - CONNECTION_STRING=${CONNECTION_STRING}
     build:
       dockerfile: Dockerfile
-
+    ports:
+      - "8080:8080"
