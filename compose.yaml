@@ -1,0 +1,18 @@
+services:
+  date-service:
+    build:
+      dockerfile: date-service/Dockerfile
+    container_name: date-service
+    ports:
+      - "9090:9090"
+  storage-explorer:
+    environment:
+      - ENDPOINT=${ENDPOINT}
+      - CONNECTION_STRING=${CONNECTION_STRING}
+      - DATE_SERVICE_ENDPOINT=http://date-service:9090/
+    build:
+      dockerfile: storage-explorer/Dockerfile
+    depends_on:
+      - date-service
+    ports:
+      - "8080:8080"

@@ -1,7 +1,9 @@
-cservices:
+services:
   storage-explorer:
     environment:
       - ENDPOINT=${ENDPOINT}
+      - CONNECTION_STRING=${CONNECTION_STRING}
+      - DATE_SERVICE_ENDPOINT=${DATE_SERVICE_ENDPOINT}
     build:
       dockerfile: Dockerfile
     ports:

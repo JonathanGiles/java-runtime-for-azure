@@ -30,6 +30,21 @@ body {
     padding-bottom: 10px;
 }
 
+footer {
+    position: absolute;
+    width: 85%;
+    height: 5%;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    color: #373a3c;
+    clear: both;
+    text-align: center;
+    font-family: "Segoe UI", "Source Sans Pro", Calibri, Candara, Arial, sans-serif;
+    font-size: 0.9375rem;
+    font-weight: 400;
+}
+
 @media screen and (max-width: 992px) {
     body {
         width: 100%;

@@ -4,6 +4,7 @@ import com.microsoft.aspire.storage.explorer.service.StorageItem;
 import com.microsoft.aspire.storage.explorer.service.StorageService;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
@@ -15,16 +16,22 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.io.IOException;
+import java.time.OffsetDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.stream.Collectors;
 
 @Controller
 public class StorageServiceController {
 
     private final StorageService storageService;
+
+    @Value("${DATE_SERVICE_ENDPOINT}")
+    private String dateServiceEndpoint;
 
     @Autowired
     public StorageServiceController(final StorageService storageService) {
@@ -35,6 +42,9 @@ public class StorageServiceController {
     public String listUploadedFiles(final Model model,
                                     final HttpServletResponse response) {
         model.addAttribute("files", storageService.listAllFiles().collect(Collectors.toList()));
+        RestTemplate restTemplate = new RestTemplate();
+        OffsetDateTime time = restTemplate.getForObject(dateServiceEndpoint + "/time", OffsetDateTime.class);
+        model.addAttribute("time", time.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
         response.addHeader("Cache-Control", "no-cache");
         return "uploadForm";
     }
