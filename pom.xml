@@ -19,5 +19,6 @@
         <module>aspire4j</module>
         <module>storage-explorer-apphost</module>
         <module>storage-explorer</module>
+        <module>date-service</module>
     </modules>
 </project>
