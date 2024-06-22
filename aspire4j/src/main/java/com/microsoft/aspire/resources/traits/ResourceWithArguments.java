@@ -1,4 +1,4 @@
-package com.microsoft.aspire.components.common.traits;
+package com.microsoft.aspire.resources.traits;
 
 public interface ResourceWithArguments<T extends ResourceWithArguments<T>> {
 

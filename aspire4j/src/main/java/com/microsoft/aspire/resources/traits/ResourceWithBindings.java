@@ -1,6 +1,6 @@
-package com.microsoft.aspire.components.common.traits;
+package com.microsoft.aspire.resources.traits;
 
-import com.microsoft.aspire.components.common.properties.Binding;
+import com.microsoft.aspire.resources.properties.Binding;
 
 import java.util.Map;
 

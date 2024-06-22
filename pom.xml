@@ -17,6 +17,7 @@
 
     <modules>
         <module>aspire4j</module>
+        <module>aspire4j-extensions-azure-storage</module>
         <module>storage-explorer-apphost</module>
         <module>storage-explorer</module>
         <module>date-service</module>

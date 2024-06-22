@@ -1,4 +1,4 @@
-package com.microsoft.aspire.components.common.properties;
+package com.microsoft.aspire.resources.properties;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;

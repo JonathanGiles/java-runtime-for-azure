@@ -1,12 +1,12 @@
-package com.microsoft.aspire.components.common;
+package com.microsoft.aspire.resources;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
-import com.microsoft.aspire.components.common.properties.Binding;
-import com.microsoft.aspire.components.common.traits.ResourceWithArguments;
-import com.microsoft.aspire.components.common.traits.ResourceWithBindings;
-import com.microsoft.aspire.components.common.traits.ResourceWithEnvironment;
+import com.microsoft.aspire.resources.properties.Binding;
+import com.microsoft.aspire.resources.traits.ResourceWithArguments;
+import com.microsoft.aspire.resources.traits.ResourceWithBindings;
+import com.microsoft.aspire.resources.traits.ResourceWithEnvironment;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
@@ -51,7 +51,7 @@ import java.util.*;
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
 public class Executable extends Resource implements ResourceWithArguments<Executable>,
                                                     ResourceWithEnvironment<Executable>,
-                                                    ResourceWithBindings<Executable> {
+        ResourceWithBindings<Executable> {
 
     @NotNull(message = "Executable.workingDirectory cannot be null")
     @NotEmpty(message = "Executable.workingDirectory cannot be an empty string")

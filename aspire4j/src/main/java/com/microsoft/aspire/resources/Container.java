@@ -1,14 +1,14 @@
-package com.microsoft.aspire.components.common;
+package com.microsoft.aspire.resources;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
-import com.microsoft.aspire.components.common.properties.BindMount;
-import com.microsoft.aspire.components.common.properties.Binding;
-import com.microsoft.aspire.components.common.properties.Volume;
-import com.microsoft.aspire.components.common.traits.ResourceWithArguments;
-import com.microsoft.aspire.components.common.traits.ResourceWithBindings;
-import com.microsoft.aspire.components.common.traits.ResourceWithEnvironment;
+import com.microsoft.aspire.resources.properties.BindMount;
+import com.microsoft.aspire.resources.properties.Binding;
+import com.microsoft.aspire.resources.properties.Volume;
+import com.microsoft.aspire.resources.traits.ResourceWithArguments;
+import com.microsoft.aspire.resources.traits.ResourceWithBindings;
+import com.microsoft.aspire.resources.traits.ResourceWithEnvironment;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
@@ -88,8 +88,8 @@ For example:
 @JsonPropertyOrder({"type", "image", "entrypoint", "args", "connectionString", "env", "bindings", "bindMounts", "volumes"})
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
 public class Container extends Resource implements ResourceWithArguments<Container>,
-                                                   ResourceWithEnvironment<Container>,
-                                                   ResourceWithBindings<Container> {
+        ResourceWithEnvironment<Container>,
+        ResourceWithBindings<Container> {
 
     @NotNull(message = "Container.image cannot be null")
     @NotEmpty(message = "Container.image cannot be an empty string")

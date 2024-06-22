@@ -1,8 +1,8 @@
-package com.microsoft.aspire.components.azure;
+package com.microsoft.aspire.extensions.azure.storage;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.microsoft.aspire.components.common.Value;
-import com.microsoft.aspire.components.common.traits.ResourceWithConnectionString;
+import com.microsoft.aspire.resources.Value;
+import com.microsoft.aspire.resources.traits.ResourceWithConnectionString;
 
 public final class AzureStorageBlobsResource extends Value
         implements ResourceWithConnectionString<AzureStorageBlobsResource>{

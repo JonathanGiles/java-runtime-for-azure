@@ -2,6 +2,7 @@ package com.microsoft.aspire.springsample;
 
 import com.microsoft.aspire.AppHost;
 import com.microsoft.aspire.DistributedApplication;
+import com.microsoft.aspire.extensions.azure.storage.AzureStorageExtension;
 
 public class StorageExplorerAppHost implements AppHost {
 
@@ -11,7 +12,11 @@ public class StorageExplorerAppHost implements AppHost {
 
     @Override
     public void configureApplication(DistributedApplication app) {
-        var azureStorage = app.addAzureStorage("storage");
+        app.printExtensions();
+
+        var azureStorage = app.withExtension(AzureStorageExtension.class)
+            .addAzureStorage("storage");
+
         var blobStorage = azureStorage.addBlobs("storage-explorer-blobs");
 
         var dateService = app.addDockerFile("dateservice", "../date-service/Dockerfile", "../date-service")

@@ -1,4 +1,4 @@
-package com.microsoft.aspire.components.common.traits;
+package com.microsoft.aspire.resources.traits;
 
 import java.util.Map;
 

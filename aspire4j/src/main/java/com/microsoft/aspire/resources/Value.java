@@ -1,19 +1,9 @@
-package com.microsoft.aspire.components.common;
+package com.microsoft.aspire.resources;
 
 import com.fasterxml.jackson.annotation.*;
-import com.microsoft.aspire.components.common.properties.BindMount;
-import com.microsoft.aspire.components.common.properties.Binding;
-import com.microsoft.aspire.components.common.properties.Volume;
-import com.microsoft.aspire.components.common.traits.ResourceWithArguments;
-import com.microsoft.aspire.components.common.traits.ResourceWithBindings;
-import com.microsoft.aspire.components.common.traits.ResourceWithEnvironment;
-import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.NotNull;
 
-import java.util.ArrayList;
 import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
 
 /*

@@ -1,10 +1,9 @@
-package com.microsoft.aspire.components.azure;
+package com.microsoft.aspire.resources;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
-import com.microsoft.aspire.components.common.Resource;
-import com.microsoft.aspire.components.common.traits.ResourceWithParameters;
+import com.microsoft.aspire.resources.traits.ResourceWithParameters;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;

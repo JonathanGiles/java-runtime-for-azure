@@ -1,7 +1,7 @@
 package com.microsoft.aspire.implementation.manifest;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.microsoft.aspire.components.common.Resource;
+import com.microsoft.aspire.resources.Resource;
 import jakarta.validation.Valid;
 
 import java.util.*;

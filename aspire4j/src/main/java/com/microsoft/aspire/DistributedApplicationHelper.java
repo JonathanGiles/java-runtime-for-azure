@@ -1,6 +1,4 @@
-package com.microsoft.aspire.implementation;
-
-import com.microsoft.aspire.DistributedApplication;
+package com.microsoft.aspire;
 
 public class DistributedApplicationHelper {
     private static DistributedApplicationAccessor accessor;
