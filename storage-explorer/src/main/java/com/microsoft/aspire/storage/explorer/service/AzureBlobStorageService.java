@@ -2,6 +2,7 @@
 // Licensed under the MIT License.
 package com.microsoft.aspire.storage.explorer.service;
 
+import com.azure.identity.DefaultAzureCredentialBuilder;
 import com.azure.storage.blob.BlobClient;
 import com.azure.storage.blob.BlobContainerClient;
 import com.azure.storage.blob.BlobServiceClient;
@@ -22,8 +23,8 @@ import java.util.stream.Stream;
 public class AzureBlobStorageService implements StorageService {
     private String blobStorageContainerName = "mycontainer";
 
-    @Value("${CONNECTION_STRING}")
-    private String blobStorageConnectionString;
+    @Value("${ENDPOINT}")
+    private String storageEndpoint;
 
     private BlobContainerClient blobContainerClient;
 
@@ -35,8 +36,8 @@ public class AzureBlobStorageService implements StorageService {
 
         boolean doInit = true;
 
-        if (blobStorageConnectionString == null || blobStorageConnectionString.isEmpty()) {
-            System.err.println("Error: Please set the CONNECTION_STRING property");
+        if (storageEndpoint == null || storageEndpoint.isEmpty()) {
+            System.err.println("Error: Please set the ENDPOINT property");
             doInit = false;
         }
 
@@ -46,8 +47,9 @@ public class AzureBlobStorageService implements StorageService {
         }
 
         final BlobServiceClient blobServiceClient = new BlobServiceClientBuilder()
-            .connectionString(blobStorageConnectionString)
-            .buildClient();
+                .endpoint(storageEndpoint)
+                .credential(new DefaultAzureCredentialBuilder().build())
+                .buildClient();
 
         blobContainerClient = blobServiceClient.getBlobContainerClient(blobStorageContainerName);
         if (!blobContainerClient.exists()) {

@@ -1,7 +1,7 @@
 services:
   storage-explorer:
     environment:
-      - CONNECTION_STRING=${CONNECTION_STRING}
+      - ENDPOINT=${ENDPOINT}
     build:
       dockerfile: Dockerfile
     ports:

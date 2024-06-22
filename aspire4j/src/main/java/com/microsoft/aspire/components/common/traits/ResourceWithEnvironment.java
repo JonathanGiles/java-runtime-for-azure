@@ -18,7 +18,7 @@ public interface ResourceWithEnvironment<T extends ResourceWithEnvironment<T>> {
     default <R extends Resource & ResourceWithConnectionString<?>> T withReference(R resource) {
         // https://learn.microsoft.com/en-us/dotnet/api/aspire.hosting.resourcebuilderextensions.withreference?view=dotnet-aspire-8.0.1#aspire-hosting-resourcebuilderextensions-withreference-1(aspire-hosting-applicationmodel-iresourcebuilder((-0))-aspire-hosting-applicationmodel-iresourcebuilder((aspire-hosting-applicationmodel-iresourcewithconnectionstring))-system-string-system-boolean)
         final String connectionName = resource.getConnectionName();
-        final String envVarName = "CONNECTION_STRING";
+        final String envVarName = "ENDPOINT";
 //        final String envVarName = "ConnectionStrings__" +
 //                (connectionName != null && !connectionName.isEmpty() ? connectionName : resource.getName());
         withEnvironment(envVarName, "{" + resource.getName() + ".connectionString}");
