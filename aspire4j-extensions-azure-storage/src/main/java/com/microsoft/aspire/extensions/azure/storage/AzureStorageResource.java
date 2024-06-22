@@ -11,6 +11,7 @@ public class AzureStorageResource extends AzureBicepResource
     public AzureStorageResource(String name) {
         super(name, "storage.module.bicep");
 
+        // FIXME just here because I saw other samples with it
         withParameter("principalId", "");
         withParameter("principalType", "");
     }

@@ -9,6 +9,7 @@ This GitHub repository is split into five sub-projects:
 
 * `aspire4j`: The core library that provides the AppHost and the ability to define infrastructure as code.
 * `aspire4j-extensions-azure-storage`: An extension to the core library that provides the ability to configure Azure Storage resources.
+* * `aspire4j-extensions-azure`: A wrapper project that developers could use to bring in all Azure extensions at once.
 * `storage-explorer`: A sample Spring application that is designed to work with Azure Services. It does not have any
 specific knowledge of the Aspire4J framework or how to deploy to Azure.
 * `date-service`: A simple Spring application that provides a date microservice. It is used by the `storage-explorer`.

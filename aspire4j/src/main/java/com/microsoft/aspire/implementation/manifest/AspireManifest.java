@@ -24,4 +24,8 @@ public class AspireManifest {
         resources.put(resource.getName(), resource);
         return resource;
     }
+
+    public boolean isEmpty() {
+        return resources.isEmpty();
+    }
 }

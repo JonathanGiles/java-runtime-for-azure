@@ -58,6 +58,11 @@ public class ManifestGenerator {
     }
 
     private void writeManifest(DistributedApplication app) {
+        if (app.manifest.isEmpty()) {
+            System.out.println("No configuration received from AppHost...exiting");
+            System.exit(-1);
+        }
+
         System.out.println("Validating models...");
         Validator validator = Validation.buildDefaultValidatorFactory().getValidator();
 
