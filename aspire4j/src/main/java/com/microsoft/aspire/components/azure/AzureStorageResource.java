@@ -4,8 +4,8 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.microsoft.aspire.components.common.traits.ResourceWithConnectionString;
 import com.microsoft.aspire.implementation.DistributedApplicationHelper;
 
-public final class AzureStorageResource extends AzureBicepResource
-                                        implements ResourceWithConnectionString<AzureStorageResource> {
+public class AzureStorageResource extends AzureBicepResource
+                                  implements ResourceWithConnectionString<AzureStorageResource> {
 
     public AzureStorageResource(String name) {
         super(name, "storage.module.bicep");

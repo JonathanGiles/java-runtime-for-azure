@@ -73,7 +73,7 @@ public class Executable extends Resource implements ResourceWithArguments<Execut
 
     @JsonProperty("bindings")
     @Valid
-    private final List<Binding> bindings = new ArrayList<>();
+    private final Map<Binding.Scheme, Binding> bindings = new LinkedHashMap<>();
 
     public Executable(String name, String workingDirectory, String command) {
         super("executable.v0", name);
@@ -94,7 +94,12 @@ public class Executable extends Resource implements ResourceWithArguments<Execut
 
     @Override
     public Executable withBinding(Binding binding) {
-        bindings.add(binding);
+        bindings.put(binding.getScheme(), binding);
         return this;
+    }
+
+    @Override
+    public @Valid Map<Binding.Scheme, Binding> getBindings() {
+        return Collections.unmodifiableMap(bindings);
     }
 }

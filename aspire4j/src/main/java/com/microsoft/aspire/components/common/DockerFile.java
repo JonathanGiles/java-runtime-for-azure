@@ -83,4 +83,9 @@ public class DockerFile extends Resource implements ResourceWithEnvironment<Dock
         bindings.put(binding.getScheme(), binding);
         return this;
     }
+
+    @Override
+    public @Valid Map<Binding.Scheme, Binding> getBindings() {
+        return Collections.unmodifiableMap(bindings);
+    }
 }

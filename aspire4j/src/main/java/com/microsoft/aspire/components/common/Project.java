@@ -11,10 +11,7 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /*
 {
@@ -47,9 +44,9 @@ import java.util.Map;
  */
 @JsonPropertyOrder({"type", "path", "args", "env", "bindings"})
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
-public final class Project extends Resource implements ResourceWithArguments<Project>,
-                                                       ResourceWithEnvironment<Project>,
-                                                       ResourceWithBindings<Project> {
+public class Project extends Resource implements ResourceWithArguments<Project>,
+                                                 ResourceWithEnvironment<Project>,
+                                                 ResourceWithBindings<Project> {
 
     @NotNull(message = "Project.path cannot be null")
     @NotEmpty(message = "Project.path cannot be an empty string")
@@ -98,5 +95,10 @@ public final class Project extends Resource implements ResourceWithArguments<Pro
     public Project withBinding(Binding binding) {
         bindings.put(binding.getScheme(), binding);
         return this;
+    }
+
+    @Override
+    public @Valid Map<Binding.Scheme, Binding> getBindings() {
+        return Collections.unmodifiableMap(bindings);
     }
 }

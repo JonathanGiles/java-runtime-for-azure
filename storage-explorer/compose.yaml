@@ -1,4 +1,4 @@
-services:
+cservices:
   storage-explorer:
     environment:
       - ENDPOINT=${ENDPOINT}
