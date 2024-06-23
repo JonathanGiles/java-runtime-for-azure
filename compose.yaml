@@ -1,7 +1,8 @@
 services:
   date-service:
     build:
-      dockerfile: date-service/Dockerfile
+      dockerfile: Dockerfile
+      context: date-service
     container_name: date-service
     ports:
       - "9090:9090"
@@ -11,7 +12,8 @@ services:
       - CONNECTION_STRING=${CONNECTION_STRING}
       - DATE_SERVICE_ENDPOINT=http://date-service:9090/
     build:
-      dockerfile: storage-explorer/Dockerfile
+      dockerfile: Dockerfile
+      context: storage-explorer
     depends_on:
       - date-service
     ports:
