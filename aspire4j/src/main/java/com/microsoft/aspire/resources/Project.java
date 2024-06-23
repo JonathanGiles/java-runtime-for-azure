@@ -46,7 +46,7 @@ import java.util.*;
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
 public class Project extends Resource implements ResourceWithArguments<Project>,
                                                  ResourceWithEnvironment<Project>,
-        ResourceWithBindings<Project> {
+                                                 ResourceWithBindings<Project> {
 
     @NotNull(message = "Project.path cannot be null")
     @NotEmpty(message = "Project.path cannot be an empty string")
@@ -66,7 +66,7 @@ public class Project extends Resource implements ResourceWithArguments<Project>,
     private final Map<Binding.Scheme, Binding> bindings = new LinkedHashMap<>();
 
     public Project(String name) {
-        super("project.v0", name);
+        super(ResourceType.PROJECT, name);
     }
 
     /**

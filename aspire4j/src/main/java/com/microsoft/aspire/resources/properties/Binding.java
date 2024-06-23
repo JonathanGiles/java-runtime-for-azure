@@ -115,15 +115,15 @@ public class Binding {
 
     @NotNull(message = "Binding.scheme cannot be null")
     @JsonProperty("scheme")
-    private final Scheme scheme;
+    private Scheme scheme;
 
     @NotNull(message = "Binding.protocol cannot be null")
     @JsonProperty("protocol")
-    private final Protocol protocol;
+    private Protocol protocol;
 
     @NotNull(message = "Binding.transport cannot be null")
     @JsonProperty("transport")
-    private final Transport transport;
+    private Transport transport;
 
     @JsonProperty("external")
     private Boolean external;
@@ -138,10 +138,28 @@ public class Binding {
     @Max(value = 65535, message = "Binding.port must be between 0 and 65535")
     private Integer port;
 
+    public Binding() {
+    }
+
     public Binding(Scheme scheme, Protocol protocol, Transport transport) {
         this.scheme = scheme;
         this.protocol = protocol;
         this.transport = transport;
+    }
+
+    public Binding withScheme(Scheme scheme) {
+        this.scheme = scheme;
+        return this;
+    }
+
+    public Binding withProtocol(Protocol protocol) {
+        this.protocol = protocol;
+        return this;
+    }
+
+    public Binding withTransport(Transport transport) {
+        this.transport = transport;
+        return this;
     }
 
     public Binding withExternal() {

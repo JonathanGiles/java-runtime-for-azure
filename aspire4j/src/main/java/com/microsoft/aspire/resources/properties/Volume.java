@@ -33,19 +33,45 @@ public class Volume {
     @NotNull(message = "Volume.name cannot be null")
     @NotEmpty(message = "Volume.name cannot be an empty string")
     @JsonProperty("name")
-    private final String name;
+    private String name;
 
     @NotNull(message = "Volume.target cannot be null")
     @NotEmpty(message = "Volume.target cannot be an empty string")
     @JsonProperty("target")
-    private final String target;
+    private String target;
 
     @JsonProperty("readOnly")
-    private final boolean readOnly;
+    private boolean readOnly;
+
+    public Volume() {
+    }
+
+    public Volume(String name) {
+        this(name, null);
+    }
+
+    public Volume(String name, String target) {
+        this(name, target, false);
+    }
 
     public Volume(String name, String target, boolean readOnly) {
         this.name = name;
         this.target = target;
         this.readOnly = readOnly;
+    }
+
+    public Volume withName(String name) {
+        this.name = name;
+        return this;
+    }
+
+    public Volume withTarget(String target) {
+        this.target = target;
+        return this;
+    }
+
+    public Volume withReadOnly() {
+        this.readOnly = true;
+        return this;
     }
 }

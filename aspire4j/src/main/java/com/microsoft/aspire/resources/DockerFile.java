@@ -51,12 +51,12 @@ public class DockerFile extends Resource implements ResourceWithEnvironment<Dock
     @NotNull(message = "DockerFile.path cannot be null")
     @NotEmpty(message = "DockerFile.path cannot be an empty string")
     @JsonProperty("path")
-    private final String path;
+    private String path;
 
     @NotNull(message = "DockerFile.context cannot be null")
     @NotEmpty(message = "DockerFile.context cannot be an empty string")
     @JsonProperty("context")
-    private final String context;
+    private String context;
 
     @JsonProperty("env")
     @Valid
@@ -66,10 +66,28 @@ public class DockerFile extends Resource implements ResourceWithEnvironment<Dock
     @Valid
     private final Map<Binding.Scheme, Binding> bindings = new LinkedHashMap<>();
 
+    public DockerFile(String name) {
+        this(name, null, null);
+    }
+
+    public DockerFile(String name, String path) {
+        this(name, path, null);
+    }
+
     public DockerFile(String name, String path, String context) {
-        super("dockerfile.v0", name);
-        this.path = Objects.requireNonNull(path);
-        this.context = Objects.requireNonNull(context);
+        super(ResourceType.DOCKER_FILE, name);
+        this.path = path;
+        this.context = context;
+    }
+
+    public DockerFile withPath(String path) {
+        this.path = path;
+        return this;
+    }
+
+    public DockerFile withContext(String context) {
+        this.context = context;
+        return this;
     }
 
     @Override

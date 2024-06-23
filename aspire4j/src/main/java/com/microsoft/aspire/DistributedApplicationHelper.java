@@ -1,5 +1,6 @@
 package com.microsoft.aspire;
 
+// FIXME this is hacky
 public class DistributedApplicationHelper {
     private static DistributedApplicationAccessor accessor;
 

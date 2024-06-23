@@ -1,8 +1,6 @@
 package com.microsoft.aspire;
 
 import com.microsoft.aspire.resources.*;
-import com.microsoft.aspire.resources.properties.Binding;
-import com.microsoft.aspire.implementation.manifest.AspireManifest;
 import jakarta.validation.Valid;
 
 import java.io.PrintStream;
@@ -32,14 +30,44 @@ public class DistributedApplication {
 
     /***************************************************************************
      *
+     * Resource
+     *
+     **************************************************************************/
+
+    /**
+     * Add a new resource to the distributed application.
+     *
+     * @param r
+     * @param <T>
+     * @return
+     */
+    public <T extends Resource> T addResource(T r) {
+        return manifest.addResource(r);
+    }
+
+    /***************************************************************************
+     *
      * Project
      *
      **************************************************************************/
 
+    /**
+     * Add a new project to the distributed application.
+     *
+     * @param project
+     * @return
+     * @param <T>
+     */
     public <T extends Project> T addProject(T project) {
         return manifest.addResource(project);
     }
 
+    /**
+     * Add a new project to the distributed application.
+     *
+     * @param name
+     * @return
+     */
     public Project addProject(String name) {
         return manifest.addResource(new Project(name));
     }
@@ -51,14 +79,36 @@ public class DistributedApplication {
      *
      **************************************************************************/
 
+    /**
+     * Add a new DockerFile to the distributed application.
+     *
+     * @param dockerFile
+     * @return
+     * @param <T>
+     */
     public <T extends DockerFile> T addDockerFile(T dockerFile) {
         return manifest.addResource(dockerFile);
     }
 
+    /**
+     * Add a new DockerFile to the distributed application.
+     *
+     * @param name
+     * @param path
+     * @return
+     */
     public DockerFile addDockerFile(String name, String path) {
         return addDockerFile(name, path, ".");
     }
 
+    /**
+     * Add a new DockerFile to the distributed application.
+     *
+     * @param name
+     * @param path
+     * @param context
+     * @return
+     */
     public DockerFile addDockerFile(String name, String path, String context) {
         return manifest.addResource(new DockerFile(name, path, context));
     }
@@ -70,10 +120,24 @@ public class DistributedApplication {
      *
      **************************************************************************/
 
+    /**
+     * Add a new container to the distributed application.
+     *
+     * @param container
+     * @return
+     * @param <T>
+     */
     public <T extends Container> T addContainer(T container) {
         return manifest.addResource(container);
     }
 
+    /**
+     * Add a new container to the distributed application.
+     *
+     * @param name
+     * @param image
+     * @return
+     */
     public Container addContainer(String name, String image) {
         return manifest.addResource(new Container(name, image));
     }
@@ -85,10 +149,26 @@ public class DistributedApplication {
      *
      **************************************************************************/
 
+    /**
+     * Add a new executable to the distributed application.
+     *
+     * @param executable
+     * @return
+     * @param <T>
+     */
     public <T extends Executable> T addExecutable(T executable) {
         return manifest.addResource(executable);
     }
 
+    /**
+     * Add a new executable to the distributed application.
+     *
+     * @param name
+     * @param command
+     * @param workingDirectory
+     * @param args
+     * @return
+     */
     public Executable addExecutable(String name, String command, String workingDirectory, String... args) {
         return manifest.addResource(new Executable(name, command, workingDirectory).withArguments(args));
     }
@@ -100,50 +180,47 @@ public class DistributedApplication {
      *
      **************************************************************************/
 
+    /**
+     * Add a new value to the distributed application.
+     *
+     * @param value
+     * @return
+     * @param <T>
+     */
     public <T extends Value> T addValue(T value) {
         return manifest.addResource(value);
     }
 
+    /**
+     * Add a new value to the distributed application.
+     *
+     * @param name
+     * @param key
+     * @param value
+     * @return
+     */
     public Value addValue(String name, String key, String value) {
         return manifest.addResource(new Value(name, key, value));
     }
 
     /***************************************************************************
      *
-     * 'Extensions'
+     * Extensions
      *
      **************************************************************************/
 
-//    // demo of redis support being baked in
-//    public Container addRedis(String name) {
-//        return addContainer(name, "docker.io/library/redis:7.2");
-//    }
-//
-//    public Container addAspireDashboard() {
-//        // from https://learn.microsoft.com/en-us/dotnet/aspire/fundamentals/dashboard/standalone?tabs=bash
-//        // FIXME creating a binding is too verbose
-//        return addContainer("aspire-dashboard", "mcr.microsoft.com/dotnet/aspire-dashboard:8.0.0")
-//                .withBinding(new Binding(Binding.Scheme.TCP, Binding.Protocol.TCP, Binding.Transport.HTTP)
-//                        .withPort(4317)
-//                        .withTargetPort(18889))
-//                .withBinding(new Binding(Binding.Scheme.HTTP, Binding.Protocol.TCP, Binding.Transport.HTTP)
-//                        .withPort(18888)
-//                        .withTargetPort(18888));
-//    }
-
-//    public AzureStorageResource addAzureStorage(String name) {
-//        return manifest.addResource(new AzureStorageResource(name));
-//    }
-
-    // FIXME temporary
-    public <T extends Resource> T addResource(T r) {
-        return manifest.addResource(r);
-    }
-
+    /**
+     * Print the available extensions to System.out.
+     */
     public void printExtensions() {
         printExtensions(System.out);
     }
 
+    /**
+     * Print the available extensions to the provided PrintStream.
+     *
+     * @param out
+     */
     public void printExtensions(PrintStream out) {
         out.println("Available Aspire4J Extensions:");
         extensions.forEach(e -> {
@@ -152,6 +229,14 @@ public class DistributedApplication {
         });
     }
 
+    /**
+     * Loads the specified extension and makes an instance of it available for configuration, but it does not
+     * add the extension to the distributed application. This will happen when the extension is configured.
+     *
+     * @param extension
+     * @return
+     * @param <T>
+     */
     public <T extends Extension> T withExtension(Class<T> extension) {
         try {
             return extension.newInstance();

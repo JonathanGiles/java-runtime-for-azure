@@ -51,17 +51,17 @@ import java.util.*;
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
 public class Executable extends Resource implements ResourceWithArguments<Executable>,
                                                     ResourceWithEnvironment<Executable>,
-        ResourceWithBindings<Executable> {
+                                                    ResourceWithBindings<Executable> {
 
     @NotNull(message = "Executable.workingDirectory cannot be null")
     @NotEmpty(message = "Executable.workingDirectory cannot be an empty string")
     @JsonProperty("workingDirectory")
-    private final String workingDirectory;
+    private String workingDirectory;
 
     @JsonProperty("command")
     @NotNull(message = "Executable.command cannot be null")
     @NotEmpty(message = "Executable.command cannot be an empty string")
-    private final String command;
+    private String command;
 
     @JsonProperty("args")
     @Valid
@@ -75,10 +75,28 @@ public class Executable extends Resource implements ResourceWithArguments<Execut
     @Valid
     private final Map<Binding.Scheme, Binding> bindings = new LinkedHashMap<>();
 
+    public Executable(String name) {
+        this(name, null, null);
+    }
+
+    public Executable(String name, String workingDirectory) {
+        this(name, workingDirectory, null);
+    }
+
     public Executable(String name, String workingDirectory, String command) {
-        super("executable.v0", name);
+        super(ResourceType.EXECUTABLE, name);
         this.workingDirectory = workingDirectory;
         this.command = command;
+    }
+
+    public Executable withWorkingDirectory(String workingDirectory) {
+        this.workingDirectory = workingDirectory;
+        return this;
+    }
+
+    public Executable withCommand(String command) {
+        this.command = command;
+        return this;
     }
 
     public Executable withEnvironment(String key, String value) {

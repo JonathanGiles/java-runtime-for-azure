@@ -6,16 +6,11 @@ import com.microsoft.aspire.extensions.azure.storage.AzureStorageExtension;
 
 public class StorageExplorerAppHost implements AppHost {
 
-    public static void main(String[] args) {
-        new StorageExplorerAppHost().run();
-    }
-
-    @Override
-    public void configureApplication(DistributedApplication app) {
+    @Override public void configureApplication(DistributedApplication app) {
         app.printExtensions();
 
         var azureStorage = app.withExtension(AzureStorageExtension.class)
-            .addAzureStorage("storage");
+                .addAzureStorage("storage");
 
         var blobStorage = azureStorage.addBlobs("storage-explorer-blobs");
 
@@ -26,5 +21,9 @@ public class StorageExplorerAppHost implements AppHost {
             .withExternalHttpEndpoints()
             .withReference(blobStorage)
             .withReference(dateService);
+    }
+
+    public static void main(String[] args) {
+        new StorageExplorerAppHost().run();
     }
 }

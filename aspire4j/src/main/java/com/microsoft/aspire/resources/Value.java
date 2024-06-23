@@ -33,7 +33,7 @@ public class Value extends Resource {
     private final Map<String, String> properties = new LinkedHashMap<>();
 
     public Value(String name, String key, String value) {
-        super("value.v0", name);
+        super(ResourceType.VALUE, name);
         properties.put(key, value);
     }
 

@@ -94,7 +94,7 @@ public class Container extends Resource implements ResourceWithArguments<Contain
     @NotNull(message = "Container.image cannot be null")
     @NotEmpty(message = "Container.image cannot be an empty string")
     @JsonProperty("image")
-    private final String image;
+    private String image;
 
     @JsonProperty("entrypoint")
     private String entryPoint;
@@ -118,10 +118,18 @@ public class Container extends Resource implements ResourceWithArguments<Contain
     @Valid
     private final List<BindMount> bindMounts = new ArrayList<>();
 
+    public Container(String name) {
+        this(name, null);
+    }
 
     public Container(String name, String image) {
-        super("container.v0", name);
+        super(ResourceType.CONTAINER, name);
         this.image = image;
+    }
+
+    public Container withImage(String image) {
+        this.image = image;
+        return this;
     }
 
     public Container withEntryPoint(String entryPoint) {

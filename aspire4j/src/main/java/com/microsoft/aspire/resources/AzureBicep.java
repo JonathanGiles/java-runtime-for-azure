@@ -68,24 +68,33 @@ For example:
 },
  */
 @JsonPropertyOrder({"type", "path", "connectionString", "params"})
-public class AzureBicepResource extends Resource implements ResourceWithParameters<AzureBicepResource> {
+public class AzureBicep extends Resource implements ResourceWithParameters<AzureBicep> {
 
     @NotNull(message = "AzureBicep.path cannot be null")
     @NotEmpty(message = "AzureBicep.path cannot be an empty string")
     @JsonProperty("path")
-    private final String path;
+    private String path;
 
     @Valid
     @JsonProperty("params")
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
     private Map<String, String> parameters = new LinkedHashMap<>();
 
-    public AzureBicepResource(String name, String path) {
-        super("azure.bicep.v0", name);
+    public AzureBicep(String name) {
+        this(name, null);
+    }
+
+    public AzureBicep(String name, String path) {
+        super(ResourceType.AZURE_BICEP, name);
         this.path = path;
     }
 
-    public AzureBicepResource withParameter(String name, String value) {
+    public AzureBicep withPath(String path) {
+        this.path = path;
+        return this;
+    }
+
+    public AzureBicep withParameter(String name, String value) {
         parameters.put(name, value);
         return this;
     }

@@ -1,11 +1,11 @@
 package com.microsoft.aspire.extensions.azure.storage;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.microsoft.aspire.resources.AzureBicepResource;
+import com.microsoft.aspire.resources.AzureBicep;
 import com.microsoft.aspire.resources.traits.ResourceWithConnectionString;
 import com.microsoft.aspire.DistributedApplicationHelper;
 
-public class AzureStorageResource extends AzureBicepResource
+public class AzureStorageResource extends AzureBicep
                                   implements ResourceWithConnectionString<AzureStorageResource> {
 
     public AzureStorageResource(String name) {

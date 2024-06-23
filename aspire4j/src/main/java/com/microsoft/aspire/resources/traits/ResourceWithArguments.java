@@ -8,6 +8,7 @@ public interface ResourceWithArguments<T extends ResourceWithArguments<T>> {
         for (String argument : arguments) {
             withArgument(argument);
         }
+
         return (T) this;
     }
 

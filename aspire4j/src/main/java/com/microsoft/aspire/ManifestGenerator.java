@@ -9,49 +9,21 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.file.*;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.ServiceLoader;
 import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
-import com.microsoft.aspire.implementation.manifest.AspireManifest;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validation;
 import jakarta.validation.Validator;
 
-public class ManifestGenerator {
+// Not public API
+class ManifestGenerator {
     private static final String OUTPUT_DIR = "output";
 
-    public static void main(String[] args) {
-        System.out.println("Starting Manifest Generator...");
-        ManifestGenerator manifestGenerator = new ManifestGenerator();
-        manifestGenerator.run();
-    }
+    private static final Logger LOGGER = Logger.getLogger(ManifestGenerator.class.getName());
 
-    private void run() {
-        System.out.println("Looking for AppHost implementations...");
-
-        int count = 0;
-        ServiceLoader<AppHost> serviceLoader = ServiceLoader.load(AppHost.class);
-        for (AppHost appHost : serviceLoader) {
-            count++;
-            System.out.println("Found " + appHost.getClass());
-            DistributedApplication app = new DistributedApplication();
-
-            System.out.print("Receiving configuration from AppHost...");
-            appHost.configureApplication(app);
-            System.out.println("Done");
-
-            writeManifest(app);
-        }
-
-        if (count == 0) {
-            System.out.println("No AppHost implementations found...exiting");
-            System.exit(-1);
-        }
-    }
-
-    public void run(AppHost appHost) {
+    void run(AppHost appHost) {
         DistributedApplication app = new DistributedApplication();
         appHost.configureApplication(app);
         writeManifest(app);
@@ -59,23 +31,27 @@ public class ManifestGenerator {
 
     private void writeManifest(DistributedApplication app) {
         if (app.manifest.isEmpty()) {
-            System.out.println("No configuration received from AppHost...exiting");
+            LOGGER.info("No configuration received from AppHost...exiting");
             System.exit(-1);
         }
 
-        System.out.println("Validating models...");
+        LOGGER.info("Validating models...");
+        // Firstly, disable the info logging messages that are printed by Hibernate Validator
+        Logger.getLogger("org.hibernate.validator.internal.util.Version").setLevel(Level.OFF);
+
+        // Get the logger for the Hibernate Validator class
         Validator validator = Validation.buildDefaultValidatorFactory().getValidator();
 
         Set<ConstraintViolation<AspireManifest>> violations = validator.validate(app.manifest);
         if (!violations.isEmpty()) {
             for (ConstraintViolation<AspireManifest> violation : violations) {
-                System.err.println(violation.getMessage());
+                LOGGER.warning(violation.getMessage());
             }
-            System.out.println("Failed...exiting");
+            LOGGER.warning("Failed...exiting");
             System.exit(-1);
         } else {
             // object is valid, continue processing...
-            System.out.println("Models validated...Writing manifest to file");
+            LOGGER.info("Models validated...Writing manifest to file");
         }
 
         File outputDir = new File(OUTPUT_DIR);
@@ -92,18 +68,18 @@ public class ManifestGenerator {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        System.out.println("Manifest written to file");
+        LOGGER.info("Manifest written to file");
 
         writeBicep();
     }
 
     private void writeBicep() {
-        System.out.print("Writing Bicep files...");
+        LOGGER.info("Writing Bicep files...");
         try {
             // Get the URL of the 'storage.module.bicep' resource
             URL resourceUrl = ManifestGenerator.class.getResource("storage.module.bicep");
             if (resourceUrl == null) {
-                System.err.println("Resource not found: storage.module.bicep");
+                LOGGER.warning("Resource not found: storage.module.bicep");
                 System.exit(-1);
             }
 
@@ -121,7 +97,7 @@ public class ManifestGenerator {
                         StandardCopyOption.REPLACE_EXISTING);
             }
 
-            System.out.println("Done");
+            LOGGER.info("Done");
         } catch (IOException | URISyntaxException e) {
             e.printStackTrace();
         }
@@ -129,9 +105,9 @@ public class ManifestGenerator {
 
     private void writeToFile(InputStream resourceAsStream, Path path) {
         try {
-            System.out.println("Writing bicep file to " + path);
+            LOGGER.info("Writing bicep file to " + path);
             Files.copy(resourceAsStream, path, StandardCopyOption.REPLACE_EXISTING);
-            System.out.println("Done writing bicep file.");
+            LOGGER.info("Done writing bicep file.");
         } catch (IOException e) {
             e.printStackTrace();
         }
