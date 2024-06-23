@@ -3,6 +3,8 @@ package com.microsoft.aspire.storage.explorer;
 import com.microsoft.aspire.storage.explorer.service.StorageItem;
 import com.microsoft.aspire.storage.explorer.service.StorageService;
 import jakarta.servlet.http.HttpServletResponse;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.InputStreamResource;
@@ -28,9 +30,10 @@ import java.util.stream.Collectors;
 @Controller
 public class StorageServiceController {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(StorageServiceController.class);
     private final StorageService storageService;
 
-    @Value("${DATE_SERVICE_ENDPOINT}")
+    @Value("${services__dateservice__https__0}")
     private String dateServiceEndpoint;
 
     @Autowired
@@ -42,11 +45,24 @@ public class StorageServiceController {
     public String listUploadedFiles(final Model model,
                                     final HttpServletResponse response) {
         model.addAttribute("files", storageService.listAllFiles().collect(Collectors.toList()));
-        RestTemplate restTemplate = new RestTemplate();
-        OffsetDateTime time = restTemplate.getForObject(dateServiceEndpoint + "/time", OffsetDateTime.class);
-        model.addAttribute("time", time.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
+        updateTime(model);
         response.addHeader("Cache-Control", "no-cache");
         return "uploadForm";
+    }
+
+    private void updateTime(Model model) {
+        LOGGER.info("The datetime service endpoint is " + dateServiceEndpoint);
+        String lastUpdated = "";
+        try {
+            RestTemplate restTemplate = new RestTemplate();
+            OffsetDateTime time = restTemplate.getForObject(dateServiceEndpoint + "/time", OffsetDateTime.class);
+            if (time != null) {
+                lastUpdated = time.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+            }
+        } catch (Exception exception) {
+            LOGGER.error("Failed to get time from datetime service", exception);
+        }
+        model.addAttribute("time", lastUpdated);
     }
 
     @GetMapping("/files/{filename:.+}")

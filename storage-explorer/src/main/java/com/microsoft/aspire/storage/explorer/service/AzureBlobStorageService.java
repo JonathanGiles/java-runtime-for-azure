@@ -26,10 +26,6 @@ public class AzureBlobStorageService implements StorageService {
     @Value("${ENDPOINT}")
     private String storageEndpoint;
 
-
-    @Value("${CONNECTION_STRING}")
-    private String connectionString;
-
     private BlobContainerClient blobContainerClient;
 
     @Override
@@ -40,8 +36,8 @@ public class AzureBlobStorageService implements StorageService {
 
         boolean doInit = true;
 
-        if ((storageEndpoint == null || storageEndpoint.isEmpty()) && (connectionString == null || connectionString.isEmpty())) {
-            System.err.println("Error: Please set the ENDPOINT or CONNECTION_STRING property");
+        if ((storageEndpoint == null || storageEndpoint.isEmpty())) {
+            System.err.println("Error: Please set the ENDPOINT property");
             doInit = false;
         }
 
@@ -50,16 +46,10 @@ public class AzureBlobStorageService implements StorageService {
             return;
         }
         BlobServiceClient blobServiceClient = null;
-        if (storageEndpoint == null) {
-            blobServiceClient = new BlobServiceClientBuilder()
-                    .endpoint(storageEndpoint)
-                    .credential(new DefaultAzureCredentialBuilder().build())
-                    .buildClient();
-        } else {
-            blobServiceClient = new BlobServiceClientBuilder()
-                    .connectionString(connectionString)
-                    .buildClient();
-        }
+        blobServiceClient = new BlobServiceClientBuilder()
+                .endpoint(storageEndpoint)
+                .credential(new DefaultAzureCredentialBuilder().build())
+                .buildClient();
 
         blobContainerClient = blobServiceClient.getBlobContainerClient(blobStorageContainerName);
         if (!blobContainerClient.exists()) {
