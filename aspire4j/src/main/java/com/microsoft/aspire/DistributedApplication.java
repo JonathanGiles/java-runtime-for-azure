@@ -95,17 +95,6 @@ public class DistributedApplication {
      *
      * @param name
      * @param path
-     * @return
-     */
-    public DockerFile addDockerFile(String name, String path) {
-        return addDockerFile(name, path, ".");
-    }
-
-    /**
-     * Add a new DockerFile to the distributed application.
-     *
-     * @param name
-     * @param path
      * @param context
      * @return
      */
@@ -224,7 +213,7 @@ public class DistributedApplication {
     public void printExtensions(PrintStream out) {
         out.println("Available Aspire4J Extensions:");
         extensions.forEach(e -> {
-            out.println("  " + e.getName() + ": " + e.getDescription());
+            out.println("  " + e.getName() + " (" + e.getClass().getSimpleName() + ".class): " + e.getDescription());
             e.getAvailableResources().forEach(r -> out.println("   - " + r.getSimpleName()));
         });
     }
