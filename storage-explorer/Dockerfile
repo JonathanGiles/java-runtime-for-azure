@@ -1,4 +1,4 @@
-FROM maven:3.9.7-eclipse-temurin-21-alpine AS maven
+FROM maven:3.9.7-eclipse-temurin-21 AS maven
 MAINTAINER microsoft.com
 COPY src storage-explorer/src
 COPY pom.xml storage-explorer/
