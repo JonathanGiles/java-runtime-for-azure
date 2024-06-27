@@ -4,29 +4,34 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.net.URL;
 import java.nio.file.*;
+import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import com.microsoft.aspire.implementation.json.RelativePathSerializer;
+import com.microsoft.aspire.resources.AzureBicepResource;
+import com.microsoft.aspire.resources.Resource;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validation;
 import jakarta.validation.Validator;
 
 // Not public API
 class ManifestGenerator {
-    private static final String OUTPUT_DIR = "output";
 
     private static final Logger LOGGER = Logger.getLogger(ManifestGenerator.class.getName());
 
-    void run(AppHost appHost) {
+    private Path outputPath;
+
+    void generateManifest(AppHost appHost, Path outputPath) {
+        this.outputPath = outputPath;
+
         DistributedApplication app = new DistributedApplication();
         appHost.configureApplication(app);
+        app.performResourceIntrospection();
         writeManifest(app);
+        writeBicep(app);
     }
 
     private void writeManifest(DistributedApplication app) {
@@ -54,14 +59,18 @@ class ManifestGenerator {
             LOGGER.info("Models validated...Writing manifest to file");
         }
 
-        File outputDir = new File(OUTPUT_DIR);
+        File outputDir = outputPath.toFile();
         if (!outputDir.exists()) {
             outputDir.mkdirs();
         }
 
+        // Set the outputDir in the RelativePathSerializer
+        RelativePathSerializer.setOutputPath(outputPath);
+
         // Jackson ObjectMapper is used to serialize the AspireManifest object to a JSON string,
         // and write to a file named "aspire-manifest.json".
         ObjectMapper objectMapper = new ObjectMapper();
+
         try {
             objectMapper.writerWithDefaultPrettyPrinter()
                     .writeValue(new File(outputDir, "aspire-manifest.json"), app.manifest);
@@ -69,47 +78,25 @@ class ManifestGenerator {
             e.printStackTrace();
         }
         LOGGER.info("Manifest written to file");
-
-        writeBicep();
     }
 
-    private void writeBicep() {
+    private void writeBicep(DistributedApplication app) {
         LOGGER.info("Writing Bicep files...");
-        try {
-            // Get the URL of the 'storage.module.bicep' resource
-            URL resourceUrl = ManifestGenerator.class.getResource("storage.module.bicep");
-            if (resourceUrl == null) {
-                LOGGER.warning("Resource not found: storage.module.bicep");
-                System.exit(-1);
+
+        // iterate through the resources in the app, and for any that are of type AzureBicep, give them the opportunity
+        // to write their bicep file to the output directory.
+        for (Resource resource : app.manifest.getResources().values()) {
+            if (resource instanceof AzureBicepResource azureBicepResource) {
+                List<AzureBicepResource.BicepFileOutput> bicepFiles = azureBicepResource.getBicepFiles();
+
+                for (AzureBicepResource.BicepFileOutput bicepFile : bicepFiles) {
+                    try {
+                        Files.write(Paths.get(outputPath.toString() + "/" + bicepFile.filename()), bicepFile.content().getBytes());
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
             }
-
-            // Convert the URL to a URI
-            URI resourceUri = resourceUrl.toURI();
-
-            // Check if the URI is a jar URI
-            if (resourceUri.getScheme().equals("jar")) {
-                InputStream resourceAsStream = ManifestGenerator.class.getResourceAsStream("storage.module.bicep");
-                writeToFile(resourceAsStream, Paths.get(OUTPUT_DIR  + "/storage.module.bicep"));
-            } else {
-                // The URI is not a jar URI, so just copy the file
-                Files.copy(Paths.get(resourceUri),
-                        Paths.get(OUTPUT_DIR  + "/storage.module.bicep"),
-                        StandardCopyOption.REPLACE_EXISTING);
-            }
-
-            LOGGER.info("Done");
-        } catch (IOException | URISyntaxException e) {
-            e.printStackTrace();
-        }
-    }
-
-    private void writeToFile(InputStream resourceAsStream, Path path) {
-        try {
-            LOGGER.info("Writing bicep file to " + path);
-            Files.copy(resourceAsStream, path, StandardCopyOption.REPLACE_EXISTING);
-            LOGGER.info("Done writing bicep file.");
-        } catch (IOException e) {
-            e.printStackTrace();
         }
     }
 }

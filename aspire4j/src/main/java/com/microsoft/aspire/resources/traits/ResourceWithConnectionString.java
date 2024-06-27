@@ -10,6 +10,7 @@ public interface ResourceWithConnectionString<T extends ResourceWithConnectionSt
      * Gets the connection string associated with the resource.
      * @return
      */
+    @JsonIgnore
     String getConnectionString();
 
 //    /**

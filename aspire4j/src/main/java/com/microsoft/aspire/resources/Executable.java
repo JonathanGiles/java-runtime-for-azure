@@ -1,5 +1,6 @@
 package com.microsoft.aspire.resources;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
@@ -105,18 +106,33 @@ public class Executable extends Resource implements ResourceWithArguments<Execut
     }
 
     @Override
+    @JsonIgnore
+    public Map<String, String> getEnvironment() {
+        return Collections.unmodifiableMap(env);
+    }
+
+    @Override
+    @JsonIgnore
     public Executable withArgument(String argument) {
         arguments.add(argument);
         return this;
     }
 
     @Override
+    @JsonIgnore
+    public List<String> getArguments() {
+        return Collections.unmodifiableList(arguments);
+    }
+
+    @Override
+    @JsonIgnore
     public Executable withBinding(Binding binding) {
         bindings.put(binding.getScheme(), binding);
         return this;
     }
 
     @Override
+    @JsonIgnore
     public @Valid Map<Binding.Scheme, Binding> getBindings() {
         return Collections.unmodifiableMap(bindings);
     }

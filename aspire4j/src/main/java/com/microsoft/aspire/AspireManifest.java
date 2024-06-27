@@ -14,7 +14,7 @@ class AspireManifest {
     // Map from resource name to resource
     @Valid
     @JsonProperty("resources")
-    private final Map<String, Resource> resources;
+    final Map<String, Resource> resources;
 
     AspireManifest() {
         this.resources = new LinkedHashMap<>();
@@ -24,6 +24,10 @@ class AspireManifest {
         Objects.requireNonNull(resource);
         resources.put(resource.getName(), resource);
         return resource;
+    }
+
+    Map<String, Resource> getResources() {
+        return resources;
     }
 
     boolean isEmpty() {

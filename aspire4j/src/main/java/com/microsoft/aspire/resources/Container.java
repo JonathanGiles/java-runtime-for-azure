@@ -1,5 +1,6 @@
 package com.microsoft.aspire.resources;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
@@ -88,8 +89,8 @@ For example:
 @JsonPropertyOrder({"type", "image", "entrypoint", "args", "connectionString", "env", "bindings", "bindMounts", "volumes"})
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
 public class Container extends Resource implements ResourceWithArguments<Container>,
-        ResourceWithEnvironment<Container>,
-        ResourceWithBindings<Container> {
+                                                   ResourceWithEnvironment<Container>,
+                                                   ResourceWithBindings<Container> {
 
     @NotNull(message = "Container.image cannot be null")
     @NotEmpty(message = "Container.image cannot be an empty string")
@@ -127,27 +128,38 @@ public class Container extends Resource implements ResourceWithArguments<Contain
         this.image = image;
     }
 
+    @JsonIgnore
     public Container withImage(String image) {
         this.image = image;
         return this;
     }
 
+    @JsonIgnore
     public Container withEntryPoint(String entryPoint) {
         this.entryPoint = entryPoint;
         return this;
     }
 
     @Override
+    @JsonIgnore
     public Container withArgument(String argument) {
         arguments.add(argument);
         return this;
     }
 
+    @Override
+    @JsonIgnore
+    public List<String> getArguments() {
+        return Collections.unmodifiableList(arguments);
+    }
+
+    @JsonIgnore
     public Container withVolume(Volume volume) {
         volumes.add(volume);
         return this;
     }
 
+    @JsonIgnore
     public Container withDataVolume() {
         // FIXME: hardcoded values
         // placeholder values from https://github.com/dotnet/aspire/blob/main/playground/TestShop/AppHost/aspire-manifest.json#L38
@@ -156,23 +168,33 @@ public class Container extends Resource implements ResourceWithArguments<Contain
     }
 
     @Override
+    @JsonIgnore
     public Container withEnvironment(String name, String value) {
         environment.put(name, value);
         return this;
     }
 
     @Override
+    @JsonIgnore
+    public Map<String, String> getEnvironment() {
+        return Collections.unmodifiableMap(environment);
+    }
+
+    @Override
+    @JsonIgnore
     public Container withBinding(Binding binding) {
         bindings.put(binding.getScheme(), binding);
         return this;
     }
 
     @Override
+    @JsonIgnore
     public @Valid Map<Binding.Scheme, Binding> getBindings() {
         return Collections.unmodifiableMap(bindings);
     }
 
     // TODO should this be part of ResourceWithBindings?
+    @JsonIgnore
     public Container withBindMount(BindMount bindMount) {
         bindMounts.add(bindMount);
         return this;

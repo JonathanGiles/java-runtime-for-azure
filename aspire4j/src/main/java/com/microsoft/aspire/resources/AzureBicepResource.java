@@ -1,5 +1,6 @@
 package com.microsoft.aspire.resources;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
@@ -8,7 +9,9 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 
+import java.util.Collections;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 /*
@@ -68,7 +71,7 @@ For example:
 },
  */
 @JsonPropertyOrder({"type", "path", "connectionString", "params"})
-public class AzureBicep extends Resource implements ResourceWithParameters<AzureBicep> {
+public abstract class AzureBicepResource extends Resource implements ResourceWithParameters<AzureBicepResource> {
 
     @NotNull(message = "AzureBicep.path cannot be null")
     @NotEmpty(message = "AzureBicep.path cannot be an empty string")
@@ -80,22 +83,42 @@ public class AzureBicep extends Resource implements ResourceWithParameters<Azure
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
     private Map<String, String> parameters = new LinkedHashMap<>();
 
-    public AzureBicep(String name) {
+    public AzureBicepResource(String name) {
         this(name, null);
     }
 
-    public AzureBicep(String name, String path) {
-        super(ResourceType.AZURE_BICEP, name);
+    public AzureBicepResource(ResourceType type, String name) {
+        this(type, name, null);
+    }
+
+    public AzureBicepResource(String name, String path) {
+        this(ResourceType.AZURE_BICEP, name, path);
+    }
+
+    public AzureBicepResource(ResourceType type, String name, String path) {
+        super(type, name);
         this.path = path;
     }
 
-    public AzureBicep withPath(String path) {
+    @JsonIgnore
+    public AzureBicepResource withPath(String path) {
         this.path = path;
         return this;
     }
 
-    public AzureBicep withParameter(String name, String value) {
+    @JsonIgnore
+    public AzureBicepResource withParameter(String name, String value) {
         parameters.put(name, value);
         return this;
     }
+
+    @Override
+    @JsonIgnore
+    public @Valid Map<String, String> getParameters() {
+        return Collections.unmodifiableMap(parameters);
+    }
+
+    public abstract List<BicepFileOutput> getBicepFiles();
+
+    public record BicepFileOutput(String filename, String content) {    }
 }

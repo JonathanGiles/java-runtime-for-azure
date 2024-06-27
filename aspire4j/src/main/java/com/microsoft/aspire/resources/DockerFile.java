@@ -1,8 +1,12 @@
 package com.microsoft.aspire.resources;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.microsoft.aspire.implementation.json.RelativePath;
+import com.microsoft.aspire.implementation.json.RelativePathSerializer;
 import com.microsoft.aspire.resources.properties.Binding;
 import com.microsoft.aspire.resources.traits.ResourceWithBindings;
 import com.microsoft.aspire.resources.traits.ResourceWithEnvironment;
@@ -46,16 +50,20 @@ import java.util.*;
 @JsonPropertyOrder({"type", "path", "context", "env", "bindings"})
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
 public class DockerFile extends Resource implements ResourceWithEnvironment<DockerFile>,
-        ResourceWithBindings<DockerFile> {
+                                                    ResourceWithBindings<DockerFile> {
 
     @NotNull(message = "DockerFile.path cannot be null")
     @NotEmpty(message = "DockerFile.path cannot be an empty string")
     @JsonProperty("path")
+    @JsonSerialize(using = RelativePathSerializer.class)
+    @RelativePath
     private String path;
 
     @NotNull(message = "DockerFile.context cannot be null")
     @NotEmpty(message = "DockerFile.context cannot be an empty string")
     @JsonProperty("context")
+    @JsonSerialize(using = RelativePathSerializer.class)
+    @RelativePath
     private String context;
 
     @JsonProperty("env")
@@ -91,18 +99,27 @@ public class DockerFile extends Resource implements ResourceWithEnvironment<Dock
     }
 
     @Override
+    @JsonIgnore
     public DockerFile withEnvironment(String name, String value) {
         environment.put(name, value);
         return this;
     }
 
     @Override
+    @JsonIgnore
+    public Map<String, String> getEnvironment() {
+        return Collections.unmodifiableMap(environment);
+    }
+
+    @Override
+    @JsonIgnore
     public DockerFile withBinding(Binding binding) {
         bindings.put(binding.getScheme(), binding);
         return this;
     }
 
     @Override
+    @JsonIgnore
     public @Valid Map<Binding.Scheme, Binding> getBindings() {
         return Collections.unmodifiableMap(bindings);
     }

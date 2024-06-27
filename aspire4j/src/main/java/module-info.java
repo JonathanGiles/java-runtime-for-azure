@@ -12,6 +12,7 @@ module com.microsoft.aspire {
     opens com.microsoft.aspire.resources to org.hibernate.validator, com.fasterxml.jackson.databind;
     opens com.microsoft.aspire.resources.properties to org.hibernate.validator, com.fasterxml.jackson.databind;
     opens com.microsoft.aspire to com.fasterxml.jackson.databind, org.hibernate.validator;
+    opens com.microsoft.aspire.implementation.json to com.fasterxml.jackson.databind;
 
     uses com.microsoft.aspire.Extension;
 }

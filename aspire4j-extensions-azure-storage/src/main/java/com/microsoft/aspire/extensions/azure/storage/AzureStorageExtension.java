@@ -3,10 +3,13 @@ package com.microsoft.aspire.extensions.azure.storage;
 import com.microsoft.aspire.DistributedApplicationHelper;
 import com.microsoft.aspire.Extension;
 import com.microsoft.aspire.resources.Resource;
+import com.microsoft.aspire.resources.ResourceType;
 
 import java.util.List;
 
 public class AzureStorageExtension implements Extension {
+
+    static final ResourceType AZURE_STORAGE = ResourceType.fromString("azure.storage.v0");
 
     @Override
     public String getName() {

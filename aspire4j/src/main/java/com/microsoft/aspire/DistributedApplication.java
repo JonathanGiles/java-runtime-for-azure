@@ -1,6 +1,7 @@
 package com.microsoft.aspire;
 
 import com.microsoft.aspire.resources.*;
+import com.microsoft.aspire.resources.traits.IntrospectiveResource;
 import jakarta.validation.Valid;
 
 import java.io.PrintStream;
@@ -232,5 +233,21 @@ public class DistributedApplication {
         } catch (InstantiationException | IllegalAccessException e) {
             throw new RuntimeException("Failed to create a new instance of the extension class", e);
         }
+    }
+
+
+    /***************************************************************************
+     *
+     * Non-public API
+     *
+     **************************************************************************/
+
+    void performResourceIntrospection() {
+        manifest.getResources().values().forEach(resource -> {
+            if (resource instanceof IntrospectiveResource ir) {
+//                ir.introspect(ir);
+                ir.introspect();
+            }
+        });
     }
 }

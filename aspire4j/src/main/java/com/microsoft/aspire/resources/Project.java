@@ -1,8 +1,12 @@
 package com.microsoft.aspire.resources;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.microsoft.aspire.implementation.json.RelativePath;
+import com.microsoft.aspire.implementation.json.RelativePathSerializer;
 import com.microsoft.aspire.resources.properties.Binding;
 import com.microsoft.aspire.resources.traits.ResourceWithArguments;
 import com.microsoft.aspire.resources.traits.ResourceWithBindings;
@@ -51,6 +55,8 @@ public class Project extends Resource implements ResourceWithArguments<Project>,
     @NotNull(message = "Project.path cannot be null")
     @NotEmpty(message = "Project.path cannot be an empty string")
     @JsonProperty("path")
+    @JsonSerialize(using = RelativePathSerializer.class)
+    @RelativePath
     private String path;
 
     @JsonProperty("env")
@@ -66,7 +72,11 @@ public class Project extends Resource implements ResourceWithArguments<Project>,
     private final Map<Binding.Scheme, Binding> bindings = new LinkedHashMap<>();
 
     public Project(String name) {
-        super(ResourceType.PROJECT, name);
+        this(ResourceType.PROJECT, name);
+    }
+
+    protected Project(ResourceType type, String name) {
+        super(type, name);
     }
 
     /**
@@ -74,31 +84,53 @@ public class Project extends Resource implements ResourceWithArguments<Project>,
      * @param path
      * @return
      */
+    @JsonIgnore
     public Project withPath(String path) {
         this.path = path;
         return this;
     }
 
     @Override
+    @JsonIgnore
     public Project withEnvironment(String key, String value) {
         this.env.put(key, value);
         return this;
     }
 
     @Override
+    @JsonIgnore
     public Project withArgument(String argument) {
         arguments.add(argument);
         return this;
     }
 
     @Override
+    @JsonIgnore
     public Project withBinding(Binding binding) {
         bindings.put(binding.getScheme(), binding);
         return this;
     }
 
     @Override
+    @JsonIgnore
     public @Valid Map<Binding.Scheme, Binding> getBindings() {
         return Collections.unmodifiableMap(bindings);
+    }
+
+    @JsonIgnore
+    public final String getPath() {
+        return path;
+    }
+
+    @Override
+    @JsonIgnore
+    public final Map<String, String> getEnvironment() {
+        return Collections.unmodifiableMap(env);
+    }
+
+    @Override
+    @JsonIgnore
+    public final List<String> getArguments() {
+        return Collections.unmodifiableList(arguments);
     }
 }

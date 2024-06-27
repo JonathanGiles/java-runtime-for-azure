@@ -1,5 +1,6 @@
 package com.microsoft.aspire.resources.traits;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.microsoft.aspire.resources.properties.Binding;
 
 import java.util.Map;
@@ -12,6 +13,7 @@ public interface ResourceWithBindings<T extends ResourceWithBindings<T>> {
      * Returns a read-only map of bindings for this resource.
      * @return
      */
+    @JsonIgnore
     Map<Binding.Scheme, Binding> getBindings();
 
     default T withExternalHttpEndpoints() {

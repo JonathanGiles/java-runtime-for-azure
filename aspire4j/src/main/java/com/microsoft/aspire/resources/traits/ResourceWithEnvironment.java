@@ -1,5 +1,6 @@
 package com.microsoft.aspire.resources.traits;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.microsoft.aspire.resources.*;
 
 import java.util.Map;
@@ -7,6 +8,12 @@ import java.util.Map;
 public interface ResourceWithEnvironment<T extends ResourceWithEnvironment<T>> {
 
     T withEnvironment(String key, String value);
+
+    /**
+     * Returns an unmodifiable view of the environment variables.
+     */
+    @JsonIgnore
+    Map<String, String> getEnvironment();
 
     default T withEnvironment(Map<String, String> environment) {
         for (Map.Entry<String, String> entry : environment.entrySet()) {
@@ -32,7 +39,8 @@ public interface ResourceWithEnvironment<T extends ResourceWithEnvironment<T>> {
 //                String envVarName = "ConnectionStrings__" + resource.getName();
 //                String envVarValue = "{" + resource.getName() + ".connectionString}";
                 // TODO
-                throw new RuntimeException("Not implemented yet");
+//                throw new RuntimeException("Not implemented yet");
+                break;
             }
             case DockerFile r -> {
                 r.getBindings().forEach((scheme, binding) -> {
