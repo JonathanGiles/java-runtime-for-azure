@@ -14,7 +14,7 @@ class AspireManifest {
     // Map from resource name to resource
     @Valid
     @JsonProperty("resources")
-    final Map<String, Resource> resources;
+    Map<String, Resource> resources;
 
     AspireManifest() {
         this.resources = new LinkedHashMap<>();
@@ -32,5 +32,34 @@ class AspireManifest {
 
     boolean isEmpty() {
         return resources.isEmpty();
+    }
+
+    public void substituteResource(Resource oldResource, Resource... newResources) {
+        if (oldResource == null) {
+            throw new IllegalArgumentException("oldResource cannot be null");
+        }
+        if (newResources == null || newResources.length == 0) {
+            throw new IllegalArgumentException("newResources cannot be null or empty");
+        }
+        if (!resources.containsKey(oldResource.getName())) {
+            throw new IllegalArgumentException("oldResource not found in manifest");
+        }
+        for (Resource newResource : newResources) {
+            if (resources.containsKey(newResource.getName()) && !newResource.getName().equals(oldResource.getName())) {
+                throw new IllegalArgumentException("newResource already exists in manifest");
+            }
+        }
+
+        LinkedHashMap<String, Resource> newResourcesMap = new LinkedHashMap<>();
+        for (Map.Entry<String, Resource> entry : resources.entrySet()) {
+            if (entry.getKey().equals(oldResource.getName())) {
+                for (Resource newResource : newResources) {
+                    newResourcesMap.put(newResource.getName(), newResource);
+                }
+            } else {
+                newResourcesMap.put(entry.getKey(), entry.getValue());
+            }
+        }
+        resources = newResourcesMap;
     }
 }

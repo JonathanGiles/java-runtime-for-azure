@@ -5,16 +5,20 @@ import com.microsoft.aspire.resources.Value;
 import com.microsoft.aspire.resources.traits.ResourceWithConnectionString;
 
 public final class AzureStorageBlobsResource extends Value
-        implements ResourceWithConnectionString<AzureStorageBlobsResource>{
+        implements ResourceWithConnectionString<AzureStorageBlobsResource> {
+    private final AzureStorageResource storageResource;
+    private final String connectionString;
 
-    public AzureStorageBlobsResource(String name, String connectionString) {
-        super(name, "connectionString", connectionString);
+    public AzureStorageBlobsResource(String name, AzureStorageResource storageResource) {
+        super(name);
+        this.storageResource = storageResource;
+        this.connectionString = storageResource.getName() + ".outputs.blobEndpoint";
+        withProperty("connectionString", connectionString);
     }
 
-    @Override
-    @JsonIgnore
-    public String getConnectionString() {
-        // FIXME we've hardcoded the bicep output that we know
-        return "{storage.outputs.blobEndpoint}";
-    }
+//    @Override
+//    @JsonIgnore
+//    public String getConnectionString() {
+//        return connectionString;
+//    }
 }

@@ -46,6 +46,17 @@ public class DistributedApplication {
         return manifest.addResource(r);
     }
 
+    /**
+     * Sometimes a resource, upon introspection, needs to change its type. Rather than allow for types to mutable,
+     * we instead support substituting a resource with one or more new resources.
+     *
+     * @param oldResource The resource to remove.
+     * @param newResources The resource(s) to add in the place of the old resource.
+     */
+    public void substituteResource(Resource oldResource, Resource... newResources) {
+        manifest.substituteResource(oldResource, newResources);
+    }
+
     /***************************************************************************
      *
      * Project
@@ -234,6 +245,13 @@ public class DistributedApplication {
             throw new RuntimeException("Failed to create a new instance of the extension class", e);
         }
     }
+
+
+    /***************************************************************************
+     *
+     * Public utility methods
+     *
+     **************************************************************************/
 
 
     /***************************************************************************

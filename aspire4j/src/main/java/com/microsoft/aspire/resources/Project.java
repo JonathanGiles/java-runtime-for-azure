@@ -8,8 +8,10 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.microsoft.aspire.implementation.json.RelativePath;
 import com.microsoft.aspire.implementation.json.RelativePathSerializer;
 import com.microsoft.aspire.resources.properties.Binding;
+import com.microsoft.aspire.resources.properties.EndpointReference;
 import com.microsoft.aspire.resources.traits.ResourceWithArguments;
 import com.microsoft.aspire.resources.traits.ResourceWithBindings;
+import com.microsoft.aspire.resources.traits.ResourceWithEndpoints;
 import com.microsoft.aspire.resources.traits.ResourceWithEnvironment;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotEmpty;
@@ -50,7 +52,8 @@ import java.util.*;
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
 public class Project extends Resource implements ResourceWithArguments<Project>,
                                                  ResourceWithEnvironment<Project>,
-                                                 ResourceWithBindings<Project> {
+                                                 ResourceWithBindings<Project>,
+                                                 ResourceWithEndpoints<Project> {
 
     @NotNull(message = "Project.path cannot be null")
     @NotEmpty(message = "Project.path cannot be an empty string")
@@ -132,5 +135,11 @@ public class Project extends Resource implements ResourceWithArguments<Project>,
     @JsonIgnore
     public final List<String> getArguments() {
         return Collections.unmodifiableList(arguments);
+    }
+
+    @Override
+    public List<EndpointReference> getEndpoints() {
+        // TODO how do I know which endpoints are available?
+        return List.of();
     }
 }

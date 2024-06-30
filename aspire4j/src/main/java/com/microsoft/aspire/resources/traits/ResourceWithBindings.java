@@ -17,6 +17,7 @@ public interface ResourceWithBindings<T extends ResourceWithBindings<T>> {
     Map<Binding.Scheme, Binding> getBindings();
 
     default T withExternalHttpEndpoints() {
+        // TODO we should probably not have the target port be 8080
         withBinding(new Binding(Binding.Scheme.HTTP, Binding.Protocol.TCP, Binding.Transport.HTTP).withTargetPort(8080).withExternal());
         withBinding(new Binding(Binding.Scheme.HTTPS, Binding.Protocol.TCP, Binding.Transport.HTTP).withTargetPort(8080).withExternal());
         return (T) this;

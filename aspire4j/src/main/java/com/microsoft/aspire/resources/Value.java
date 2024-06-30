@@ -32,9 +32,18 @@ public class Value extends Resource {
     @JsonIgnore
     private final Map<String, String> properties = new LinkedHashMap<>();
 
+    public Value(String name) {
+        super(ResourceType.VALUE, name);
+    }
+
     public Value(String name, String key, String value) {
         super(ResourceType.VALUE, name);
         properties.put(key, value);
+    }
+
+    public Value withProperty(String key, String value) {
+        properties.put(key, value);
+        return this;
     }
 
     @JsonAnyGetter

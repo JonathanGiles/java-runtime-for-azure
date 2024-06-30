@@ -6,9 +6,11 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.microsoft.aspire.resources.properties.BindMount;
 import com.microsoft.aspire.resources.properties.Binding;
+import com.microsoft.aspire.resources.properties.EndpointReference;
 import com.microsoft.aspire.resources.properties.Volume;
 import com.microsoft.aspire.resources.traits.ResourceWithArguments;
 import com.microsoft.aspire.resources.traits.ResourceWithBindings;
+import com.microsoft.aspire.resources.traits.ResourceWithEndpoints;
 import com.microsoft.aspire.resources.traits.ResourceWithEnvironment;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotEmpty;
@@ -90,7 +92,8 @@ For example:
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
 public class Container extends Resource implements ResourceWithArguments<Container>,
                                                    ResourceWithEnvironment<Container>,
-                                                   ResourceWithBindings<Container> {
+                                                   ResourceWithBindings<Container>,
+                                                   ResourceWithEndpoints<Container> {
 
     @NotNull(message = "Container.image cannot be null")
     @NotEmpty(message = "Container.image cannot be an empty string")
@@ -198,5 +201,11 @@ public class Container extends Resource implements ResourceWithArguments<Contain
     public Container withBindMount(BindMount bindMount) {
         bindMounts.add(bindMount);
         return this;
+    }
+
+    @Override
+    public List<EndpointReference> getEndpoints() {
+        // TODO how do I know which endpoints are available?
+        return List.of();
     }
 }

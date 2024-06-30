@@ -5,8 +5,10 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.microsoft.aspire.resources.properties.Binding;
+import com.microsoft.aspire.resources.properties.EndpointReference;
 import com.microsoft.aspire.resources.traits.ResourceWithArguments;
 import com.microsoft.aspire.resources.traits.ResourceWithBindings;
+import com.microsoft.aspire.resources.traits.ResourceWithEndpoints;
 import com.microsoft.aspire.resources.traits.ResourceWithEnvironment;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotEmpty;
@@ -52,7 +54,8 @@ import java.util.*;
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
 public class Executable extends Resource implements ResourceWithArguments<Executable>,
                                                     ResourceWithEnvironment<Executable>,
-                                                    ResourceWithBindings<Executable> {
+                                                    ResourceWithBindings<Executable>,
+                                                    ResourceWithEndpoints<Executable> {
 
     @NotNull(message = "Executable.workingDirectory cannot be null")
     @NotEmpty(message = "Executable.workingDirectory cannot be an empty string")
@@ -135,5 +138,11 @@ public class Executable extends Resource implements ResourceWithArguments<Execut
     @JsonIgnore
     public @Valid Map<Binding.Scheme, Binding> getBindings() {
         return Collections.unmodifiableMap(bindings);
+    }
+
+    @Override
+    public List<EndpointReference> getEndpoints() {
+        // TODO how do I know which endpoints are available?
+        return List.of();
     }
 }
