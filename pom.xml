@@ -17,11 +17,57 @@
 
     <modules>
         <module>aspire4j</module>
-        <module>aspire4j-extensions-azure-storage</module>
-        <module>aspire4j-extensions-azure</module>
-        <module>aspire4j-extensions-spring</module>
-        <module>storage-explorer-apphost</module>
-        <module>storage-explorer</module>
-        <module>date-service</module>
+        <module>samples</module>
     </modules>
+
+    <build>
+        <plugins>
+            <!-- Checkstyle plugin -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-checkstyle-plugin</artifactId>
+                <version>3.4.0</version>
+                <configuration>
+                    <configLocation>sun_checks.xml</configLocation>
+                    <consoleOutput>false</consoleOutput>
+                    <failsOnError>false</failsOnError>
+                    <linkXRef>false</linkXRef>
+                </configuration>
+            </plugin>
+
+            <!-- PMD plugin -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-pmd-plugin</artifactId>
+                <version>3.23.0</version>
+                <configuration>
+                    <rulesets>
+                        <ruleset>/rulesets/java/maven-pmd-plugin-default.xml</ruleset>
+                        <ruleset>/category/java/bestpractices.xml</ruleset>
+                    </rulesets>
+                </configuration>
+            </plugin>
+
+            <!-- SpotBugs plugin -->
+            <plugin>
+                <groupId>com.github.spotbugs</groupId>
+                <artifactId>spotbugs-maven-plugin</artifactId>
+                <version>4.8.6.1</version>
+                <configuration>
+                    <effort>Max</effort>
+                    <threshold>Low</threshold>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+    <reporting>
+        <plugins>
+            <plugin>
+                <groupId>com.github.spotbugs</groupId>
+                <artifactId>spotbugs-maven-plugin</artifactId>
+                <version>4.8.6.1</version>
+            </plugin>
+        </plugins>
+    </reporting>
 </project>

@@ -2,16 +2,16 @@
 
 This is a proof of concept project, which introduces a minimal example of a Java implementation of the Aspire framework. It aims to provide a Java-idiomatic developer experience that mimics the concepts introduced by the Aspire framework for .net. In particular, it introduces the concept of the AppHost, allowing for Java developers to define infrastructure as code, whilst continuing to rely on the existing Java ecosystem frameworks such as Spring, Micronaut, and Quarkus.
 
-This GitHub repository is split into six sub-projects:
+This GitHub repository is split into many sub-projects, but they can be broadly categorised as follows:
 
-* `aspire4j`: The core library that provides the AppHost and the ability to define infrastructure as code.
-* `aspire4j-extensions-azure-storage`: An extension to the core library that provides the ability to configure Azure Storage resources.
-* `aspire4j-extensions-azure`: A wrapper project that developers could use to bring in all Azure extensions at once.
-* `storage-explorer`: A sample Spring application that is designed to work with Azure Services. It does not have any specific knowledge of the Aspire4J framework or how to deploy to Azure.
-* `date-service`: A simple Spring application that provides a date microservice. It is used by the `storage-explorer`.
-* `storage-explorer-apphost`: The infrastructure as code project that defines how the `storage-explorer` application, using the Aspire4J framework, should be deployed to Azure.
+* **Aspire4J**:
+  * `aspire4j`: The core library that provides the AppHost and the ability to define infrastructure as code.
+  * `aspire4j-extensions-*`: Extensions for the Aspire4J library, providing support for Azure, Spring, etc.
+  * `aspire4j-maven-archetype`: A Maven archetype that can be used to create new Aspire4J App Hosts.
+* **Sample Applications**:
+  * **Storage Explorer**: Refer to the [readme](tree/main/samples/storage-explorer/readme.md) for more information.
 
-In this way, the file of most interest is the [StorageExplorerAppHost file](https://github.com/JonathanGiles/aspire4j/blob/main/storage-explorer-apphost/src/main/java/com/microsoft/aspire/springsample/StorageExplorerAppHost.java), which defines the infrastructure as code.
+In this way, the file of most interest is the `StorageExplorerAppHost` file, which defines the infrastructure as code.
 
 ## Getting Started
 
