@@ -20,17 +20,18 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.LinkedHashMap;
-import java.util.Map;
+import java.util.*;
 import java.util.logging.Logger;
 import java.util.stream.Stream;
 
 public class SpringIntrospector {
     private static final Logger LOGGER = Logger.getLogger(SpringIntrospector.class.getName());
 
+    private final Set<SpringDeploymentStrategy> strategies = new TreeSet<>();
+
     public SpringIntrospector() { }
 
-    public Map<String, String> introspect(SpringProject project) {
+    public Set<SpringDeploymentStrategy> introspect(SpringProject project) {
         LOGGER.info("Beginning introspection of Spring project: " + project.getName());
 
         /*
@@ -47,9 +48,9 @@ public class SpringIntrospector {
 
         // TODO Take the introspection properties and turn it into a set of useful properties to pass to the aspire-manifest,
         // and modify the properties of the SpringProject directly
-        Map<String, String> properties = new LinkedHashMap<>();
+//        Map<String, String> properties = new LinkedHashMap<>();
 
-        return properties;
+        return strategies;
     }
 
     private void lookForBuildFiles(SpringProject project, Map<String, String> properties) {
@@ -73,14 +74,17 @@ public class SpringIntrospector {
         }
 
         // Dockerfile and compose.yaml files
-        boolean hasDocker = false;
-        hasDocker |= lookForFile(project, properties, "Dockerfile");
-        hasDocker |= lookForFile(project, properties, "docker-compose.yaml");
-        hasDocker |= lookForFile(project, properties, "compose.yaml");
-        if (hasDocker) {
-            LOGGER.fine("Found docker files");
-            // determine strategies that will yield a successful docker build and deployment
+//        boolean hasDocker = false;
+        if (lookForFile(project, properties, "Dockerfile")) {
+            // with this strategy, we can short circuit and just substitute our spring project to instead be a Docker project.
+            strategies.add(new SpringDeploymentStrategy(SpringDeploymentStrategy.DeploymentType.DOCKER_FILE, 1000).withCommand("Dockerfile"));
         }
+//        hasDocker |= lookForFile(project, properties, "docker-compose.yaml");
+//        hasDocker |= lookForFile(project, properties, "compose.yaml");
+//        if (hasDocker) {
+//            LOGGER.fine("Found docker files");
+//            // determine strategies that will yield a successful docker build and deployment
+//        }
     }
 
     private void introspectPomXml(SpringProject project, String s) {
