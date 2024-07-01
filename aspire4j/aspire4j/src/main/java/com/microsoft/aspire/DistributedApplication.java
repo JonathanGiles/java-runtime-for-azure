@@ -42,7 +42,7 @@ public class DistributedApplication {
      * @param <T>
      * @return
      */
-    public <T extends Resource> T addResource(T r) {
+    public <T extends Resource<T>> T addResource(T r) {
         return manifest.addResource(r);
     }
 
@@ -53,7 +53,7 @@ public class DistributedApplication {
      * @param oldResource The resource to remove.
      * @param newResources The resource(s) to add in the place of the old resource.
      */
-    public void substituteResource(Resource oldResource, Resource... newResources) {
+    public void substituteResource(Resource<?> oldResource, Resource<?>... newResources) {
         manifest.substituteResource(oldResource, newResources);
     }
 
@@ -170,8 +170,8 @@ public class DistributedApplication {
      * @param args
      * @return
      */
-    public Executable addExecutable(String name, String command, String workingDirectory, String... args) {
-        return manifest.addResource(new Executable(name, command, workingDirectory).withArguments(args));
+    public Executable<?> addExecutable(String name, String command, String workingDirectory, String... args) {
+        return manifest.addResource(new Executable<>(name, command, workingDirectory).withArguments(args));
     }
 
 

@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.microsoft.aspire.resources.traits.ResourceWithParameters;
+import com.microsoft.aspire.resources.traits.ResourceWithTemplate;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
@@ -71,7 +72,10 @@ For example:
 },
  */
 @JsonPropertyOrder({"type", "path", "connectionString", "params"})
-public abstract class AzureBicepResource extends Resource implements ResourceWithParameters<AzureBicepResource> {
+public abstract class AzureBicepResource<T extends AzureBicepResource<T>>
+                                        extends Resource<T>
+                                        implements ResourceWithParameters<T>,
+                                                   ResourceWithTemplate<T> {
 
     @NotNull(message = "AzureBicep.path cannot be null")
     @NotEmpty(message = "AzureBicep.path cannot be an empty string")
@@ -101,15 +105,15 @@ public abstract class AzureBicepResource extends Resource implements ResourceWit
     }
 
     @JsonIgnore
-    public AzureBicepResource withPath(String path) {
+    public T withPath(String path) {
         this.path = path;
-        return this;
+        return self();
     }
 
     @JsonIgnore
-    public AzureBicepResource withParameter(String name, String value) {
+    public T withParameter(String name, String value) {
         parameters.put(name, value);
-        return this;
+        return self();
     }
 
     @Override
@@ -118,7 +122,12 @@ public abstract class AzureBicepResource extends Resource implements ResourceWit
         return Collections.unmodifiableMap(parameters);
     }
 
-    public abstract List<BicepFileOutput> getBicepFiles();
+//    public abstract List<BicepFileOutput> getBicepFiles();
+//
+//    public record BicepFileOutput(String filename, String content) {    }
 
-    public record BicepFileOutput(String filename, String content) {    }
+    @Override
+    public T self() {
+        return (T) this;
+    }
 }

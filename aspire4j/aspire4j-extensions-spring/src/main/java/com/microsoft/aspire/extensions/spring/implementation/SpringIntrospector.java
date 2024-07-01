@@ -7,7 +7,7 @@ import com.github.javaparser.ast.expr.MarkerAnnotationExpr;
 import com.github.javaparser.ast.expr.NormalAnnotationExpr;
 import com.github.javaparser.ast.expr.SingleMemberAnnotationExpr;
 import com.github.javaparser.ast.visitor.VoidVisitorAdapter;
-import com.microsoft.aspire.extensions.spring.SpringProject;
+import com.microsoft.aspire.extensions.spring.resources.SpringProject;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -156,7 +156,8 @@ public class SpringIntrospector {
                     .filter(path -> path.toString().endsWith(".java"))
                     .forEach(path -> parseAndVisit(javaParser, path.toFile()));
         } catch (IOException e) {
-            e.printStackTrace();
+            LOGGER.severe("Failed to walk Spring project path '" + projectPath + "' relative to working directory.");
+//            e.printStackTrace();
         }
     }
 

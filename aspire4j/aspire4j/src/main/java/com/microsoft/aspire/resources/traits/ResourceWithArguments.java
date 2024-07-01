@@ -19,13 +19,15 @@ public interface ResourceWithArguments<T extends ResourceWithArguments<T>> {
             withArgument(argument);
         }
 
-        return (T) this;
+        return self();
     }
 
     default T withArguments(Iterable<String> arguments) {
         for (String argument : arguments) {
             withArgument(argument);
         }
-        return (T) this;
+        return self();
     }
+
+    T self();
 }

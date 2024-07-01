@@ -4,7 +4,7 @@ import com.microsoft.aspire.resources.Resource;
 
 public interface ResourceWithReference<T extends ResourceWithReference<T>> {
 
-    default T withReference(Resource resource) {
+    default T withReference(Resource<?> resource) {
         // https://learn.microsoft.com/en-us/dotnet/api/aspire.hosting.resourcebuilderextensions.withreference?view=dotnet-aspire-8.0.1#aspire-hosting-resourcebuilderextensions-withreference-1(aspire-hosting-applicationmodel-iresourcebuilder((-0))-aspire-hosting-applicationmodel-iresourcebuilder((aspire-hosting-applicationmodel-iresourcewithconnectionstring))-system-string-system-boolean)
 
         // we are adding references from this resource, to the given resource. We do this by adding appropriate
@@ -50,6 +50,8 @@ public interface ResourceWithReference<T extends ResourceWithReference<T>> {
             // TODO anything to be done here?
         }
 
-        return (T) this;
+        return self();
     }
+
+    T self();
 }

@@ -50,10 +50,11 @@ import java.util.*;
  */
 @JsonPropertyOrder({"type", "path", "args", "env", "bindings"})
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
-public class Project extends Resource implements ResourceWithArguments<Project>,
-                                                 ResourceWithEnvironment<Project>,
-                                                 ResourceWithBindings<Project>,
-                                                 ResourceWithEndpoints<Project> {
+public class Project<T extends Project<T>> extends Resource<T>
+                                           implements ResourceWithArguments<T>,
+                                                      ResourceWithEnvironment<T>,
+                                                      ResourceWithBindings<T>,
+                                                      ResourceWithEndpoints<T> {
 
     @NotNull(message = "Project.path cannot be null")
     @NotEmpty(message = "Project.path cannot be an empty string")
@@ -88,30 +89,30 @@ public class Project extends Resource implements ResourceWithArguments<Project>,
      * @return
      */
     @JsonIgnore
-    public Project withPath(String path) {
+    public T withPath(String path) {
         this.path = path;
-        return this;
+        return self();
     }
 
     @Override
     @JsonIgnore
-    public Project withEnvironment(String key, String value) {
+    public T withEnvironment(String key, String value) {
         this.env.put(key, value);
-        return this;
+        return self();
     }
 
     @Override
     @JsonIgnore
-    public Project withArgument(String argument) {
+    public T withArgument(String argument) {
         arguments.add(argument);
-        return this;
+        return self();
     }
 
     @Override
     @JsonIgnore
-    public Project withBinding(Binding binding) {
+    public T withBinding(Binding binding) {
         bindings.put(binding.getScheme(), binding);
-        return this;
+        return self();
     }
 
     @Override
@@ -138,8 +139,13 @@ public class Project extends Resource implements ResourceWithArguments<Project>,
     }
 
     @Override
-    public List<EndpointReference> getEndpoints() {
+    public final List<EndpointReference> getEndpoints() {
         // TODO how do I know which endpoints are available?
         return List.of();
+    }
+
+    @Override
+    public T self() {
+        return (T) this;
     }
 }

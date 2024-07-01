@@ -19,6 +19,8 @@ public interface ResourceWithEnvironment<T extends ResourceWithEnvironment<T>> e
         for (Map.Entry<String, String> entry : environment.entrySet()) {
             withEnvironment(entry.getKey(), entry.getValue());
         }
-        return (T) this;
+        return self();
     }
+
+    T self();
 }

@@ -13,6 +13,7 @@ import java.util.logging.Logger;
 import com.microsoft.aspire.implementation.json.RelativePathSerializer;
 import com.microsoft.aspire.resources.AzureBicepResource;
 import com.microsoft.aspire.resources.Resource;
+import com.microsoft.aspire.resources.traits.ResourceWithTemplate;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validation;
 import jakarta.validation.Validator;
@@ -30,8 +31,18 @@ class ManifestGenerator {
         DistributedApplication app = new DistributedApplication();
         appHost.configureApplication(app);
         app.performResourceIntrospection();
+        processTemplates(app);
         writeManifest(app);
-        writeBicep(app);
+    }
+
+    private void processTemplates(DistributedApplication app) {
+        LOGGER.info("Processing templates...");
+        app.manifest.getResources().values().stream()
+            .filter(r -> r instanceof ResourceWithTemplate<?>)
+            .map(r -> (ResourceWithTemplate<?>) r)
+            .map(ResourceWithTemplate::processTemplate)
+            .forEach(templateFiles -> templateFiles.forEach(this::writeTemplateFile));
+        LOGGER.info("Templates processed");
     }
 
     private void writeManifest(DistributedApplication app) {
@@ -80,23 +91,31 @@ class ManifestGenerator {
         LOGGER.info("Manifest written to file");
     }
 
-    private void writeBicep(DistributedApplication app) {
-        LOGGER.info("Writing Bicep files...");
-
-        // iterate through the resources in the app, and for any that are of type AzureBicep, give them the opportunity
-        // to write their bicep file to the output directory.
-        for (Resource resource : app.manifest.getResources().values()) {
-            if (resource instanceof AzureBicepResource azureBicepResource) {
-                List<AzureBicepResource.BicepFileOutput> bicepFiles = azureBicepResource.getBicepFiles();
-
-                for (AzureBicepResource.BicepFileOutput bicepFile : bicepFiles) {
-                    try {
-                        Files.write(Paths.get(outputPath.toString() + "/" + bicepFile.filename()), bicepFile.content().getBytes());
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                }
-            }
+    private void writeTemplateFile(ResourceWithTemplate.TemplateFileOutput templateFile) {
+        try {
+            Files.write(Paths.get(outputPath.toString() + "/" + templateFile.filename()), templateFile.content().getBytes());
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
+
+//    private void writeBicep(DistributedApplication app) {
+//        LOGGER.info("Writing Bicep files...");
+//
+//        // iterate through the resources in the app, and for any that are of type AzureBicep, give them the opportunity
+//        // to write their bicep file to the output directory.
+//        for (Resource resource : app.manifest.getResources().values()) {
+//            if (resource instanceof AzureBicepResource azureBicepResource) {
+//                List<ResourceWithTemplate.TemplateFileOutput> bicepFiles = azureBicepResource.getBicepFiles();
+//
+//                for (ResourceWithTemplate.TemplateFileOutput bicepFile : bicepFiles) {
+//                    try {
+//                        Files.write(Paths.get(outputPath.toString() + "/" + bicepFile.filename()), bicepFile.content().getBytes());
+//                    } catch (IOException e) {
+//                        e.printStackTrace();
+//                    }
+//                }
+//            }
+//        }
+//    }
 }

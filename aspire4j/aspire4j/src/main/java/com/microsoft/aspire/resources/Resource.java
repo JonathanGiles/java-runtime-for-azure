@@ -9,7 +9,7 @@ import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 
 @JsonPropertyOrder({"type", "params"})
-public abstract class Resource {
+public abstract class Resource<T extends Resource<T>> {
 
     @Valid
     @NotNull(message = "Resource Type cannot be null")
@@ -58,4 +58,7 @@ public abstract class Resource {
         }
         return newResource;
     }
+
+    // This method is used to return "this" as the correct type
+    protected abstract T self();
 }

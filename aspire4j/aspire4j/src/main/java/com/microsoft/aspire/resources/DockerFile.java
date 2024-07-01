@@ -49,8 +49,9 @@ import java.util.*;
  */
 @JsonPropertyOrder({"type", "path", "context", "env", "bindings"})
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
-public class DockerFile extends Resource implements ResourceWithEnvironment<DockerFile>,
-                                                    ResourceWithBindings<DockerFile> {
+public class DockerFile<T extends DockerFile<T>> extends Resource<T>
+                        implements ResourceWithEnvironment<DockerFile<T>>,
+                                   ResourceWithBindings<DockerFile<T>> {
 
     @NotNull(message = "DockerFile.path cannot be null")
     @NotEmpty(message = "DockerFile.path cannot be an empty string")
@@ -83,26 +84,30 @@ public class DockerFile extends Resource implements ResourceWithEnvironment<Dock
     }
 
     public DockerFile(String name, String path, String context) {
-        super(ResourceType.DOCKER_FILE, name);
+        this(ResourceType.DOCKER_FILE, name);
         this.path = path;
         this.context = context;
     }
 
-    public DockerFile withPath(String path) {
-        this.path = path;
-        return this;
+    protected DockerFile(ResourceType type, String name) {
+        super(type, name);
     }
 
-    public DockerFile withContext(String context) {
+    public T withPath(String path) {
+        this.path = path;
+        return self();
+    }
+
+    public T withContext(String context) {
         this.context = context;
-        return this;
+        return self();
     }
 
     @Override
     @JsonIgnore
-    public DockerFile withEnvironment(String name, String value) {
+    public T withEnvironment(String name, String value) {
         environment.put(name, value);
-        return this;
+        return self();
     }
 
     @Override
@@ -113,14 +118,19 @@ public class DockerFile extends Resource implements ResourceWithEnvironment<Dock
 
     @Override
     @JsonIgnore
-    public DockerFile withBinding(Binding binding) {
+    public T withBinding(Binding binding) {
         bindings.put(binding.getScheme(), binding);
-        return this;
+        return self();
     }
 
     @Override
     @JsonIgnore
     public @Valid Map<Binding.Scheme, Binding> getBindings() {
         return Collections.unmodifiableMap(bindings);
+    }
+
+    @Override
+    public T self() {
+        return (T) this;
     }
 }

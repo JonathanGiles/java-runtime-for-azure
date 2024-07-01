@@ -26,7 +26,7 @@ import java.util.Map;
  */
 @JsonPropertyOrder({"connectionString"})
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
-public class Value extends Resource {
+public class Value<T extends Value<T>> extends Resource<T> {
 
     @NotEmpty(message = "Value.properties cannot be empty")
     @JsonIgnore
@@ -41,13 +41,18 @@ public class Value extends Resource {
         properties.put(key, value);
     }
 
-    public Value withProperty(String key, String value) {
+    public T withProperty(String key, String value) {
         properties.put(key, value);
-        return this;
+        return self();
     }
 
     @JsonAnyGetter
     public Map<String, String> getProperties() {
         return properties;
+    }
+
+    @Override
+    protected T self() {
+        return (T) this;
     }
 }

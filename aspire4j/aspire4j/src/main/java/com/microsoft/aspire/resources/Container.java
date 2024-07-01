@@ -90,10 +90,11 @@ For example:
  */
 @JsonPropertyOrder({"type", "image", "entrypoint", "args", "connectionString", "env", "bindings", "bindMounts", "volumes"})
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
-public class Container extends Resource implements ResourceWithArguments<Container>,
-                                                   ResourceWithEnvironment<Container>,
-                                                   ResourceWithBindings<Container>,
-                                                   ResourceWithEndpoints<Container> {
+public class Container<T extends Container<T>> extends Resource<T>
+                                               implements ResourceWithArguments<Container<T>>,
+                                                   ResourceWithEnvironment<Container<T>>,
+                                                   ResourceWithBindings<Container<T>>,
+                                                   ResourceWithEndpoints<Container<T>> {
 
     @NotNull(message = "Container.image cannot be null")
     @NotEmpty(message = "Container.image cannot be an empty string")
@@ -132,22 +133,22 @@ public class Container extends Resource implements ResourceWithArguments<Contain
     }
 
     @JsonIgnore
-    public Container withImage(String image) {
+    public T withImage(String image) {
         this.image = image;
-        return this;
+        return self();
     }
 
     @JsonIgnore
-    public Container withEntryPoint(String entryPoint) {
+    public T withEntryPoint(String entryPoint) {
         this.entryPoint = entryPoint;
-        return this;
+        return self();
     }
 
     @Override
     @JsonIgnore
-    public Container withArgument(String argument) {
+    public T withArgument(String argument) {
         arguments.add(argument);
-        return this;
+        return self();
     }
 
     @Override
@@ -157,24 +158,24 @@ public class Container extends Resource implements ResourceWithArguments<Contain
     }
 
     @JsonIgnore
-    public Container withVolume(Volume volume) {
+    public T withVolume(Volume volume) {
         volumes.add(volume);
-        return this;
+        return self();
     }
 
     @JsonIgnore
-    public Container withDataVolume() {
+    public T withDataVolume() {
         // FIXME: hardcoded values
         // placeholder values from https://github.com/dotnet/aspire/blob/main/playground/TestShop/AppHost/aspire-manifest.json#L38
         volumes.add(new Volume("TestShop.AppHost-basketcache-data", "/data", false));
-        return this;
+        return self();
     }
 
     @Override
     @JsonIgnore
-    public Container withEnvironment(String name, String value) {
+    public T withEnvironment(String name, String value) {
         environment.put(name, value);
-        return this;
+        return self();
     }
 
     @Override
@@ -185,9 +186,9 @@ public class Container extends Resource implements ResourceWithArguments<Contain
 
     @Override
     @JsonIgnore
-    public Container withBinding(Binding binding) {
+    public T withBinding(Binding binding) {
         bindings.put(binding.getScheme(), binding);
-        return this;
+        return self();
     }
 
     @Override
@@ -198,14 +199,19 @@ public class Container extends Resource implements ResourceWithArguments<Contain
 
     // TODO should this be part of ResourceWithBindings?
     @JsonIgnore
-    public Container withBindMount(BindMount bindMount) {
+    public T withBindMount(BindMount bindMount) {
         bindMounts.add(bindMount);
-        return this;
+        return self();
     }
 
     @Override
     public List<EndpointReference> getEndpoints() {
         // TODO how do I know which endpoints are available?
         return List.of();
+    }
+
+    @Override
+    public T self() {
+        return (T) this;
     }
 }

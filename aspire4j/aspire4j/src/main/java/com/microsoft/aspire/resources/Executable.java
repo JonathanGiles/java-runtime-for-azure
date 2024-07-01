@@ -52,10 +52,11 @@ import java.util.*;
  */
 @JsonPropertyOrder({"type", "workingDirectory", "command", "args", "env", "bindings"})
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
-public class Executable extends Resource implements ResourceWithArguments<Executable>,
-                                                    ResourceWithEnvironment<Executable>,
-                                                    ResourceWithBindings<Executable>,
-                                                    ResourceWithEndpoints<Executable> {
+public class Executable<T extends Executable<T>> extends Resource<T>
+                                                 implements ResourceWithArguments<Executable<T>>,
+                                                          ResourceWithEnvironment<Executable<T>>,
+                                                          ResourceWithBindings<Executable<T>>,
+                                                          ResourceWithEndpoints<Executable<T>> {
 
     @NotNull(message = "Executable.workingDirectory cannot be null")
     @NotEmpty(message = "Executable.workingDirectory cannot be an empty string")
@@ -93,19 +94,19 @@ public class Executable extends Resource implements ResourceWithArguments<Execut
         this.command = command;
     }
 
-    public Executable withWorkingDirectory(String workingDirectory) {
+    public T withWorkingDirectory(String workingDirectory) {
         this.workingDirectory = workingDirectory;
-        return this;
+        return self();
     }
 
-    public Executable withCommand(String command) {
+    public T withCommand(String command) {
         this.command = command;
-        return this;
+        return self();
     }
 
-    public Executable withEnvironment(String key, String value) {
+    public T withEnvironment(String key, String value) {
         this.env.put(key, value);
-        return this;
+        return self();
     }
 
     @Override
@@ -144,5 +145,10 @@ public class Executable extends Resource implements ResourceWithArguments<Execut
     public List<EndpointReference> getEndpoints() {
         // TODO how do I know which endpoints are available?
         return List.of();
+    }
+
+    @Override
+    public T self() {
+        return (T) this;
     }
 }

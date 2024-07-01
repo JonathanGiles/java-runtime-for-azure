@@ -18,6 +18,8 @@ public interface ResourceWithParameters<T extends ResourceWithParameters<T>> {
         for (Map.Entry<String, String> entry : parameters.entrySet()) {
             withParameter(entry.getKey(), entry.getValue());
         }
-        return (T) this;
+        return self();
     }
+
+    T self();
 }
