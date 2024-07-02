@@ -4,6 +4,8 @@ import com.microsoft.aspire.resources.Resource;
 
 public interface ResourceWithReference<T extends ResourceWithReference<T>> {
 
+    // TODO we should defer the act of creating references until just prior to writing out the manifest, as we may
+    // change our properties when we introspect or process templates.
     default T withReference(Resource<?> resource) {
         // https://learn.microsoft.com/en-us/dotnet/api/aspire.hosting.resourcebuilderextensions.withreference?view=dotnet-aspire-8.0.1#aspire-hosting-resourcebuilderextensions-withreference-1(aspire-hosting-applicationmodel-iresourcebuilder((-0))-aspire-hosting-applicationmodel-iresourcebuilder((aspire-hosting-applicationmodel-iresourcewithconnectionstring))-system-string-system-boolean)
 

@@ -21,12 +21,12 @@ public interface TemplateEngine {
                                              final Map<String, Object> context) {
         return templateDescriptorList.stream().map(templateDescriptor -> {
             // read the file from our local resources directory
-            InputStream resourceAsStream = cls.getResourceAsStream(templateDescriptor.inputFilename());
+            InputStream resourceAsStream = cls.getResourceAsStream(templateDescriptor.getInputFilename());
             if (resourceAsStream == null) {
-                throw new RuntimeException("Resource file not found: " + templateDescriptor.inputFilename());
+                throw new RuntimeException("Resource file not found: " + templateDescriptor.getInputFilename());
             }
             final TemplateEngine templateEngine = TemplateEngine.getTemplateEngine();
-            final String outputFilename = templateEngine.processTemplate(templateDescriptor.outputFilename(), context);
+            final String outputFilename = templateEngine.processTemplate(templateDescriptor.getOutputFilename(), context);
             final String outputString = templateEngine.processTemplate(resourceAsStream, context);
             return new ResourceWithTemplate.TemplateFileOutput(outputFilename, outputString);
         }).collect(Collectors.toList());

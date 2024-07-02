@@ -1,6 +1,7 @@
 package com.microsoft.aspire.extensions.spring.resources;
 
 import com.microsoft.aspire.resources.DockerFile;
+import com.microsoft.aspire.resources.properties.Binding;
 import com.microsoft.aspire.resources.traits.ResourceWithTemplate;
 import com.microsoft.aspire.utils.templates.TemplateEngine;
 
@@ -17,6 +18,8 @@ public final class EurekaServiceDiscovery extends DockerFile<EurekaServiceDiscov
     private final String PROPERTY_REGISTER_WITH_EUREKA = "registerWithEureka";
     private final String PROPERTY_FETCH_REGISTRY = "fetchRegistry";
 
+    private static final int DEFAULT_PORT = 8761;
+
     private final Map<String, Object> properties;
 
     public EurekaServiceDiscovery(String name) {
@@ -24,32 +27,40 @@ public final class EurekaServiceDiscovery extends DockerFile<EurekaServiceDiscov
 
         this.properties = new HashMap<>();
         this.properties.put(PROPERTY_NAME, name);
-        this.properties.put(PROPERTY_PORT, 8761);
+        this.properties.put(PROPERTY_PORT, DEFAULT_PORT);
         this.properties.put(PROPERTY_REGISTER_WITH_EUREKA, false);
         this.properties.put(PROPERTY_FETCH_REGISTRY, false);
+
+        withPort(DEFAULT_PORT);
     }
 
     public EurekaServiceDiscovery withPort(int port) {
         this.properties.put(PROPERTY_PORT, port);
+
+        withBinding(new Binding(Binding.Scheme.HTTP, Binding.Protocol.TCP, Binding.Transport.HTTP)
+            /*.withPort(port)*/.withTargetPort(port).withExternal());
+        withBinding(new Binding(Binding.Scheme.HTTPS, Binding.Protocol.TCP, Binding.Transport.HTTP)
+            /*.withPort(port)*/.withTargetPort(port).withExternal());
+
         return this;
     }
 
     @Override
     public List<TemplateFileOutput> processTemplate(Path outputPath) {
-        final String inPrefix = "/templates/eureka/";
-        final String outPrefix = "eureka/";
-        List<TemplateDescriptor> templateFiles = List.of(
-            new TemplateDescriptor(inPrefix+"pom.xml", outPrefix+"pom.xml"),
-            new TemplateDescriptor(inPrefix+"Dockerfile", outPrefix+"Dockerfile"),
-            new TemplateDescriptor(inPrefix+"EurekaServerApplication.java", outPrefix+"src/main/java/com/microsoft/aspire/spring/eureka/EurekaServerApplication.java"),
-            new TemplateDescriptor(inPrefix+"application.yaml", outPrefix+"src/main/resources/application.yaml")
-        );
+        final String templatePath = "/templates/eureka/";
+        final String outputRootPath = "eureka/";
+        List<TemplateDescriptor> templateFiles = TemplateDescriptorsBuilder.begin(templatePath, outputRootPath)
+            .with("pom.xml")
+            .with("Dockerfile")
+            .with("EurekaServerApplication.java", "src/main/java/com/microsoft/aspire/spring/eureka/EurekaServerApplication.java")
+            .with("application.yaml", "src/main/resources/application.yaml")
+            .build();
 
         List<TemplateFileOutput> templateOutput = TemplateEngine.process(EurekaServiceDiscovery.class, templateFiles, properties);
 
-        // TODO we know that we need to get the output filename from the first element, and set that as the path
-        withPath(outputPath.resolve(templateOutput.get(0).filename()).toString());
-        withContext(outputPath.resolve(templateOutput.get(0).filename()).getParent().toString());
+        // FIXME we need a better way of determining the output path of the template
+        withPath("output/" + outputRootPath + "Dockerfile");
+        withContext("output/" + outputRootPath);
 
         return templateOutput;
     }

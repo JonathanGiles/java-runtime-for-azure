@@ -77,7 +77,9 @@ public class SpringIntrospector {
 //        boolean hasDocker = false;
         if (lookForFile(project, properties, "Dockerfile")) {
             // with this strategy, we can short circuit and just substitute our spring project to instead be a Docker project.
-            strategies.add(new SpringDeploymentStrategy(SpringDeploymentStrategy.DeploymentType.DOCKER_FILE, 1000).withCommand("Dockerfile"));
+            strategies.add(
+                new SpringDeploymentStrategy(SpringDeploymentStrategy.DeploymentType.DOCKER_FILE, 1000)
+                    .withCommand(properties.get("Dockerfile")));
         }
 //        hasDocker |= lookForFile(project, properties, "docker-compose.yaml");
 //        hasDocker |= lookForFile(project, properties, "compose.yaml");

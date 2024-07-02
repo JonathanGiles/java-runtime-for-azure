@@ -70,7 +70,7 @@ public class DistributedApplication {
      * @return
      * @param <T>
      */
-    public <T extends Project> T addProject(T project) {
+    public <T extends Project<?>> T addProject(T project) {
         return manifest.addResource(project);
     }
 
@@ -80,7 +80,7 @@ public class DistributedApplication {
      * @param name
      * @return
      */
-    public Project addProject(String name) {
+    public Project<?> addProject(String name) {
         return manifest.addResource(new Project(name));
     }
 
@@ -98,7 +98,7 @@ public class DistributedApplication {
      * @return
      * @param <T>
      */
-    public <T extends DockerFile> T addDockerFile(T dockerFile) {
+    public <T extends DockerFile<?>> T addDockerFile(T dockerFile) {
         return manifest.addResource(dockerFile);
     }
 
@@ -110,7 +110,7 @@ public class DistributedApplication {
      * @param context
      * @return
      */
-    public DockerFile addDockerFile(String name, String path, String context) {
+    public DockerFile<?> addDockerFile(String name, String path, String context) {
         return manifest.addResource(new DockerFile(name, path, context));
     }
 
@@ -128,7 +128,7 @@ public class DistributedApplication {
      * @return
      * @param <T>
      */
-    public <T extends Container> T addContainer(T container) {
+    public <T extends Container<?>> T addContainer(T container) {
         return manifest.addResource(container);
     }
 
@@ -139,7 +139,7 @@ public class DistributedApplication {
      * @param image
      * @return
      */
-    public Container addContainer(String name, String image) {
+    public Container<?> addContainer(String name, String image) {
         return manifest.addResource(new Container(name, image));
     }
 
@@ -157,7 +157,7 @@ public class DistributedApplication {
      * @return
      * @param <T>
      */
-    public <T extends Executable> T addExecutable(T executable) {
+    public <T extends Executable<?>> T addExecutable(T executable) {
         return manifest.addResource(executable);
     }
 
@@ -188,7 +188,7 @@ public class DistributedApplication {
      * @return
      * @param <T>
      */
-    public <T extends Value> T addValue(T value) {
+    public <T extends Value<?>> T addValue(T value) {
         return manifest.addResource(value);
     }
 
@@ -200,7 +200,7 @@ public class DistributedApplication {
      * @param value
      * @return
      */
-    public Value addValue(String name, String key, String value) {
+    public Value<?> addValue(String name, String key, String value) {
         return manifest.addResource(new Value(name, key, value));
     }
 

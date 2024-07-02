@@ -1,6 +1,7 @@
 package com.microsoft.aspire.resources.traits;
 
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -17,7 +18,54 @@ public interface ResourceWithTemplate<T extends ResourceWithTemplate<T>> {
 
     T self();
 
-    record TemplateDescriptor(String inputFilename, String outputFilename) {   }
+    class TemplateDescriptor {
+        private final String inputFilename;
+        private final String outputFilename;
+
+        public TemplateDescriptor(String inputFilename, String outputFilename) {
+            this.inputFilename = inputFilename;
+            this.outputFilename = outputFilename;
+        }
+
+        public String getInputFilename() {
+            return inputFilename;
+        }
+
+        public String getOutputFilename() {
+            return outputFilename;
+        }
+    }
+
+    class TemplateDescriptorsBuilder {
+        final String templatePath;
+        final String outputRootPath;
+
+        final List<TemplateDescriptor> templateDescriptors;
+
+        private TemplateDescriptorsBuilder(String templatePath, String outputRootPath) {
+            this.templatePath = templatePath;
+            this.outputRootPath = outputRootPath;
+            this.templateDescriptors = new ArrayList<>();
+        }
+
+        public static TemplateDescriptorsBuilder begin(String templatePath, String outputRootPath) {
+            return new TemplateDescriptorsBuilder(templatePath, outputRootPath);
+        }
+
+        public TemplateDescriptorsBuilder with(String inputFilename) {
+            templateDescriptors.add(new TemplateDescriptor(templatePath + inputFilename, outputRootPath + inputFilename));
+            return this;
+        }
+
+        public TemplateDescriptorsBuilder with(String inputFilename, String outputFilename) {
+            templateDescriptors.add(new TemplateDescriptor(templatePath + inputFilename, outputRootPath + outputFilename));
+            return this;
+        }
+
+        public List<TemplateDescriptor> build() {
+            return templateDescriptors;
+        }
+    }
 
     // FIXME at some point string content won't be sufficient, and we will want to support binary content too
     record TemplateFileOutput(String filename, String content) {    }
