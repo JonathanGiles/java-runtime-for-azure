@@ -21,6 +21,7 @@ public class SpringProject extends Project<SpringProject> implements Introspecti
 
     public SpringProject(String name) {
         super(SPRING_PROJECT, name);
+        withEnvironment("spring.application.name", name);
     }
 
     @Override

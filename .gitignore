@@ -52,3 +52,4 @@ build/
 ### mvn ###
 **/.mvn/
 /temp/*
+**/output/**

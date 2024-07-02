@@ -10,10 +10,9 @@ public class StorageExplorerAppHost implements AppHost {
     @Override public void configureApplication(DistributedApplication app) {
         app.printExtensions();
 
-        var azureStorage = app.withExtension(AzureStorageExtension.class)
-            .addAzureStorage("storage");
-
-        var blobStorage = azureStorage.addBlobs("storage-explorer-blobs");
+        var blobStorage = app.withExtension(AzureStorageExtension.class)
+            .addAzureStorage("storage")
+            .addBlobs("storage-explorer-blobs");
 
         var eurekaServiceDiscovery = app.withExtension(SpringExtension.class)
             .addEurekaServiceDiscovery("eureka");
