@@ -4,10 +4,15 @@ module com.microsoft.aspire {
     requires transitive org.hibernate.validator;
     requires java.logging;
 
+    // Templating engines
+//    requires velocity.engine.core;
+    requires freemarker;
+
     exports com.microsoft.aspire;
     exports com.microsoft.aspire.resources;
     exports com.microsoft.aspire.resources.properties;
     exports com.microsoft.aspire.resources.traits;
+    exports com.microsoft.aspire.utils.templates;
 
     opens com.microsoft.aspire.resources to org.hibernate.validator, com.fasterxml.jackson.databind;
     opens com.microsoft.aspire.resources.properties to org.hibernate.validator, com.fasterxml.jackson.databind;

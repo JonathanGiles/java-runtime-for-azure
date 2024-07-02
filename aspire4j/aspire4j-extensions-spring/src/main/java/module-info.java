@@ -7,10 +7,12 @@ module com.microsoft.aspire.extensions.spring {
     requires java.logging;
 
     exports com.microsoft.aspire.extensions.spring;
-
-    opens com.microsoft.aspire.extensions.spring to org.hibernate.validator, com.fasterxml.jackson.databind;
     exports com.microsoft.aspire.extensions.spring.resources;
+    opens com.microsoft.aspire.extensions.spring to org.hibernate.validator, com.fasterxml.jackson.databind;
     opens com.microsoft.aspire.extensions.spring.resources to com.fasterxml.jackson.databind, org.hibernate.validator;
+
+    // We conditionally open up the template files to the apphost, so it can write them out
+    opens templates.eureka to com.microsoft.aspire;
 
     provides com.microsoft.aspire.Extension with SpringExtension;
 }

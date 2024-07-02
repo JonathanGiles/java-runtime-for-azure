@@ -1,5 +1,6 @@
 package com.microsoft.aspire.resources.traits;
 
+import java.nio.file.Path;
 import java.util.List;
 
 /**
@@ -12,9 +13,11 @@ import java.util.List;
  */
 public interface ResourceWithTemplate<T extends ResourceWithTemplate<T>> {
 
-    List<TemplateFileOutput> processTemplate();
+    List<TemplateFileOutput> processTemplate(Path outputPath);
 
     T self();
+
+    record TemplateDescriptor(String inputFilename, String outputFilename) {   }
 
     // FIXME at some point string content won't be sufficient, and we will want to support binary content too
     record TemplateFileOutput(String filename, String content) {    }

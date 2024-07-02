@@ -5,26 +5,22 @@ import com.microsoft.aspire.resources.ResourceType;
 import com.microsoft.aspire.resources.properties.EndpointReference;
 import com.microsoft.aspire.DistributedApplicationHelper;
 import com.microsoft.aspire.resources.traits.ResourceWithEndpoints;
+import com.microsoft.aspire.utils.templates.TemplateEngine;
 
-import java.io.IOException;
-import java.io.InputStream;
+import java.nio.file.Path;
 import java.util.List;
+import java.util.Map;
 
 public class AzureStorageResource extends AzureBicepResource<AzureStorageResource>
                                   implements ResourceWithEndpoints<AzureStorageResource> {
     private static final ResourceType AZURE_STORAGE = ResourceType.fromString("azure.storage.v0");
 
-    private static final String BICEP_TEMPLATE_FILE = "templates/bicep/storage.module.bicep";
-    private static final String BICEP_OUTPUT_FILE = "%s.module.bicep";
-
-    private final String bicepOutputFilename;
-
     public AzureStorageResource(String name) {
         super(AZURE_STORAGE, name);
 
         // This is the path to the output bicep file
-        bicepOutputFilename = String.format(BICEP_OUTPUT_FILE, name);
-        withPath(bicepOutputFilename);
+//        bicepOutputFilename = String.format(BICEP_OUTPUT_FILE, name);
+//        withPath(bicepOutputFilename);
 
         // FIXME just here because I saw other samples with it
 //        withParameter("principalId", "");
@@ -43,20 +39,18 @@ public class AzureStorageResource extends AzureBicepResource<AzureStorageResourc
     }
 
     @Override
-    public List<TemplateFileOutput> processTemplate() {
-        // read the file from our local resources directory
-        InputStream resourceAsStream = AzureStorageResource.class.getResourceAsStream(BICEP_TEMPLATE_FILE);
-        if (resourceAsStream == null) {
-            throw new RuntimeException("Resource file not found: " + BICEP_TEMPLATE_FILE);
-        }
-        try {
-            String bicepTemplate = new String(resourceAsStream.readAllBytes());
+    public List<TemplateFileOutput> processTemplate(Path outputPath) {
+        List<TemplateDescriptor> templateFiles = List.of(
+            new TemplateDescriptor("/templates/bicep/storage.module.bicep", "${name}.module.bicep")
+        );
 
-            // If necessary, modify template variables
+        List<TemplateFileOutput> templateOutput = TemplateEngine.process(AzureStorageResource.class, templateFiles, Map.of(
+            "name", getName()
+        ));
 
-            return List.of(new TemplateFileOutput(bicepOutputFilename, bicepTemplate));
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+        // we know that we need to get the output filename from the first element, and set that as the path
+        withPath(outputPath.toString());
+
+        return templateOutput;
     }
 }

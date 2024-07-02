@@ -5,14 +5,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.*;
-import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.microsoft.aspire.implementation.json.RelativePathSerializer;
-import com.microsoft.aspire.resources.AzureBicepResource;
-import com.microsoft.aspire.resources.Resource;
 import com.microsoft.aspire.resources.traits.ResourceWithTemplate;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validation;
@@ -28,19 +25,24 @@ class ManifestGenerator {
     void generateManifest(AppHost appHost, Path outputPath) {
         this.outputPath = outputPath;
 
+        File outputDir = outputPath.toFile();
+        if (!outputDir.exists()) {
+            outputDir.mkdirs();
+        }
+
         DistributedApplication app = new DistributedApplication();
         appHost.configureApplication(app);
         app.performResourceIntrospection();
-        processTemplates(app);
+        processTemplates(app, outputPath);
         writeManifest(app);
     }
 
-    private void processTemplates(DistributedApplication app) {
+    private void processTemplates(DistributedApplication app, Path outputPath) {
         LOGGER.info("Processing templates...");
         app.manifest.getResources().values().stream()
             .filter(r -> r instanceof ResourceWithTemplate<?>)
             .map(r -> (ResourceWithTemplate<?>) r)
-            .map(ResourceWithTemplate::processTemplate)
+            .map(r -> r.processTemplate(outputPath))
             .forEach(templateFiles -> templateFiles.forEach(this::writeTemplateFile));
         LOGGER.info("Templates processed");
     }
@@ -70,11 +72,6 @@ class ManifestGenerator {
             LOGGER.info("Models validated...Writing manifest to file");
         }
 
-        File outputDir = outputPath.toFile();
-        if (!outputDir.exists()) {
-            outputDir.mkdirs();
-        }
-
         // Set the outputDir in the RelativePathSerializer
         RelativePathSerializer.setOutputPath(outputPath);
 
@@ -84,7 +81,7 @@ class ManifestGenerator {
 
         try {
             objectMapper.writerWithDefaultPrettyPrinter()
-                    .writeValue(new File(outputDir, "aspire-manifest.json"), app.manifest);
+                    .writeValue(new File(outputPath.toFile(), "aspire-manifest.json"), app.manifest);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -93,29 +90,13 @@ class ManifestGenerator {
 
     private void writeTemplateFile(ResourceWithTemplate.TemplateFileOutput templateFile) {
         try {
-            Files.write(Paths.get(outputPath.toString() + "/" + templateFile.filename()), templateFile.content().getBytes());
+            Path path = Paths.get(outputPath.toString() + "/" + templateFile.filename());
+
+            // ensure the parent directories exist
+            Files.createDirectories(path.getParent());
+            Files.write(path, templateFile.content().getBytes());
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
-
-//    private void writeBicep(DistributedApplication app) {
-//        LOGGER.info("Writing Bicep files...");
-//
-//        // iterate through the resources in the app, and for any that are of type AzureBicep, give them the opportunity
-//        // to write their bicep file to the output directory.
-//        for (Resource resource : app.manifest.getResources().values()) {
-//            if (resource instanceof AzureBicepResource azureBicepResource) {
-//                List<ResourceWithTemplate.TemplateFileOutput> bicepFiles = azureBicepResource.getBicepFiles();
-//
-//                for (ResourceWithTemplate.TemplateFileOutput bicepFile : bicepFiles) {
-//                    try {
-//                        Files.write(Paths.get(outputPath.toString() + "/" + bicepFile.filename()), bicepFile.content().getBytes());
-//                    } catch (IOException e) {
-//                        e.printStackTrace();
-//                    }
-//                }
-//            }
-//        }
-//    }
 }

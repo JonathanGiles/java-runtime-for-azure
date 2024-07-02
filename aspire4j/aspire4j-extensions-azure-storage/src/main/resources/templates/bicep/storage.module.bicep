@@ -11,7 +11,7 @@ param principalType string
 
 
 resource storageAccount_1XR3Um8QY 'Microsoft.Storage/storageAccounts@2022-09-01' = {
-  name: toLower(take('storage${uniqueString(resourceGroup().id)}', 24))
+  name: toLower(take('storage${r"${uniqueString(resourceGroup().id)"}}', 24))
   location: location
   tags: {
     'aspire-resource-name': 'storage'

@@ -32,6 +32,18 @@
             <artifactId>expressly</artifactId>
             <version>5.0.0</version>
         </dependency>
+
+        <!-- Template engine -->
+<!--        <dependency>-->
+<!--            <groupId>org.apache.velocity</groupId>-->
+<!--            <artifactId>velocity-engine-core</artifactId>-->
+<!--            <version>2.3</version>-->
+<!--        </dependency>-->
+        <dependency>
+            <groupId>org.freemarker</groupId>
+            <artifactId>freemarker</artifactId>
+            <version>2.3.33</version>
+        </dependency>
     </dependencies>
 
     <build>

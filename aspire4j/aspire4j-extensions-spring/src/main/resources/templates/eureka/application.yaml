@@ -1,0 +1,9 @@
+spring:
+  application:
+    name: ${name}
+server:
+  port: ${port?c}
+eureka:
+  client:
+    register-with-eureka: ${registerWithEureka?string("true", "false")}
+    fetch-registry: ${fetchRegistry?string("true", "false")}
