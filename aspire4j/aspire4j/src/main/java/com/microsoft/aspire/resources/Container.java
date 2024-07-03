@@ -91,10 +91,10 @@ For example:
 @JsonPropertyOrder({"type", "image", "entrypoint", "args", "connectionString", "env", "bindings", "bindMounts", "volumes"})
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
 public class Container<T extends Container<T>> extends Resource<T>
-                                               implements ResourceWithArguments<Container<T>>,
-                                                   ResourceWithEnvironment<Container<T>>,
-                                                   ResourceWithBindings<Container<T>>,
-                                                   ResourceWithEndpoints<Container<T>> {
+                                               implements ResourceWithArguments<T>,
+                                                   ResourceWithEnvironment<T>,
+                                                   ResourceWithBindings<T>,
+                                                   ResourceWithEndpoints<T> {
 
     @NotNull(message = "Container.image cannot be null")
     @NotEmpty(message = "Container.image cannot be an empty string")

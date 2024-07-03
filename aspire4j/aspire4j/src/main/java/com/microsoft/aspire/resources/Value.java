@@ -1,6 +1,7 @@
 package com.microsoft.aspire.resources;
 
 import com.fasterxml.jackson.annotation.*;
+import com.microsoft.aspire.resources.traits.SelfAware;
 import jakarta.validation.constraints.NotEmpty;
 
 import java.util.LinkedHashMap;
@@ -26,7 +27,7 @@ import java.util.Map;
  */
 @JsonPropertyOrder({"connectionString"})
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
-public class Value<T extends Value<T>> extends Resource<T> {
+public class Value<T extends Value<T>> extends Resource<T> implements SelfAware<T> {
 
     @NotEmpty(message = "Value.properties cannot be empty")
     @JsonIgnore
@@ -52,7 +53,7 @@ public class Value<T extends Value<T>> extends Resource<T> {
     }
 
     @Override
-    protected T self() {
+    public T self() {
         return (T) this;
     }
 }

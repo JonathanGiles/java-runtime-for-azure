@@ -53,10 +53,10 @@ import java.util.*;
 @JsonPropertyOrder({"type", "workingDirectory", "command", "args", "env", "bindings"})
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
 public class Executable<T extends Executable<T>> extends Resource<T>
-                                                 implements ResourceWithArguments<Executable<T>>,
-                                                          ResourceWithEnvironment<Executable<T>>,
-                                                          ResourceWithBindings<Executable<T>>,
-                                                          ResourceWithEndpoints<Executable<T>> {
+                                                 implements ResourceWithArguments<T>,
+                                                          ResourceWithEnvironment<T>,
+                                                          ResourceWithBindings<T>,
+                                                          ResourceWithEndpoints<T> {
 
     @NotNull(message = "Executable.workingDirectory cannot be null")
     @NotEmpty(message = "Executable.workingDirectory cannot be an empty string")
@@ -118,9 +118,9 @@ public class Executable<T extends Executable<T>> extends Resource<T>
 
     @Override
     @JsonIgnore
-    public Executable withArgument(String argument) {
+    public T withArgument(String argument) {
         arguments.add(argument);
-        return this;
+        return self();
     }
 
     @Override
@@ -131,9 +131,9 @@ public class Executable<T extends Executable<T>> extends Resource<T>
 
     @Override
     @JsonIgnore
-    public Executable withBinding(Binding binding) {
+    public T withBinding(Binding binding) {
         bindings.put(binding.getScheme(), binding);
-        return this;
+        return self();
     }
 
     @Override

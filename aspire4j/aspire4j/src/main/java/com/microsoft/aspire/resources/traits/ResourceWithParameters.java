@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import java.util.Map;
 
-public interface ResourceWithParameters<T extends ResourceWithParameters<T>> {
+public interface ResourceWithParameters<T extends ResourceWithParameters<T>> extends SelfAware<T> {
 
     T withParameter(String key, String value);
 
@@ -20,6 +20,4 @@ public interface ResourceWithParameters<T extends ResourceWithParameters<T>> {
         }
         return self();
     }
-
-    T self();
 }

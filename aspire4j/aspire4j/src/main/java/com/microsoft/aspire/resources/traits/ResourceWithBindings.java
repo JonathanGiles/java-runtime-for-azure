@@ -5,7 +5,7 @@ import com.microsoft.aspire.resources.properties.Binding;
 
 import java.util.Map;
 
-public interface ResourceWithBindings<T extends ResourceWithBindings<T>> {
+public interface ResourceWithBindings<T extends ResourceWithBindings<T>> extends SelfAware<T> {
 
     T withBinding(Binding binding);
 
@@ -22,6 +22,4 @@ public interface ResourceWithBindings<T extends ResourceWithBindings<T>> {
         withBinding(new Binding(Binding.Scheme.HTTPS, Binding.Protocol.TCP, Binding.Transport.HTTP).withTargetPort(8080).withExternal());
         return self();
     }
-
-    T self();
 }

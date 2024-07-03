@@ -50,8 +50,8 @@ import java.util.*;
 @JsonPropertyOrder({"type", "path", "context", "env", "bindings"})
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
 public class DockerFile<T extends DockerFile<T>> extends Resource<T>
-                        implements ResourceWithEnvironment<DockerFile<T>>,
-                                   ResourceWithBindings<DockerFile<T>> {
+                        implements ResourceWithEnvironment<T>,
+                                   ResourceWithBindings<T> {
 
     @NotNull(message = "DockerFile.path cannot be null")
     @NotEmpty(message = "DockerFile.path cannot be an empty string")

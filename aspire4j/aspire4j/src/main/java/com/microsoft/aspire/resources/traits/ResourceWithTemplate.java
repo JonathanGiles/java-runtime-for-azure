@@ -12,11 +12,9 @@ import java.util.List;
  * location specified by the app host user.
  * @param <T>
  */
-public interface ResourceWithTemplate<T extends ResourceWithTemplate<T>> {
+public interface ResourceWithTemplate<T extends ResourceWithTemplate<T>> extends SelfAware<T> {
 
     List<TemplateFileOutput> processTemplate(Path outputPath);
-
-    T self();
 
     class TemplateDescriptor {
         private final String inputFilename;

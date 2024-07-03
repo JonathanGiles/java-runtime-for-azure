@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import java.util.List;
 
-public interface ResourceWithArguments<T extends ResourceWithArguments<T>> {
+public interface ResourceWithArguments<T extends ResourceWithArguments<T>> extends SelfAware<T> {
 
     T withArgument(String argument);
 
@@ -28,6 +28,4 @@ public interface ResourceWithArguments<T extends ResourceWithArguments<T>> {
         }
         return self();
     }
-
-    T self();
 }

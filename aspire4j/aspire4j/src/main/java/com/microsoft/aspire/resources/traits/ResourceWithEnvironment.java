@@ -4,7 +4,8 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import java.util.Map;
 
-public interface ResourceWithEnvironment<T extends ResourceWithEnvironment<T>> extends ResourceWithReference<T> {
+public interface ResourceWithEnvironment<T extends ResourceWithEnvironment<T>>
+                                                    extends ResourceWithReference<T>, SelfAware<T> {
 
     T withEnvironment(String key, String value);
 
@@ -20,7 +21,4 @@ public interface ResourceWithEnvironment<T extends ResourceWithEnvironment<T>> e
         }
         return self();
     }
-
-    @Override
-    T self();
 }

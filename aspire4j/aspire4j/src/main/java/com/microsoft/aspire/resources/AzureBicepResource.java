@@ -122,10 +122,6 @@ public abstract class AzureBicepResource<T extends AzureBicepResource<T>>
         return Collections.unmodifiableMap(parameters);
     }
 
-//    public abstract List<BicepFileOutput> getBicepFiles();
-//
-//    public record BicepFileOutput(String filename, String content) {    }
-
     @Override
     public T self() {
         return (T) this;

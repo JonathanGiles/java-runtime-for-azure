@@ -2,7 +2,7 @@ package com.microsoft.aspire.resources.traits;
 
 import com.microsoft.aspire.resources.Resource;
 
-public interface ResourceWithReference<T extends ResourceWithReference<T>> {
+public interface ResourceWithReference<T extends ResourceWithReference<T>> extends SelfAware<T> {
 
     // TODO we should defer the act of creating references until just prior to writing out the manifest, as we may
     // change our properties when we introspect or process templates.
@@ -54,6 +54,4 @@ public interface ResourceWithReference<T extends ResourceWithReference<T>> {
 
         return self();
     }
-
-    T self();
 }
