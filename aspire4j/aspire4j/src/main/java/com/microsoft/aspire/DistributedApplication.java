@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.ServiceLoader;
 
 public class DistributedApplication {
+    private static DistributedApplication INSTANCE;
 
     @Valid
     final AspireManifest manifest;
@@ -20,8 +21,12 @@ public class DistributedApplication {
         manifest = new AspireManifest();
         loadExtensions();
 
-        // FIXME We could make this a static field, but it all feels hacky, so we will go with this for now
-        DistributedApplicationHelper.setAccessor(() -> this);
+        // FIXME This is hacky
+        INSTANCE = this;
+    }
+
+    public static DistributedApplication getInstance() {
+        return INSTANCE;
     }
 
     private void loadExtensions() {

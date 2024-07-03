@@ -11,8 +11,7 @@ import java.util.stream.Collectors;
 public interface TemplateEngine {
 
     static TemplateEngine getTemplateEngine() {
-        // TODO cache this
-        return new FreeMarkerTemplateProcessor();
+        return FreeMarkerTemplateProcessor.getTemplateEngine();
     }
 
     static List<ResourceWithTemplate.TemplateFileOutput> process(

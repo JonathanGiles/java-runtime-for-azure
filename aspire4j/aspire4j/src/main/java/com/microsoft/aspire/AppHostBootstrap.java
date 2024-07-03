@@ -8,6 +8,7 @@ import java.util.*;
 import java.util.logging.LogManager;
 import java.util.logging.Logger;
 
+// Not public API
 class AppHostBootstrap {
 
     static {

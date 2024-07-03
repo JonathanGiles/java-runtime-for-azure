@@ -10,7 +10,14 @@ import java.io.StringReader;
 import java.io.StringWriter;
 import java.util.Map;
 
-public class FreeMarkerTemplateProcessor implements TemplateEngine {
+class FreeMarkerTemplateProcessor implements TemplateEngine {
+    private static final TemplateEngine INSTANCE = new FreeMarkerTemplateProcessor();
+
+    private FreeMarkerTemplateProcessor() {    }
+
+    public static TemplateEngine getTemplateEngine() {
+        return INSTANCE;
+    }
 
     @Override
     public String processTemplate(String templateContent, Map<String, Object> context) {

@@ -1,6 +1,6 @@
 package com.microsoft.aspire.extensions.spring;
 
-import com.microsoft.aspire.DistributedApplicationHelper;
+import com.microsoft.aspire.DistributedApplication;
 import com.microsoft.aspire.Extension;
 import com.microsoft.aspire.extensions.spring.resources.EurekaServiceDiscovery;
 import com.microsoft.aspire.extensions.spring.resources.SpringProject;
@@ -26,10 +26,10 @@ public class SpringExtension implements Extension {
     }
 
     public SpringProject addSpringProject(String name) {
-        return DistributedApplicationHelper.getDistributedApplication().addResource(new SpringProject(name));
+        return DistributedApplication.getInstance().addResource(new SpringProject(name));
     }
 
     public EurekaServiceDiscovery addEurekaServiceDiscovery(String name) {
-        return DistributedApplicationHelper.getDistributedApplication().addResource(new EurekaServiceDiscovery(name));
+        return DistributedApplication.getInstance().addResource(new EurekaServiceDiscovery(name));
     }
 }

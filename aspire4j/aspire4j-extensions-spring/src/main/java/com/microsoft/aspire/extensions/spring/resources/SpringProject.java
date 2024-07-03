@@ -1,7 +1,7 @@
 package com.microsoft.aspire.extensions.spring.resources;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.microsoft.aspire.DistributedApplicationHelper;
+import com.microsoft.aspire.DistributedApplication;
 import com.microsoft.aspire.extensions.spring.implementation.SpringDeploymentStrategy;
 import com.microsoft.aspire.extensions.spring.implementation.SpringIntrospector;
 import com.microsoft.aspire.resources.DockerFile;
@@ -43,7 +43,7 @@ public class SpringProject extends Project<SpringProject> implements Introspecti
                     .withContext(getName())
                     .withExternalHttpEndpoints(); // FIXME this is not really the context
 
-            DistributedApplicationHelper.getDistributedApplication().substituteResource(this, dockerFile);
+                DistributedApplication.getInstance().substituteResource(this, dockerFile);
         });
     }
 

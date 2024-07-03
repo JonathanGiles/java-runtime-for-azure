@@ -2,22 +2,31 @@ package com.microsoft.aspire.extensions.azure.storage.resources;
 
 import com.microsoft.aspire.resources.Value;
 import com.microsoft.aspire.resources.traits.ResourceWithConnectionString;
+import com.microsoft.aspire.resources.traits.ResourceWithParent;
 
-public final class AzureStorageBlobsResource extends Value
-        implements ResourceWithConnectionString<AzureStorageBlobsResource> {
+public final class AzureStorageBlobsResource extends Value<AzureStorageBlobsResource>
+                                             implements ResourceWithConnectionString<AzureStorageBlobsResource>,
+                                                        ResourceWithParent<AzureStorageResource> {
     private final AzureStorageResource storageResource;
-    private final String connectionString;
 
     public AzureStorageBlobsResource(String name, AzureStorageResource storageResource) {
         super(name);
         this.storageResource = storageResource;
-        this.connectionString = storageResource.getName() + ".outputs.blobEndpoint";
-        withProperty("connectionString", connectionString);
+        withProperty(getConnectionStringEnvironmentVariable(), getValue());
     }
 
-//    @Override
-//    @JsonIgnore
-//    public String getConnectionString() {
-//        return connectionString;
-//    }
+    @Override
+    public AzureStorageResource getParent() {
+        return storageResource;
+    }
+
+    @Override
+    public String getConnectionStringEnvironmentVariable() {
+        return "connectionString";
+    }
+
+    @Override
+    public String getValue() {
+        return storageResource.getName() + ".outputs.blobEndpoint";
+    }
 }

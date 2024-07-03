@@ -34,8 +34,15 @@ Url
 Gets the URL for this endpoint.
  */
 
+import com.microsoft.aspire.resources.traits.ValueProvider;
+
 /**
  * Represents an endpoint reference for a resource with endpoints.
  */
-public class EndpointReference {
+public class EndpointReference implements ValueProvider {
+    @Override
+    public String getValue() {
+//        return "";
+        throw new UnsupportedOperationException("Not implemented");
+    }
 }
