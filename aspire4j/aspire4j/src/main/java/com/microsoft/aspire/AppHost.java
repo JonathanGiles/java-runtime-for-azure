@@ -7,7 +7,7 @@ public interface AppHost {
     /**
      * This is the primary front door through which users interact with the apphost. It can be called directly from
      * the main method of your AppHost implementation. It will parse the runtime arguments and determine the mode of
-     * operation, and the proceed to execute the appropriate method.
+     * operation, and then proceed to execute the appropriate method.
      *
      * @param args An array of runtime arguments received when the application first starts.
      */

@@ -11,6 +11,8 @@ import com.microsoft.aspire.resources.properties.Binding;
 import com.microsoft.aspire.resources.traits.IntrospectiveResource;
 import jakarta.validation.Valid;
 
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Set;
 
 public class SpringProject extends Project<SpringProject> implements IntrospectiveResource {
@@ -43,9 +45,11 @@ public class SpringProject extends Project<SpringProject> implements Introspecti
             // context name (which is the directory containing the Dockerfile)
             DockerFile<?> dockerFile = new DockerFile<>(getName());
 
+            String dockerFilePath = s.getCommands().get(0);
+            Path contextPath = Paths.get(dockerFilePath).getParent();
             this.copyInto(dockerFile);
-            dockerFile.withPath(s.getCommands().get(0))
-                    .withContext(getName())
+            dockerFile.withPath(dockerFilePath)
+                    .withContext(contextPath.toString())
                     .withExternalHttpEndpoints(); // FIXME this is not really the context
 
                 DistributedApplication.getInstance().substituteResource(this, dockerFile);

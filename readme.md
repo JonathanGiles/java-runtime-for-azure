@@ -7,7 +7,7 @@ This GitHub repository is split into many sub-projects, but they can be broadly 
 * **Aspire4J**:
   * `aspire4j`: The core library that provides the AppHost and the ability to define infrastructure as code.
   * `aspire4j-extensions-*`: Extensions for the Aspire4J library, providing support for Azure, Spring, etc.
-  * `aspire4j-maven-archetype`: A Maven archetype that can be used to create new Aspire4J App Hosts.
+  * `aspire4j-maven-tools`: A Maven archetype that can be used to create new Aspire4J App Hosts.
 * **Sample Applications**:
   * **Storage Explorer**: Refer to the [readme](tree/main/samples/storage-explorer/readme.md) for more information.
 
@@ -31,13 +31,13 @@ Feedback is welcome!
 If you want to use Aspire4J in your Java microservice projects, you can! Here's how you can create your own Aspire App Host:
 
 1. Clone this repository onto your machine.
-2. From the root of the repository, run `mvn -f aspire4j-maven-archetype clean install`.
+2. From the root of the repository, run `mvn -f aspire4j/aspire4j-maven-tools clean install`.
 3. Go to your existing Java project and run the following:
 
 ```shell
 mvn archetype:generate \
   -DarchetypeGroupId=com.microsoft.aspire \
-  -DarchetypeArtifactId=aspire4j-maven-archetype \
+  -DarchetypeArtifactId=aspire4j-maven-tools \
   -DarchetypeVersion=1.0-SNAPSHOT
 ```
 
