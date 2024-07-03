@@ -1,7 +1,6 @@
 package com.microsoft.aspire.resources.traits;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.microsoft.aspire.resources.*;
 
 import java.util.Map;
 
@@ -22,5 +21,6 @@ public interface ResourceWithEnvironment<T extends ResourceWithEnvironment<T>> e
         return self();
     }
 
+    @Override
     T self();
 }

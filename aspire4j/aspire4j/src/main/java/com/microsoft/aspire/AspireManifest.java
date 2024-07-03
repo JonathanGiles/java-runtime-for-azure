@@ -50,7 +50,7 @@ class AspireManifest {
             }
         }
 
-        LinkedHashMap<String, Resource> newResourcesMap = new LinkedHashMap<>();
+        Map<String, Resource> newResourcesMap = new LinkedHashMap<>();
         for (Map.Entry<String, Resource> entry : resources.entrySet()) {
             if (entry.getKey().equals(oldResource.getName())) {
                 for (Resource newResource : newResources) {

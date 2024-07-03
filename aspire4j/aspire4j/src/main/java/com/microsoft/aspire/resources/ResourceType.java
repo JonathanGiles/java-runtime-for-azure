@@ -30,6 +30,7 @@ public class ResourceType {
         return new ResourceType(value);
     }
 
+    @Override
     @JsonValue
     public String toString() {
         return value;

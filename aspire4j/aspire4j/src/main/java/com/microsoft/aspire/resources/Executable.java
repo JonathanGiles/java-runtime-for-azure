@@ -104,6 +104,7 @@ public class Executable<T extends Executable<T>> extends Resource<T>
         return self();
     }
 
+    @Override
     public T withEnvironment(String key, String value) {
         this.env.put(key, value);
         return self();

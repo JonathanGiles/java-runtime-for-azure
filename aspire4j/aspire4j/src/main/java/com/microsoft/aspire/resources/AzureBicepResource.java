@@ -12,7 +12,6 @@ import jakarta.validation.constraints.NotNull;
 
 import java.util.Collections;
 import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
 
 /*
@@ -110,6 +109,7 @@ public abstract class AzureBicepResource<T extends AzureBicepResource<T>>
         return self();
     }
 
+    @Override
     @JsonIgnore
     public T withParameter(String name, String value) {
         parameters.put(name, value);

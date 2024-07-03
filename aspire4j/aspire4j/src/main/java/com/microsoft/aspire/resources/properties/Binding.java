@@ -72,6 +72,7 @@ public class Binding {
             this.value = value;
         }
 
+        @Override
         @JsonValue
         public String toString() {
             return value;
@@ -90,6 +91,7 @@ public class Binding {
             this.value = value;
         }
 
+        @Override
         @JsonValue
         public String toString() {
             return value;
@@ -107,6 +109,7 @@ public class Binding {
             this.value = value;
         }
 
+        @Override
         @JsonValue
         public String toString() {
             return value;

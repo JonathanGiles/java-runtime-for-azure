@@ -5,6 +5,7 @@ import java.io.InputStream;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
+import java.util.logging.Level;
 import java.util.logging.LogManager;
 import java.util.logging.Logger;
 
@@ -66,7 +67,7 @@ class AppHostBootstrap {
         PARAMETERS.add(new Parameter(List.of(PROPERTY_MODE, "-m"), "Specifies if the execution mode is 'local' or 'publish'", "publish"));
     }
 
-    public static void boot(AppHost appHost, String[] args) {
+    public static void boot(AppHost appHost, String... args) {
         Map<String, String> parsedParameters = new HashMap<>();
 
         // Initialize parsedParameters with default values
@@ -92,7 +93,9 @@ class AppHostBootstrap {
         }
 
         // Use parameters here to bootstrap the app appropriatel here...
-        LOGGER.fine("Parsed runtime parameters: " + parsedParameters);
+        if (LOGGER.isLoggable(Level.FINE)) {
+            LOGGER.fine("Parsed runtime parameters: " + parsedParameters);
+        }
 
         if (parsedParameters.get(PROPERTY_MODE).equals("local")) {
             appHost.run();

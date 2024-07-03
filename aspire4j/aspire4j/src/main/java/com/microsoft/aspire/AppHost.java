@@ -11,7 +11,7 @@ public interface AppHost {
      *
      * @param args An array of runtime arguments received when the application first starts.
      */
-    default void boot(String[] args) {
+    default void boot(String... args) {
         AppHostBootstrap.boot(this, args);
     }
 
