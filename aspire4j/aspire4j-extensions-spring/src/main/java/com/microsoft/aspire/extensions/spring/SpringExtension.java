@@ -21,14 +21,24 @@ public class SpringExtension implements Extension {
     }
 
     @Override
-    public List<Class<? extends Resource>> getAvailableResources() {
+    public List<Class<? extends Resource<?>>> getAvailableResources() {
         return List.of(SpringProject.class);
     }
 
+    /**
+     * Adds a new Spring project to the app host.
+     * @param name The name of the spring project.
+     * @return A new {@link SpringProject} instance that can be used to configure the project.
+     */
     public SpringProject addSpringProject(String name) {
         return DistributedApplication.getInstance().addResource(new SpringProject(name));
     }
 
+    /**
+     * Adds a new Eureka service to the app host.
+     * @param name The name of the Eureka service.
+     * @return A new {@link EurekaServiceDiscovery} instance that can be used to configure Eureka.
+     */
     public EurekaServiceDiscovery addEurekaServiceDiscovery(String name) {
         return DistributedApplication.getInstance().addResource(new EurekaServiceDiscovery(name));
     }

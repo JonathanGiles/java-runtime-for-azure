@@ -21,7 +21,7 @@ public class AzureStorageExtension implements Extension {
     }
 
     @Override
-    public List<Class<? extends Resource>> getAvailableResources() {
+    public List<Class<? extends Resource<?>>> getAvailableResources() {
         return List.of(AzureStorageResource.class, AzureStorageBlobsResource.class);
     }
 

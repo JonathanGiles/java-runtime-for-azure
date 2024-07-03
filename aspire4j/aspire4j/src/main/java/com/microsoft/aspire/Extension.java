@@ -28,5 +28,5 @@ public interface Extension {
      *
      * @return A list of resources that are available in this extension.
      */
-    List<Class<? extends Resource>> getAvailableResources();
+    List<Class<? extends Resource<?>>> getAvailableResources();
 }
