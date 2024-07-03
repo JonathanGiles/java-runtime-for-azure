@@ -10,6 +10,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.microsoft.aspire.implementation.json.RelativePathSerializer;
+import com.microsoft.aspire.resources.traits.ResourceWithLifecycle;
 import com.microsoft.aspire.resources.traits.ResourceWithTemplate;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validation;
@@ -51,6 +52,9 @@ class ManifestGenerator {
             LOGGER.info("No configuration received from AppHost...exiting");
             System.exit(-1);
         }
+
+        // run the precommit lifecycle hook on all resources
+        app.manifest.getResources().values().forEach(ResourceWithLifecycle::onResourcePrecommit);
 
         LOGGER.info("Validating models...");
         // Firstly, disable the info logging messages that are printed by Hibernate Validator

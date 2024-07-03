@@ -20,11 +20,6 @@ public class SpringExtension implements Extension {
         return "Provides support for working with Spring applications";
     }
 
-    @Override
-    public List<Class<? extends Resource<?>>> getAvailableResources() {
-        return List.of(SpringProject.class);
-    }
-
     /**
      * Adds a new Spring project to the app host.
      * @param name The name of the spring project.

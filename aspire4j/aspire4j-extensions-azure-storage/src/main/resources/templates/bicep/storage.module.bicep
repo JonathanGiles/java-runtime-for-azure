@@ -66,3 +66,5 @@ resource roleAssignment_r0wA6OpKE 'Microsoft.Authorization/roleAssignments@2022-
 }
 
 output blobEndpoint string = storageAccount_1XR3Um8QY.properties.primaryEndpoints.blob
+output queueEndpoint string = storageAccount_1XR3Um8QY.properties.primaryEndpoints.queue
+output tableEndpoint string = storageAccount_1XR3Um8QY.properties.primaryEndpoints.table

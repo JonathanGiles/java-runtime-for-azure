@@ -24,13 +24,19 @@ class AspireManifest {
     <T extends Resource<?>> T addResource(T resource) {
         Objects.requireNonNull(resource);
 
-        // We eagerly do the introspection, so that the resource is ready to be used
-        // before the user does any further calls
-        if (resource instanceof IntrospectiveResource introspectiveResource) {
-            introspectiveResource.introspect();
+        if (resources.containsKey(resource.getName())) {
+            throw new IllegalArgumentException("Resource with name " + resource.getName() + " already exists in manifest");
         }
 
         resources.put(resource.getName(), resource);
+        resource.onResourceAdded();
+        return resource;
+    }
+
+    <T extends Resource<?>> T removeResource(T resource) {
+        Objects.requireNonNull(resource);
+        resources.remove(resource.getName());
+        resource.onResourceRemoved();
         return resource;
     }
 
@@ -69,5 +75,6 @@ class AspireManifest {
             }
         }
         resources = newResourcesMap;
+        oldResource.onResourceRemoved();
     }
 }

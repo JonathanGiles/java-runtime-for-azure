@@ -20,11 +20,6 @@ public class AzureStorageExtension implements Extension {
         return "Provides resources for Azure Storage";
     }
 
-    @Override
-    public List<Class<? extends Resource<?>>> getAvailableResources() {
-        return List.of(AzureStorageResource.class, AzureStorageBlobsResource.class);
-    }
-
     public AzureStorageResource addAzureStorage(String name) {
         return DistributedApplication.getInstance().addResource(new AzureStorageResource(name));
     }

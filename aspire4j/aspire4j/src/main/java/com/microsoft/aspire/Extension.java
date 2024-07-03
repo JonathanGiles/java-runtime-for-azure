@@ -21,12 +21,4 @@ public interface Extension {
      * @return The description of the extension.
      */
     String getDescription();
-
-    /**
-     * Returns a list of resources that are available in this extension. These resources can then be used by calling the
-     * {@link DistributedApplication#withExtension(Class)} method.
-     *
-     * @return A list of resources that are available in this extension.
-     */
-    List<Class<? extends Resource<?>>> getAvailableResources();
 }

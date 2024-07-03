@@ -32,6 +32,12 @@ public class SpringProject extends Project<SpringProject> implements Introspecti
     }
 
     @Override
+    public void onResourcePrecommit() {
+        super.onResourcePrecommit();
+        introspect();
+    }
+
+    @Override
     public void introspect() {
         // we add the available strategies to the aspire manifest and leave it to azd to try its best...
         this.strategies = new SpringIntrospector().introspect(this);

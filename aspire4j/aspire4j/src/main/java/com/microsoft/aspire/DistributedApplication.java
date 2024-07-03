@@ -230,8 +230,7 @@ public class DistributedApplication {
     public void printExtensions(PrintStream out) {
         out.println("Available Aspire4J Extensions:");
         extensions.forEach(e -> {
-            out.println("  " + e.getName() + " (" + e.getClass().getSimpleName() + ".class): " + e.getDescription());
-            e.getAvailableResources().forEach(r -> out.println("   - " + r.getSimpleName()));
+            out.println("  - " + e.getName() + " (" + e.getClass().getSimpleName() + ".class): " + e.getDescription());
         });
     }
 

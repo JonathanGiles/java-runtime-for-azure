@@ -8,8 +8,12 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 
+/**
+ *
+ * @param <T>
+ */
 @JsonPropertyOrder({"type", "params"})
-public abstract class Resource<T extends Resource<T>> implements SelfAware<T> {
+public abstract class Resource<T extends Resource<T>> implements ResourceWithLifecycle, SelfAware<T> {
 
     @Valid
     @NotNull(message = "Resource Type cannot be null")
@@ -35,7 +39,7 @@ public abstract class Resource<T extends Resource<T>> implements SelfAware<T> {
         return name;
     }
 
-    public <T extends Resource<?>> T copyInto(T newResource) {
+    public void copyInto(Resource<?> newResource) {
         // TODO this is incomplete
         // look at the traits of this resource, and copy them into the new resource
         if (this instanceof ResourceWithArguments<?> oldResource && newResource instanceof ResourceWithArguments<?> _newResource) {
@@ -56,6 +60,5 @@ public abstract class Resource<T extends Resource<T>> implements SelfAware<T> {
         if (this instanceof ResourceWithEnvironment<?> oldResource && newResource instanceof ResourceWithEnvironment<?> _newResource) {
             oldResource.getEnvironment().forEach(_newResource::withEnvironment);
         }
-        return newResource;
     }
 }
