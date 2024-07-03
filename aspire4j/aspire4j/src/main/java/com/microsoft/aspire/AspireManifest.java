@@ -2,6 +2,7 @@ package com.microsoft.aspire;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.microsoft.aspire.resources.Resource;
+import com.microsoft.aspire.resources.traits.IntrospectiveResource;
 import jakarta.validation.Valid;
 
 import java.util.*;
@@ -14,19 +15,26 @@ class AspireManifest {
     // Map from resource name to resource
     @Valid
     @JsonProperty("resources")
-    Map<String, Resource> resources;
+    Map<String, Resource<?>> resources;
 
     AspireManifest() {
         this.resources = new LinkedHashMap<>();
     }
 
-    <T extends Resource> T addResource(T resource) {
+    <T extends Resource<?>> T addResource(T resource) {
         Objects.requireNonNull(resource);
+
+        // We eagerly do the introspection, so that the resource is ready to be used
+        // before the user does any further calls
+        if (resource instanceof IntrospectiveResource introspectiveResource) {
+            introspectiveResource.introspect();
+        }
+
         resources.put(resource.getName(), resource);
         return resource;
     }
 
-    Map<String, Resource> getResources() {
+    Map<String, Resource<?>> getResources() {
         return resources;
     }
 
@@ -34,7 +42,7 @@ class AspireManifest {
         return resources.isEmpty();
     }
 
-    public void substituteResource(Resource oldResource, Resource... newResources) {
+    public void substituteResource(Resource<?> oldResource, Resource<?>... newResources) {
         if (oldResource == null) {
             throw new IllegalArgumentException("oldResource cannot be null");
         }
@@ -44,16 +52,16 @@ class AspireManifest {
         if (!resources.containsKey(oldResource.getName())) {
             throw new IllegalArgumentException("oldResource not found in manifest");
         }
-        for (Resource newResource : newResources) {
+        for (Resource<?> newResource : newResources) {
             if (resources.containsKey(newResource.getName()) && !newResource.getName().equals(oldResource.getName())) {
                 throw new IllegalArgumentException("newResource already exists in manifest");
             }
         }
 
-        Map<String, Resource> newResourcesMap = new LinkedHashMap<>();
-        for (Map.Entry<String, Resource> entry : resources.entrySet()) {
+        Map<String, Resource<?>> newResourcesMap = new LinkedHashMap<>();
+        for (Map.Entry<String, Resource<?>> entry : resources.entrySet()) {
             if (entry.getKey().equals(oldResource.getName())) {
-                for (Resource newResource : newResources) {
+                for (Resource<?> newResource : newResources) {
                     newResourcesMap.put(newResource.getName(), newResource);
                 }
             } else {

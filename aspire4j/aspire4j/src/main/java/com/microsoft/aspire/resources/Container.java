@@ -163,14 +163,6 @@ public class Container<T extends Container<T>> extends Resource<T>
         return self();
     }
 
-    @JsonIgnore
-    public T withDataVolume() {
-        // FIXME: hardcoded values
-        // placeholder values from https://github.com/dotnet/aspire/blob/main/playground/TestShop/AppHost/aspire-manifest.json#L38
-        volumes.add(new Volume("TestShop.AppHost-basketcache-data", "/data", false));
-        return self();
-    }
-
     @Override
     @JsonIgnore
     public T withEnvironment(String name, String value) {
@@ -197,7 +189,6 @@ public class Container<T extends Container<T>> extends Resource<T>
         return Collections.unmodifiableMap(bindings);
     }
 
-    // TODO should this be part of ResourceWithBindings?
     @JsonIgnore
     public T withBindMount(BindMount bindMount) {
         bindMounts.add(bindMount);

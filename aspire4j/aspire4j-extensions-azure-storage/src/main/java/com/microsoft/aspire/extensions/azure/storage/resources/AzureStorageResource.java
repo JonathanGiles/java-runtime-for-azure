@@ -23,6 +23,14 @@ public class AzureStorageResource extends AzureBicepResource<AzureStorageResourc
         return DistributedApplication.getInstance().addValue(new AzureStorageBlobsResource(name, this));
     }
 
+    public AzureStorageQueuesResource addQueues(String name) {
+        return DistributedApplication.getInstance().addValue(new AzureStorageQueuesResource(name, this));
+    }
+
+    public AzureStorageTablesResource addTables(String name) {
+        return DistributedApplication.getInstance().addValue(new AzureStorageTablesResource(name, this));
+    }
+
     @Override
     public List<EndpointReference> getEndpoints() {
         // TODO how do I know which endpoints are available?

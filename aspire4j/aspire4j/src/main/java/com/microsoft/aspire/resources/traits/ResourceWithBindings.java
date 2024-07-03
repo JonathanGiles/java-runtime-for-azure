@@ -7,19 +7,29 @@ import java.util.Map;
 
 public interface ResourceWithBindings<T extends ResourceWithBindings<T>> extends SelfAware<T> {
 
+    /**
+     * Adds a binding to the resource.
+     * @param binding The binding to add.
+     * @return The resource with the added binding.
+     */
     T withBinding(Binding binding);
 
     /**
      * Returns a read-only map of bindings for this resource.
-     * @return
+     * @return A read-only map of bindings for this resource.
      */
     @JsonIgnore
     Map<Binding.Scheme, Binding> getBindings();
 
+    /**
+     * Marks existing http or https endpoints on a resource as external.
+     * @return The resource with updated endpoints.
+     */
     default T withExternalHttpEndpoints() {
-        // TODO we should probably not have the target port be 8080
-        withBinding(new Binding(Binding.Scheme.HTTP, Binding.Protocol.TCP, Binding.Transport.HTTP).withTargetPort(8080).withExternal());
-        withBinding(new Binding(Binding.Scheme.HTTPS, Binding.Protocol.TCP, Binding.Transport.HTTP).withTargetPort(8080).withExternal());
+        getBindings().values().stream()
+            .filter(binding -> binding.getScheme() == Binding.Scheme.HTTP || binding.getScheme() == Binding.Scheme.HTTPS)
+            .forEach(Binding::withExternal);
+
         return self();
     }
 }

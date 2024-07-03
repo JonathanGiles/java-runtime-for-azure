@@ -86,7 +86,7 @@ public class DistributedApplication {
      * @return
      */
     public Project<?> addProject(String name) {
-        return manifest.addResource(new Project(name));
+        return manifest.addResource(new Project<>(name));
     }
 
 
@@ -116,7 +116,7 @@ public class DistributedApplication {
      * @return
      */
     public DockerFile<?> addDockerFile(String name, String path, String context) {
-        return manifest.addResource(new DockerFile(name, path, context));
+        return manifest.addResource(new DockerFile<>(name, path, context));
     }
 
 
@@ -145,7 +145,7 @@ public class DistributedApplication {
      * @return
      */
     public Container<?> addContainer(String name, String image) {
-        return manifest.addResource(new Container(name, image));
+        return manifest.addResource(new Container<>(name, image));
     }
 
 
@@ -206,7 +206,7 @@ public class DistributedApplication {
      * @return
      */
     public Value<?> addValue(String name, String key, String value) {
-        return manifest.addResource(new Value(name, key, value));
+        return manifest.addResource(new Value<>(name, key, value));
     }
 
     /***************************************************************************
@@ -265,12 +265,4 @@ public class DistributedApplication {
      *
      **************************************************************************/
 
-    void performResourceIntrospection() {
-        manifest.getResources().values().forEach(resource -> {
-            if (resource instanceof IntrospectiveResource ir) {
-//                ir.introspect(ir);
-                ir.introspect();
-            }
-        });
-    }
 }

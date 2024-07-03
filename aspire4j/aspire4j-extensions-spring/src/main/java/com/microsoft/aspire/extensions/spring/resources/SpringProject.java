@@ -7,6 +7,7 @@ import com.microsoft.aspire.extensions.spring.implementation.SpringIntrospector;
 import com.microsoft.aspire.resources.DockerFile;
 import com.microsoft.aspire.resources.Project;
 import com.microsoft.aspire.resources.ResourceType;
+import com.microsoft.aspire.resources.properties.Binding;
 import com.microsoft.aspire.resources.traits.IntrospectiveResource;
 import jakarta.validation.Valid;
 
@@ -22,6 +23,10 @@ public class SpringProject extends Project<SpringProject> implements Introspecti
     public SpringProject(String name) {
         super(SPRING_PROJECT, name);
         withEnvironment("spring.application.name", name);
+
+        // FIXME this should be removed once the introspector supports discovering the bindings
+        withBinding(new Binding(Binding.Scheme.HTTP, Binding.Protocol.TCP, Binding.Transport.HTTP).withTargetPort(8080));
+        withBinding(new Binding(Binding.Scheme.HTTPS, Binding.Protocol.TCP, Binding.Transport.HTTP).withTargetPort(8080));
     }
 
     @Override

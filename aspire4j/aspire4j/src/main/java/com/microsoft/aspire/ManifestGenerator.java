@@ -32,7 +32,6 @@ class ManifestGenerator {
 
         DistributedApplication app = new DistributedApplication();
         appHost.configureApplication(app);
-        app.performResourceIntrospection();
         processTemplates(app, outputPath);
         writeManifest(app);
     }
