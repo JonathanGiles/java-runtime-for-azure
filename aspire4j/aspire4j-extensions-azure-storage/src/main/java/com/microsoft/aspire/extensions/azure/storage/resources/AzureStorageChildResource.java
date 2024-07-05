@@ -29,7 +29,8 @@ public class AzureStorageChildResource extends Resource<AzureStorageChildResourc
 
     @Override
     public String getValue() {
-        return storageResource.getName() + ".outputs." + endpointSuffix;
+        // FIXME this kind of concatenation is error prone
+        return "{" + storageResource.getName() + ".outputs." + endpointSuffix + "}";
     }
 
     @Override

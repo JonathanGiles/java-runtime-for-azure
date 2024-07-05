@@ -22,6 +22,8 @@ public class AzureOpenAIResource extends AzureBicepResource<AzureOpenAIResource>
     public AzureOpenAIResource(String name) {
         super(name);
         this.deployments = new ArrayList<>();
+        withParameter("principalId", "");
+        withParameter("principalType", "");
     }
 
     // TODO the actual intent of this deployment list is to properly write out the deployment resources in the bicep
@@ -63,6 +65,6 @@ public class AzureOpenAIResource extends AzureBicepResource<AzureOpenAIResource>
 
     @Override
     public String getValue() {
-        return getName() + ".outputs.connectionString";
+        return "{" + getName() + ".outputs.connectionString}";
     }
 }
