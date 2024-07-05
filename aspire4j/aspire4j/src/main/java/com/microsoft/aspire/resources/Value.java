@@ -42,10 +42,10 @@ public class Value<T extends Value<T>> extends Resource<T> implements SelfAware<
         properties.put(key, value);
     }
 
-    public T withProperty(String key, String value) {
-        properties.put(key, value);
-        return self();
-    }
+//    public T withProperty(String key, String value) {
+//        properties.put(key, value);
+//        return self();
+//    }
 
     @JsonAnyGetter
     public Map<String, String> getProperties() {

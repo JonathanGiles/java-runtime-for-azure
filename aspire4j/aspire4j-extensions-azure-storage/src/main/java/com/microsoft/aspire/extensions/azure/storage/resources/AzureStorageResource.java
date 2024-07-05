@@ -20,15 +20,15 @@ public class AzureStorageResource extends AzureBicepResource<AzureStorageResourc
     }
 
     public AzureStorageBlobsResource addBlobs(String name) {
-        return DistributedApplication.getInstance().addValue(new AzureStorageBlobsResource(name, this));
+        return DistributedApplication.getInstance().addResource(new AzureStorageBlobsResource(name, this));
     }
 
     public AzureStorageQueuesResource addQueues(String name) {
-        return DistributedApplication.getInstance().addValue(new AzureStorageQueuesResource(name, this));
+        return DistributedApplication.getInstance().addResource(new AzureStorageQueuesResource(name, this));
     }
 
     public AzureStorageTablesResource addTables(String name) {
-        return DistributedApplication.getInstance().addValue(new AzureStorageTablesResource(name, this));
+        return DistributedApplication.getInstance().addResource(new AzureStorageTablesResource(name, this));
     }
 
     @Override

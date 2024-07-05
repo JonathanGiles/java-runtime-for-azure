@@ -9,7 +9,10 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import com.fasterxml.jackson.databind.module.SimpleModule;
+import com.microsoft.aspire.implementation.json.CustomSerializerModifier;
 import com.microsoft.aspire.implementation.json.RelativePathSerializer;
+import com.microsoft.aspire.implementation.json.ResourceWithConnectionStringSerializer;
 import com.microsoft.aspire.resources.traits.ResourceWithLifecycle;
 import com.microsoft.aspire.resources.traits.ResourceWithTemplate;
 import jakarta.validation.ConstraintViolation;
@@ -81,6 +84,10 @@ class ManifestGenerator {
         // Jackson ObjectMapper is used to serialize the AspireManifest object to a JSON string,
         // and write to a file named "aspire-manifest.json".
         ObjectMapper objectMapper = new ObjectMapper();
+
+        SimpleModule module = new SimpleModule();
+        module.setSerializerModifier(new CustomSerializerModifier());
+        objectMapper.registerModule(module);
 
         try {
             objectMapper.writerWithDefaultPrettyPrinter()
