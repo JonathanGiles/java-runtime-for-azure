@@ -1,7 +1,10 @@
 package com.microsoft.aspire.resources.traits;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.microsoft.aspire.implementation.json.CustomSerialize;
+import com.microsoft.aspire.implementation.json.ResourceWithConnectionStringSerializer;
 
+@CustomSerialize(serializer = ResourceWithConnectionStringSerializer.class)
 public interface ResourceWithConnectionString<T extends ResourceWithConnectionString<T>> extends ValueProvider {
 
 //    T withConnectionString(String connectionString);

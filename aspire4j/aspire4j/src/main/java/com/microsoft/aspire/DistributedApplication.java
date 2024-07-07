@@ -47,7 +47,7 @@ public class DistributedApplication {
      * @param <T>
      * @return
      */
-    public <T extends Resource<T>> T addResource(T r) {
+    public <T extends Resource<?>> T addResource(T r) {
         return manifest.addResource(r);
     }
 

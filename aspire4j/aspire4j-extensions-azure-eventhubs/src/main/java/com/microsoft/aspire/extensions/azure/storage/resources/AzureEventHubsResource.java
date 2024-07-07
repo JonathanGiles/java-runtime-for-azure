@@ -11,27 +11,16 @@ import java.nio.file.Path;
 import java.util.List;
 import java.util.Map;
 
-public class AzureStorageResource extends AzureBicepResource<AzureStorageResource>
-                                  implements ResourceWithEndpoints<AzureStorageResource> {
-    private static final ResourceType AZURE_STORAGE = ResourceType.fromString("azure.bicep.v0");
+public class AzureEventHubsResource extends AzureBicepResource<AzureEventHubsResource>
+                                  implements ResourceWithEndpoints<AzureEventHubsResource> {
 
-    public AzureStorageResource(String name) {
-        super(AZURE_STORAGE, name);
-        withParameter("principalId", "");
-        withParameter("principalType", "");
+    public AzureEventHubsResource(String name) {
+        super(name);
     }
 
-    public AzureStorageBlobsResource addBlobs(String name) {
-        return DistributedApplication.getInstance().addResource(new AzureStorageBlobsResource(name, this));
-    }
-
-    public AzureStorageQueuesResource addQueues(String name) {
-        return DistributedApplication.getInstance().addResource(new AzureStorageQueuesResource(name, this));
-    }
-
-    public AzureStorageTablesResource addTables(String name) {
-        return DistributedApplication.getInstance().addResource(new AzureStorageTablesResource(name, this));
-    }
+//    public AzureEventHubsResource addEventHub(String name) {
+//        return DistributedApplication.getInstance().addValue(new AzureEventHubsResource(name, this));
+//    }
 
     @Override
     public List<EndpointReference> getEndpoints() {
@@ -44,10 +33,10 @@ public class AzureStorageResource extends AzureBicepResource<AzureStorageResourc
         final String templatePath = "/templates/bicep/";
         final String outputRootPath = "";
         List<TemplateDescriptor> templateFiles = TemplateDescriptorsBuilder.begin(templatePath, outputRootPath)
-            .with("storage.module.bicep", "${name}.module.bicep")
+            .with("eventhubns.module.bicep", "${name}.module.bicep")
             .build();
 
-        List<TemplateFileOutput> templateOutput = TemplateEngine.process(AzureStorageResource.class, templateFiles, Map.of(
+        List<TemplateFileOutput> templateOutput = TemplateEngine.process(AzureEventHubsResource.class, templateFiles, Map.of(
             "name", getName()
         ));
 

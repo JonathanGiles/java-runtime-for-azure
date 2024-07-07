@@ -40,7 +40,7 @@ public abstract class Resource<T extends Resource<T>> implements ResourceWithLif
     }
 
     public void copyInto(Resource<?> newResource) {
-        // TODO this is incomplete
+        // TODO this is incomplete, and I'm not sure we should keep it!
         // look at the traits of this resource, and copy them into the new resource
         if (this instanceof ResourceWithArguments<?> oldResource && newResource instanceof ResourceWithArguments<?> _newResource) {
             oldResource.getArguments().forEach(_newResource::withArgument);

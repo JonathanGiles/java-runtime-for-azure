@@ -33,19 +33,15 @@ public class Value<T extends Value<T>> extends Resource<T> implements SelfAware<
     @JsonIgnore
     private final Map<String, String> properties = new LinkedHashMap<>();
 
-    public Value(String name) {
-        super(ResourceType.VALUE, name);
-    }
-
     public Value(String name, String key, String value) {
         super(ResourceType.VALUE, name);
         properties.put(key, value);
     }
 
-    public T withProperty(String key, String value) {
-        properties.put(key, value);
-        return self();
-    }
+//    public T withProperty(String key, String value) {
+//        properties.put(key, value);
+//        return self();
+//    }
 
     @JsonAnyGetter
     public Map<String, String> getProperties() {
