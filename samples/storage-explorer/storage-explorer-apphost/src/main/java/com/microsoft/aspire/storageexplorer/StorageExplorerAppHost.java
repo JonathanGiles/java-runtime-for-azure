@@ -19,16 +19,16 @@ public class StorageExplorerAppHost implements AppHost {
             .addEurekaServiceDiscovery("eureka");
 
         var dateService = app.withExtension(SpringExtension.class)
-            .addSpringProject("date-service-spring")
-            .withPath("date-service")
-            .withExternalHttpEndpoints();
+                .addSpringProject("date-service-spring")
+                .withPath("date-service")
+                .withReference(eurekaServiceDiscovery)
+                .withExternalHttpEndpoints();
 
         var storageExplorer = app.withExtension(SpringExtension.class)
             .addSpringProject("storage-explorer-spring")
             .withPath("storage-explorer")
             .withExternalHttpEndpoints()
             .withReference(blobStorage)
-            .withReference(dateService)
             .withReference(eurekaServiceDiscovery);
 
         // Old style, with direct reference to dockerfiles

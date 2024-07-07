@@ -1,0 +1,9 @@
+spring:
+  application:
+    name: storage-explorer-spring
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: ${services__eureka__https__0}/eureka/
+  instance:
+    preferIpAddress: true

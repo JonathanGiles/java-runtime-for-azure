@@ -29,6 +29,6 @@ public class AzureStorageChildResource extends Value<AzureStorageChildResource>
 
     @Override
     public String getValue() {
-        return storageResource.getName() + ".outputs." + endpointSuffix;
+        return "{" + storageResource.getName() + ".outputs." + endpointSuffix + "}";
     }
 }

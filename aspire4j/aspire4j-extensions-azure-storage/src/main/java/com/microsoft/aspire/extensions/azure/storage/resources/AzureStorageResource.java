@@ -13,10 +13,12 @@ import java.util.Map;
 
 public class AzureStorageResource extends AzureBicepResource<AzureStorageResource>
                                   implements ResourceWithEndpoints<AzureStorageResource> {
-    private static final ResourceType AZURE_STORAGE = ResourceType.fromString("azure.storage.v0");
+    private static final ResourceType AZURE_STORAGE = ResourceType.fromString("azure.bicep.v0");
 
     public AzureStorageResource(String name) {
         super(AZURE_STORAGE, name);
+        withParameter("principalId", "");
+        withParameter("principalType", "");
     }
 
     public AzureStorageBlobsResource addBlobs(String name) {
