@@ -8,20 +8,26 @@ import com.github.javaparser.ast.expr.NormalAnnotationExpr;
 import com.github.javaparser.ast.expr.SingleMemberAnnotationExpr;
 import com.github.javaparser.ast.visitor.VoidVisitorAdapter;
 import com.microsoft.aspire.extensions.spring.resources.SpringProject;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
+import org.apache.maven.model.Dependency;
+import org.apache.maven.model.Model;
+import org.apache.maven.model.Plugin;
+import org.apache.maven.model.io.xpp3.MavenXpp3Reader;
 
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileReader;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.*;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.TreeSet;
 import java.util.logging.Logger;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Stream;
 
 public class SpringIntrospector {
@@ -71,6 +77,7 @@ public class SpringIntrospector {
         if (lookForFile(project, properties, "build.gradle")) {
             LOGGER.fine("Found build.gradle file");
             // determine strategies that will yield a successful gradle build and deployment
+            introspectBuildGradle(project, properties.get("build.gradle"));
         }
 
         // Dockerfile and compose.yaml files
@@ -89,42 +96,107 @@ public class SpringIntrospector {
 //        }
     }
 
-    private void introspectPomXml(SpringProject project, String s) {
+    private void introspectPomXml(SpringProject project, String pomXmlPath) {
         // look to see if the pom uses the spring-boot-maven-plugin plugin to generate far jars
-
-
         // Look for dockerfile support in the pom
+
+        boolean dockerPluginFound = false;
+        SpringDeploymentStrategy deploymentStrategy = new SpringDeploymentStrategy(SpringDeploymentStrategy.DeploymentType.MAVEN_POM, 2100);
         try {
-            File inputFile = new File("pom.xml");
-            DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
-            DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
-            Document doc = dBuilder.parse(inputFile);
-            doc.getDocumentElement().normalize();
+            File inputFile = new File(pomXmlPath);
+            MavenXpp3Reader reader = new MavenXpp3Reader();
+            Model model = reader.read(new FileReader(inputFile));
 
-            NodeList nList = doc.getElementsByTagName("plugin");
+            List<Plugin> plugins = model.getBuild().getPlugins();
+            for (Plugin plugin : plugins) {
+                String groupId = plugin.getGroupId();
+                String artifactId = plugin.getArtifactId();
+                if ("com.spotify".equals(groupId) && "dockerfile-maven-plugin".equals(artifactId)) {
+                    LOGGER.fine("Found Spotify Dockerfile Maven Plugin!");
+                    LOGGER.fine("Use the following command to build the Docker image:");
+                    LOGGER.fine("mvn package dockerfile:build");
+                    dockerPluginFound = true;
+                    deploymentStrategy.withCommand("mvn package dockerfile:build");
+                } else if ("io.fabric8".equals(groupId) && "docker-maven-plugin".equals(artifactId)) {
+                    LOGGER.fine("Found Fabric8 Docker Maven Plugin!");
+                    LOGGER.fine("Use the following command to build the Docker image:");
+                    LOGGER.fine("mvn package docker:build");
+                    dockerPluginFound = true;
+                    deploymentStrategy.withCommand("mvn package docker:build");
+                }
+            }
 
-            for (int temp = 0; temp < nList.getLength(); temp++) {
-                Node nNode = nList.item(temp);
+            if (!dockerPluginFound) {
+                LOGGER.fine("No Docker plugin found in the pom.xml file.");
 
-                if (nNode.getNodeType() == Node.ELEMENT_NODE) {
-                    Element eElement = (Element) nNode;
-                    String groupId = eElement.getElementsByTagName("groupId").item(0).getTextContent();
-                    String artifactId = eElement.getElementsByTagName("artifactId").item(0).getTextContent();
-
-                    if ("com.spotify".equals(groupId) && "dockerfile-maven-plugin".equals(artifactId)) {
-                        System.out.println("Found Spotify Dockerfile Maven Plugin!");
-                        System.out.println("Use the following command to build the Docker image:");
-                        System.out.println("mvn package dockerfile:build");
-                    } else if ("io.fabric8".equals(groupId) && "docker-maven-plugin".equals(artifactId)) {
-                        System.out.println("Found Fabric8 Docker Maven Plugin!");
-                        System.out.println("Use the following command to build the Docker image:");
-                        System.out.println("mvn package docker:build");
+                List<Dependency> dependencies = model.getDependencies();
+                boolean webDependencyFound = false;
+                for (Dependency dependency : dependencies) {
+                    String groupId = dependency.getGroupId();
+                    String artifactId = dependency.getArtifactId();
+                    if ("org.springframework.boot".equals(groupId) && "spring-boot-starter-web".equals(artifactId)) {
+                        LOGGER.fine("Found Spring Boot Starter Web dependency!");
+                        webDependencyFound = true;
+                    } else if ("org.springframework.boot".equals(groupId) && "spring-boot-starter-webflux".equals(artifactId)) {
+                        LOGGER.fine("Found Spring Boot Starter WebFlux dependency!");
+                        webDependencyFound = true;
                     }
                 }
+
+                String command = "mvn containerise";
+                command += " --context " + Paths.get(pomXmlPath).getParent();
+                if (webDependencyFound) {
+                    command += " --port 8082:8082";
+                    command += " --env SERVER_PORT=8082";
+                }
+
+                deploymentStrategy.withCommand(command);
+                strategies.add(deploymentStrategy);
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    private void introspectBuildGradle(SpringProject project, String buildGradlePath) {
+        // look to see if the pom uses the spring-boot-maven-plugin plugin to generate far jars
+        // Look for dockerfile support in the pom
+
+        boolean dockerPluginFound = false;
+        SpringDeploymentStrategy deploymentStrategy = new SpringDeploymentStrategy(SpringDeploymentStrategy.DeploymentType.GRADLE_BUILD, 2200);
+
+        String dependencyToCheck = "org.springframework.boot:spring-boot-starter-web";
+        try {
+            if (checkDependencyInGradleFile(buildGradlePath, dependencyToCheck)) {
+                LOGGER.fine("Found Spring Boot Starter Web dependency!");
+            }
+
+            String command = "gradle containerise";
+            command += " --project-dir " + Paths.get(buildGradlePath).getParent();
+            command += " --build-file " + buildGradlePath;
+            deploymentStrategy.withCommand(command);
+            strategies.add(deploymentStrategy);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    public static boolean checkDependencyInGradleFile(String filePath, String dependency) throws IOException {
+        BufferedReader reader = new BufferedReader(new FileReader(filePath));
+        String line;
+        Pattern pattern = Pattern.compile(".*['\"]" + Pattern.quote(dependency) + "['\"].*");
+
+        while ((line = reader.readLine()) != null) {
+            Matcher matcher = pattern.matcher(line);
+            if (matcher.matches()) {
+                reader.close();
+                return true;
+            }
+        }
+
+        reader.close();
+        return false;
     }
 
     private boolean lookForFile(SpringProject project, Map<String, String> properties, String fileName) {
@@ -205,4 +277,5 @@ public class SpringIntrospector {
             }
         }
     }
+
 }

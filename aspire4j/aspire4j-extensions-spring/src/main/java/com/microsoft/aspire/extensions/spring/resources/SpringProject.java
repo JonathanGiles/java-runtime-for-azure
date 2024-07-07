@@ -11,7 +11,6 @@ import com.microsoft.aspire.resources.properties.Binding;
 import com.microsoft.aspire.resources.traits.IntrospectiveResource;
 import jakarta.validation.Valid;
 
-import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Set;
 
@@ -52,13 +51,13 @@ public class SpringProject extends Project<SpringProject> implements Introspecti
             DockerFile<?> dockerFile = new DockerFile<>(getName());
 
             String dockerFilePath = s.getCommands().get(0);
-            Path contextPath = Paths.get(dockerFilePath).getParent();
+            String contextPath = Paths.get(dockerFilePath).getParent().toString();
             this.copyInto(dockerFile);
             dockerFile.withPath(dockerFilePath)
-                    .withContext(contextPath.toString())
+                    .withContext(contextPath)
                     .withExternalHttpEndpoints(); // FIXME this is not really the context
 
-                DistributedApplication.getInstance().substituteResource(this, dockerFile);
+            DistributedApplication.getInstance().substituteResource(this, dockerFile);
         });
     }
 
