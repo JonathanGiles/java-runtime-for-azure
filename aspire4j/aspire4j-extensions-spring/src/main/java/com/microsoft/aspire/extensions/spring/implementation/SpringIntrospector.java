@@ -34,10 +34,11 @@ public class SpringIntrospector {
     private static final Logger LOGGER = Logger.getLogger(SpringIntrospector.class.getName());
 
     private final Set<SpringDeploymentStrategy> strategies = new TreeSet<>();
+    private String DEFAULT_SERVER_PORT = "8081";
 
     public SpringIntrospector() { }
 
-    public Set<SpringDeploymentStrategy> introspect(SpringProject project) {
+    public Set<SpringDeploymentStrategy> introspect(SpringProject project, Map<String, String> outputEnvs) {
         LOGGER.info("Beginning introspection of Spring project: " + project.getName());
 
         /*
@@ -49,7 +50,7 @@ public class SpringIntrospector {
          */
         Map<String, String> introspectionProperties = new LinkedHashMap<>();
 
-        lookForBuildFiles(project, introspectionProperties);
+        lookForBuildFiles(project, introspectionProperties, outputEnvs);
         introspectJavaFiles(project);
 
         // TODO Take the introspection properties and turn it into a set of useful properties to pass to the aspire-manifest,
@@ -59,7 +60,7 @@ public class SpringIntrospector {
         return strategies;
     }
 
-    private void lookForBuildFiles(SpringProject project, Map<String, String> properties) {
+    private void lookForBuildFiles(SpringProject project, Map<String, String> properties, Map<String, String> outputEnvs) {
         LOGGER.fine("Looking for build files in project: " + project.getName());
 
         // Look for a pom.xml file
@@ -70,20 +71,21 @@ public class SpringIntrospector {
             // In particular:
             //   * Is there any build plugin to generate a dockerfile?
             //   * Is there configuration to generate an executable jar file?
-            introspectPomXml(project, properties.get("pom.xml"));
+            introspectPomXml(project, properties.get("pom.xml"), outputEnvs);
         }
 
         // Look for a build.gradle file
         if (lookForFile(project, properties, "build.gradle")) {
             LOGGER.fine("Found build.gradle file");
             // determine strategies that will yield a successful gradle build and deployment
-            introspectBuildGradle(project, properties.get("build.gradle"));
+            introspectBuildGradle(project, properties.get("build.gradle"), outputEnvs);
         }
 
         // Dockerfile and compose.yaml files
 //        boolean hasDocker = false;
         if (lookForFile(project, properties, "Dockerfile")) {
             // with this strategy, we can short circuit and just substitute our spring project to instead be a Docker project.
+
             strategies.add(
                 new SpringDeploymentStrategy(SpringDeploymentStrategy.DeploymentType.DOCKER_FILE, 1000)
                     .withCommand(properties.get("Dockerfile")));
@@ -96,13 +98,14 @@ public class SpringIntrospector {
 //        }
     }
 
-    private void introspectPomXml(SpringProject project, String pomXmlPath) {
+    private void introspectPomXml(SpringProject project, String pomXmlPath, Map<String, String> outputEnvs) {
         // look to see if the pom uses the spring-boot-maven-plugin plugin to generate far jars
         // Look for dockerfile support in the pom
 
-        boolean dockerPluginFound = false;
-        SpringDeploymentStrategy deploymentStrategy = new SpringDeploymentStrategy(SpringDeploymentStrategy.DeploymentType.MAVEN_POM, 2100);
         try {
+            SpringDeploymentStrategy deploymentStrategy = new SpringDeploymentStrategy(SpringDeploymentStrategy.DeploymentType.MAVEN_POM, 2100);
+            boolean dockerPluginFound = false;
+            boolean springBootMavenPluginFound = false;
             File inputFile = new File(pomXmlPath);
             MavenXpp3Reader reader = new MavenXpp3Reader();
             Model model = reader.read(new FileReader(inputFile));
@@ -123,13 +126,16 @@ public class SpringIntrospector {
                     deploymentStrategy.withCommand("mvn package docker:build");
                 }
 
+                if (mavenPluginMatch(plugin, "org.springframework.boot", "spring-boot-maven-plugin")) {
+                    springBootMavenPluginFound = true;
+                }
             }
 
             if (!dockerPluginFound) {
                 LOGGER.fine("No Docker plugin found in the pom.xml file.");
 
-                List<Dependency> dependencies = model.getDependencies();
                 boolean webDependencyFound = false;
+                List<Dependency> dependencies = model.getDependencies();
                 for (Dependency dependency : dependencies) {
                     if (mavenDependencyMatch(dependency, "org.springframework.boot", "spring-boot-starter-web")) {
                         LOGGER.fine("Found Spring Boot Starter Web dependency!");
@@ -140,14 +146,26 @@ public class SpringIntrospector {
                     }
                 }
 
-                String command = "mvn containerise";
-//                command += " --context " + Paths.get(pomXmlPath).getParent();
                 if (webDependencyFound) {
-                    command += " --port 8082:8082";
-                    command += " --env SERVER_PORT=8082";
+                    outputEnvs.put("SERVER_PORT", DEFAULT_SERVER_PORT);
                 }
 
-                deploymentStrategy.withCommand(command);
+                if (springBootMavenPluginFound) {
+                    LOGGER.fine("Spring Boot Maven Plugin found in the pom.xml file.");
+                    // FIXME We could add more options here, like -Dspring-boot.build-image.imageName=...
+                    // https://docs.spring.io/spring-boot/maven-plugin/build-image.html#build-image.customization
+                    deploymentStrategy.withCommand("mvn spring-boot:build-image");
+                } else {
+                    String command = "mvn containerise";
+                    // command += " --context " + Paths.get(pomXmlPath).getParent();
+                    if (webDependencyFound) {
+                        command += " --port " + DEFAULT_SERVER_PORT;
+                        command += " --env SERVER_PORT=" + DEFAULT_SERVER_PORT;
+                    }
+
+                    deploymentStrategy.withCommand(command);
+                }
+
                 strategies.add(deploymentStrategy);
             }
         } catch (Exception e) {
@@ -156,7 +174,7 @@ public class SpringIntrospector {
     }
 
 
-    private void introspectBuildGradle(SpringProject project, String buildGradlePath) {
+    private void introspectBuildGradle(SpringProject project, String buildGradlePath, Map<String, String> outputEnvs) {
         // look to see if the pom uses the spring-boot-maven-plugin plugin to generate far jars
         // Look for dockerfile support in the pom
 
@@ -177,8 +195,8 @@ public class SpringIntrospector {
 
             String command = "gradle containerise";
             if (webDependencyFound) {
-                command += " --port 8082:8082";
-                command += " --env SERVER_PORT=8082";
+                command += " --port " + DEFAULT_SERVER_PORT;
+                command += " --env SERVER_PORT=" + DEFAULT_SERVER_PORT;
             }
             deploymentStrategy.withCommand(command);
             strategies.add(deploymentStrategy);
