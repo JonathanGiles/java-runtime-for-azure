@@ -109,21 +109,20 @@ public class SpringIntrospector {
 
             List<Plugin> plugins = model.getBuild().getPlugins();
             for (Plugin plugin : plugins) {
-                String groupId = plugin.getGroupId();
-                String artifactId = plugin.getArtifactId();
-                if ("com.spotify".equals(groupId) && "dockerfile-maven-plugin".equals(artifactId)) {
+                if (mavenPluginMatch(plugin, "com.spotify", "dockerfile-maven-plugin")) {
                     LOGGER.fine("Found Spotify Dockerfile Maven Plugin!");
                     LOGGER.fine("Use the following command to build the Docker image:");
                     LOGGER.fine("mvn package dockerfile:build");
                     dockerPluginFound = true;
                     deploymentStrategy.withCommand("mvn package dockerfile:build");
-                } else if ("io.fabric8".equals(groupId) && "docker-maven-plugin".equals(artifactId)) {
+                } else if (mavenPluginMatch(plugin, "io.fabric8", "docker-maven-plugin")) {
                     LOGGER.fine("Found Fabric8 Docker Maven Plugin!");
                     LOGGER.fine("Use the following command to build the Docker image:");
                     LOGGER.fine("mvn package docker:build");
                     dockerPluginFound = true;
                     deploymentStrategy.withCommand("mvn package docker:build");
                 }
+
             }
 
             if (!dockerPluginFound) {
@@ -132,12 +131,10 @@ public class SpringIntrospector {
                 List<Dependency> dependencies = model.getDependencies();
                 boolean webDependencyFound = false;
                 for (Dependency dependency : dependencies) {
-                    String groupId = dependency.getGroupId();
-                    String artifactId = dependency.getArtifactId();
-                    if ("org.springframework.boot".equals(groupId) && "spring-boot-starter-web".equals(artifactId)) {
+                    if (mavenDependencyMatch(dependency, "org.springframework.boot", "spring-boot-starter-web")) {
                         LOGGER.fine("Found Spring Boot Starter Web dependency!");
                         webDependencyFound = true;
-                    } else if ("org.springframework.boot".equals(groupId) && "spring-boot-starter-webflux".equals(artifactId)) {
+                    } else if (mavenDependencyMatch(dependency, "org.springframework.boot", "spring-boot-starter-webflux")) {
                         LOGGER.fine("Found Spring Boot Starter WebFlux dependency!");
                         webDependencyFound = true;
                     }
@@ -157,6 +154,7 @@ public class SpringIntrospector {
             e.printStackTrace();
         }
     }
+
 
     private void introspectBuildGradle(SpringProject project, String buildGradlePath) {
         // look to see if the pom uses the spring-boot-maven-plugin plugin to generate far jars
@@ -285,5 +283,17 @@ public class SpringIntrospector {
             }
         }
     }
+
+
+
+    private static boolean mavenPluginMatch(Plugin plugin, String groupId, String artifactId) {
+        return groupId.equals(plugin.getGroupId()) && artifactId.equals(plugin.getArtifactId());
+    }
+
+
+    private static boolean mavenDependencyMatch(Dependency dependency, String groupId, String artifactId) {
+        return groupId.equals(dependency.getGroupId()) && artifactId.equals(dependency.getArtifactId());
+    }
+
 
 }
