@@ -144,7 +144,7 @@ public class SpringIntrospector {
                 }
 
                 String command = "mvn containerise";
-                command += " --context " + Paths.get(pomXmlPath).getParent();
+//                command += " --context " + Paths.get(pomXmlPath).getParent();
                 if (webDependencyFound) {
                     command += " --port 8082:8082";
                     command += " --env SERVER_PORT=8082";
@@ -165,15 +165,23 @@ public class SpringIntrospector {
         boolean dockerPluginFound = false;
         SpringDeploymentStrategy deploymentStrategy = new SpringDeploymentStrategy(SpringDeploymentStrategy.DeploymentType.GRADLE_BUILD, 2200);
 
-        String dependencyToCheck = "org.springframework.boot:spring-boot-starter-web";
+        String springWebDependency = "org.springframework.boot:spring-boot-starter-web";
+        String springWebFluxDependency = "org.springframework.boot:spring-boot-starter-webflux";
         try {
-            if (checkDependencyInGradleFile(buildGradlePath, dependencyToCheck)) {
+            boolean webDependencyFound = false;
+            if (checkDependencyInGradleFile(buildGradlePath, springWebDependency)) {
                 LOGGER.fine("Found Spring Boot Starter Web dependency!");
+                webDependencyFound = true;
+            } else if (checkDependencyInGradleFile(buildGradlePath, springWebFluxDependency)) {
+                LOGGER.fine("Found Spring Boot Starter WebFlux dependency!");
+                webDependencyFound = true;
             }
 
             String command = "gradle containerise";
-            command += " --project-dir " + Paths.get(buildGradlePath).getParent();
-            command += " --build-file " + buildGradlePath;
+            if (webDependencyFound) {
+                command += " --port 8082:8082";
+                command += " --env SERVER_PORT=8082";
+            }
             deploymentStrategy.withCommand(command);
             strategies.add(deploymentStrategy);
         } catch (IOException e) {
