@@ -15,10 +15,10 @@ public class StorageExplorerAppHost implements AppHost {
         app.printExtensions();
 
         // Create Azure Storage resources...
-//        var azureStorage = app.withExtension(AzureStorageExtension.class)
-//            .addAzureStorage("storage");
-//
-//        var blobStorage = azureStorage.addBlobs("storage-explorer-blobs");
+        var azureStorage = app.withExtension(AzureStorageExtension.class)
+            .addAzureStorage("storage");
+
+        var blobStorage = azureStorage.addBlobs("storage-explorer-blobs");
 
         // Create Azure OpenAI resources...
 //         var openAI = app.withExtension(AzureOpenAIExtension.class)
@@ -33,13 +33,13 @@ public class StorageExplorerAppHost implements AppHost {
             .withPath("date-service")
             .withExternalHttpEndpoints();
 
-//        var storageExplorer = app.withExtension(SpringExtension.class)
-//            .addSpringProject("storage-explorer-spring")
-//            .withPath("storage-explorer")
-//            .withExternalHttpEndpoints()
-//            .withReference(blobStorage)
-//            .withReference(dateService)
-//            .withReference(eurekaServiceDiscovery);
+        var storageExplorer = app.withExtension(SpringExtension.class)
+            .addSpringProject("storage-explorer-spring")
+            .withPath("storage-explorer")
+            .withExternalHttpEndpoints()
+            .withReference(blobStorage)
+            .withReference(dateService)
+            .withReference(eurekaServiceDiscovery);
 //            .withReference(openAI);
 
         // Old style, with direct reference to dockerfiles
