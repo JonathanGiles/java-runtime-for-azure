@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import java.util.List;
 
+// TODO update with CommandLineArgsCallbackAnnotation support
 public interface ResourceWithArguments<T extends ResourceWithArguments<T>> extends SelfAware<T> {
 
     T withArgument(String argument);

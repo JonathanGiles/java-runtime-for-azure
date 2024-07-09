@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import java.util.Map;
 
+// TODO should this be updated with annotation support
 public interface ResourceWithParameters<T extends ResourceWithParameters<T>> extends SelfAware<T> {
 
     T withParameter(String key, String value);

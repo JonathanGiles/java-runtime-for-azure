@@ -51,11 +51,13 @@ public abstract class Resource<T extends Resource<T>> implements ResourceWithLif
     }
 
     /**
-     * Returns an unmodifiable list of annotations associated with the resource.
+     * Returns a modifiable list of annotations associated with the resource. Calling
+     * {@code getAnnotations().add(ResoureAnnotation)} is functinally equivalent to calling
+     * {@link #withAnnotation(ResourceAnnotation)}.
      * @return The list of annotations.
      */
     public final List<ResourceAnnotation> getAnnotations() {
-        return Collections.unmodifiableList(annotations);
+        return annotations;
     }
 
     public final T withAnnotation(ResourceAnnotation annotation) {
@@ -66,9 +68,13 @@ public abstract class Resource<T extends Resource<T>> implements ResourceWithLif
     public void copyInto(Resource<?> newResource) {
         // TODO this is incomplete, and I'm not sure we should keep it!
         // look at the traits of this resource, and copy them into the new resource
-        if (this instanceof ResourceWithArguments<?> oldResource && newResource instanceof ResourceWithArguments<?> _newResource) {
-            oldResource.getArguments().forEach(_newResource::withArgument);
-        }
+
+        // copy all annotations into the new resource
+        newResource.getAnnotations().addAll(getAnnotations());
+
+//        if (this instanceof ResourceWithArguments<?> oldResource && newResource instanceof ResourceWithArguments<?> _newResource) {
+//            oldResource.getArguments().forEach(_newResource::withArgument);
+//        }
 //        if (this instanceof ResourceWithEndpoints<?> oldResource && newResource instanceof ResourceWithEndpoints<?> _newResource) {
 //            rwe.getEndpoints().forEach(nrwe::withEndpoint);
 //        }
