@@ -1,55 +1,87 @@
 package com.microsoft.aspire.resources.traits;
 
+import com.microsoft.aspire.implementation.ResourceUtilities;
 import com.microsoft.aspire.resources.Resource;
+import com.microsoft.aspire.resources.properties.ConnectionStringReference;
+import com.microsoft.aspire.resources.properties.EnvironmentCallbackAnnotation;
+
+import static com.microsoft.aspire.implementation.ResourceUtilities.*;
 
 public interface ResourceWithReference<T extends ResourceWithReference<T>> extends SelfAware<T> {
 
-    // TODO we should defer the act of creating references until just prior to writing out the manifest, as we may
-    // change our properties when we introspect or process templates.
     default T withReference(Resource<?> resource) {
         // https://learn.microsoft.com/en-us/dotnet/api/aspire.hosting.resourcebuilderextensions.withreference?view=dotnet-aspire-8.0.1#aspire-hosting-resourcebuilderextensions-withreference-1(aspire-hosting-applicationmodel-iresourcebuilder((-0))-aspire-hosting-applicationmodel-iresourcebuilder((aspire-hosting-applicationmodel-iresourcewithconnectionstring))-system-string-system-boolean)
 
-        // we are adding references from this resource, to the given resource. We do this by adding appropriate
-        // properties (such as environment variables) to this resource, that will allow it to connect to the given
-        // resource. The kind and value of the properties we add will depend on the type of the given resource,
-        // and we base this on the traits that the given resource possesses.
-
-        // for now we only do this with environment variables, so we look to ensure that 'this' in a ResourceWithEnvironment
+//        // we are adding references from this resource, to the given resource. We do this by adding appropriate
+//        // properties (such as environment variables) to this resource, that will allow it to connect to the given
+//        // resource. The kind and value of the properties we add will depend on the type of the given resource,
+//        // and we base this on the traits that the given resource possesses.
+//
+//        // for now we only do this with environment variables, so we look to ensure that 'this' in a ResourceWithEnvironment
         if (! (this instanceof ResourceWithEnvironment<?>)) {
             throw new UnsupportedOperationException("Cannot add reference to a resource that does not support environment variables");
         }
 
-        ResourceWithEnvironment<?> resourceWithEnvironment = (ResourceWithEnvironment<?>) this;
-
-        if (resource instanceof ResourceWithEndpoints<?> rwe) {
-//            rwe.getEndpoints().forEach(endpoint -> {
-//                String envVarName = "ENDPOINT";
-//                String envVarValue = endpoint.getUrl();
-//                withEnvironment(envVarName, envVarValue);
-//            });
-        }
-
+        Resource<?> thisResource = (Resource<?>) this;
+        ResourceWithEnvironment<?> thisResourceWithEnvironment = (ResourceWithEnvironment<?>) this;
+//
+//        if (resource instanceof ResourceWithEndpoints<?> rwe) {
+////            rwe.getEndpoints().forEach(endpoint -> {
+////                String envVarName = "ENDPOINT";
+////                String envVarValue = endpoint.getUrl();
+////                withEnvironment(envVarName, envVarValue);
+////            });
+//        }
+//
         if (resource instanceof ResourceWithConnectionString<?> rwcs) {
-            // TODO anything to be done here?
-            String envVarName = "ConnectionStrings__" + resource.getName();
-            String envVarValue = "{" + resource.getName() + ".connectionString}";
-            resourceWithEnvironment.withEnvironment(envVarName, envVarValue);
-        }
+//            var resource = source.Resource;
+//            connectionName ??= resource.Name;
+//
+//            return builder.WithEnvironment(context =>
+//                {
+//                    var connectionStringName = resource.ConnectionStringEnvironmentVariable ?? $"{ConnectionStringEnvironmentName}{connectionName}";
+//
+//            context.EnvironmentVariables[connectionStringName] = new ConnectionStringReference(resource, optional);
+//        });
+            boolean optional = false;
+//            if (connectionName == null) {
+                final String connectionName = resource.getName();
+//            }
 
-        if (resource instanceof ResourceWithBindings<?> rwb) {
-            rwb.getBindings().forEach((scheme, binding) -> {
-                String envVarName = "services__" + resource.getName() + "__" + scheme + "__0";
-                String envVarValue = "{" + resource.getName() + ".bindings." + scheme + ".url}";
-                resourceWithEnvironment.withEnvironment(envVarName, envVarValue);
-            });
-        }
+            String connectionStringName = rwcs.getConnectionStringEnvironmentVariable();
+            if (connectionStringName == null) {
+                connectionStringName = ENV_VAR_CONNECTION_STRING + connectionName;
+            }
+            final String _connectionStringName = connectionStringName;
 
-        if (resource instanceof ResourceWithParameters<?> rwp) {
-            // TODO anything to be done here?
-        }
+            thisResource.withAnnotation(new EnvironmentCallbackAnnotation("connectionStringConfig", context -> {
+                context.getEnvironmentVariables().put(_connectionStringName, new ConnectionStringReference((Resource<?>) rwcs, optional));
+            }));
 
-        if (resource instanceof ResourceWithEnvironment<?> rwe) {
-            // TODO anything to be done here?
+//            // TODO anything to be done here?
+//            String envVarName = "ConnectionStrings__" + resource.getName();
+//            String envVarValue = "{" + resource.getName() + ".connectionString}";
+//            resourceWithEnvironment.withEnvironment(envVarName, envVarValue);
+        }
+//
+//        if (resource instanceof ResourceWithBindings<?> rwb) {
+//            rwb.getBindings().forEach((scheme, binding) -> {
+//                String envVarName = "services__" + resource.getName() + "__" + scheme + "__0";
+//                String envVarValue = "{" + resource.getName() + ".bindings." + scheme + ".url}";
+//                resourceWithEnvironment.withEnvironment(envVarName, envVarValue);
+//            });
+//        }
+//
+//        if (resource instanceof ResourceWithParameters<?> rwp) {
+//            // TODO anything to be done here?
+//        }
+//
+//        if (resource instanceof ResourceWithEnvironment<?> rwe) {
+//            // TODO anything to be done here?
+//        }
+
+        if (resource instanceof ResourceWithEndpoints<?> otherResourceWithEnvironment) {
+            ResourceUtilities.applyEndpoints(thisResourceWithEnvironment, otherResourceWithEnvironment, null);
         }
 
         return self();

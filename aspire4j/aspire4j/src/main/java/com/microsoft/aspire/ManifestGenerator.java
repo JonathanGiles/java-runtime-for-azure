@@ -4,6 +4,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.PrintStream;
+import java.io.PrintWriter;
 import java.nio.file.*;
 import java.util.Set;
 import java.util.logging.Level;
@@ -12,7 +14,6 @@ import java.util.logging.Logger;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.microsoft.aspire.implementation.json.CustomSerializerModifier;
 import com.microsoft.aspire.implementation.json.RelativePathSerializer;
-import com.microsoft.aspire.implementation.json.ResourceWithConnectionStringSerializer;
 import com.microsoft.aspire.resources.traits.ResourceWithLifecycle;
 import com.microsoft.aspire.resources.traits.ResourceWithTemplate;
 import jakarta.validation.ConstraintViolation;
@@ -89,6 +90,8 @@ class ManifestGenerator {
         module.setSerializerModifier(new CustomSerializerModifier());
         objectMapper.registerModule(module);
 
+        printAnnotations(System.out, app);
+
         try {
             objectMapper.writerWithDefaultPrettyPrinter()
                     .writeValue(new File(outputPath.toFile(), "aspire-manifest.json"), app.manifest);
@@ -108,5 +111,14 @@ class ManifestGenerator {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    private void printAnnotations(PrintStream out, DistributedApplication app) {
+        app.manifest.getResources().values().forEach(resource -> {
+            out.println("Resource: " + resource.getName());
+            resource.getAnnotations().forEach(annotation -> {
+                out.println("  Annotation: " + annotation);
+            });
+        });
     }
 }

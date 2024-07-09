@@ -1,14 +1,12 @@
 package com.microsoft.aspire.extensions.spring.resources;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.github.javaparser.utils.Pair;
 import com.microsoft.aspire.DistributedApplication;
 import com.microsoft.aspire.extensions.spring.implementation.SpringDeploymentStrategy;
 import com.microsoft.aspire.extensions.spring.implementation.SpringIntrospector;
 import com.microsoft.aspire.resources.DockerFile;
 import com.microsoft.aspire.resources.Project;
 import com.microsoft.aspire.resources.ResourceType;
-import com.microsoft.aspire.resources.properties.Binding;
 import com.microsoft.aspire.resources.traits.IntrospectiveResource;
 import jakarta.validation.Valid;
 
@@ -45,8 +43,7 @@ public class SpringProject extends Project<SpringProject> implements Introspecti
         outputEnvs.forEach((k, v) -> withEnvironment(k, v));
         if (outputEnvs.containsKey("SERVER_PORT")) {
             int serverPort = Integer.parseInt(outputEnvs.get("SERVER_PORT"));
-            withBinding(new Binding(Binding.Scheme.HTTP, Binding.Protocol.TCP, Binding.Transport.HTTP).withTargetPort(serverPort));
-            withBinding(new Binding(Binding.Scheme.HTTPS, Binding.Protocol.TCP, Binding.Transport.HTTP).withTargetPort(serverPort));
+            withHttpEndpoint(serverPort);
         }
 
         // but, we also look in the strategies to see if we found a dockerfile strategy, as in that case we transform
@@ -56,6 +53,7 @@ public class SpringProject extends Project<SpringProject> implements Introspecti
                   .findFirst().ifPresent(s -> {
             // we need to set the service name (to the existing spring project name), the path to the Dockerfile, and the
             // context name (which is the directory containing the Dockerfile)
+            // FIXME ugly generics
             DockerFile<?> dockerFile = new DockerFile<>(getName());
 
             String dockerFilePath = s.getCommands().get(0);

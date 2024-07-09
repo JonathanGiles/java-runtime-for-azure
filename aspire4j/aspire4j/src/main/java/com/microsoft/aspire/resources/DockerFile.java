@@ -7,8 +7,7 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.microsoft.aspire.implementation.json.RelativePath;
 import com.microsoft.aspire.implementation.json.RelativePathSerializer;
-import com.microsoft.aspire.resources.properties.Binding;
-import com.microsoft.aspire.resources.traits.ResourceWithBindings;
+import com.microsoft.aspire.resources.traits.ResourceWithEndpoints;
 import com.microsoft.aspire.resources.traits.ResourceWithEnvironment;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotEmpty;
@@ -50,8 +49,8 @@ import java.util.*;
 @JsonPropertyOrder({"type", "path", "context", "env", "bindings"})
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
 public class DockerFile<T extends DockerFile<T>> extends Resource<T>
-                        implements ResourceWithEnvironment<T>,
-                                   ResourceWithBindings<T> {
+                        implements ResourceWithEnvironment<T>, ResourceWithEndpoints<T> { // FIXME Does a DockerFile support endpoints like this?
+//                                   ResourceWithBindings<T> {
 
     @NotNull(message = "DockerFile.path cannot be null")
     @NotEmpty(message = "DockerFile.path cannot be an empty string")
@@ -66,14 +65,6 @@ public class DockerFile<T extends DockerFile<T>> extends Resource<T>
     @JsonSerialize(using = RelativePathSerializer.class)
     @RelativePath
     private String context;
-
-    @JsonProperty("env")
-    @Valid
-    private final Map<String, String> environment = new LinkedHashMap<>();
-
-    @JsonProperty("bindings")
-    @Valid
-    private final Map<Binding.Scheme, Binding> bindings = new LinkedHashMap<>();
 
     public DockerFile(String name) {
         this(name, null, null);
@@ -101,32 +92,6 @@ public class DockerFile<T extends DockerFile<T>> extends Resource<T>
     public T withContext(String context) {
         this.context = context;
         return self();
-    }
-
-    @Override
-    @JsonIgnore
-    public T withEnvironment(String name, String value) {
-        environment.put(name, value);
-        return self();
-    }
-
-    @Override
-    @JsonIgnore
-    public Map<String, String> getEnvironment() {
-        return Collections.unmodifiableMap(environment);
-    }
-
-    @Override
-    @JsonIgnore
-    public T withBinding(Binding binding) {
-        bindings.put(binding.getScheme(), binding);
-        return self();
-    }
-
-    @Override
-    @JsonIgnore
-    public @Valid Map<Binding.Scheme, Binding> getBindings() {
-        return Collections.unmodifiableMap(bindings);
     }
 
     @Override

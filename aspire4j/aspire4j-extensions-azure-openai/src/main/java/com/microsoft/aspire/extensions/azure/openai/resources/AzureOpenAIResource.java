@@ -2,7 +2,7 @@ package com.microsoft.aspire.extensions.azure.openai.resources;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.microsoft.aspire.resources.AzureBicepResource;
-import com.microsoft.aspire.resources.properties.EndpointReference;
+import com.microsoft.aspire.resources.properties.ReferenceExpression;
 import com.microsoft.aspire.resources.traits.ResourceWithConnectionString;
 import com.microsoft.aspire.resources.traits.ResourceWithEndpoints;
 import com.microsoft.aspire.utils.templates.TemplateEngine;
@@ -34,12 +34,6 @@ public class AzureOpenAIResource extends AzureBicepResource<AzureOpenAIResource>
     }
 
     @Override
-    public List<EndpointReference> getEndpoints() {
-        // TODO how do I know which endpoints are available?
-        return List.of();
-    }
-
-    @Override
     public List<TemplateFileOutput> processTemplate(Path outputPath) {
         final String templatePath = "/templates/openai/bicep/";
         final String outputRootPath = "";
@@ -58,13 +52,40 @@ public class AzureOpenAIResource extends AzureBicepResource<AzureOpenAIResource>
         return templateOutput;
     }
 
-    @Override
-    public String getConnectionStringEnvironmentVariable() {
-        return "connectionString";
-    }
+//    @Override
+//    public String getConnectionStringEnvironmentVariable() {
+//        return "connectionString";
+//    }
+
+//    @JsonIgnore
+//    @Override
+//    public String getValueExpression() {
+//        return "HELLOWORLD";
+//    }
+//
+//    @Override
+//    public ReferenceExpression getConnectionStringExpression() {
+//        // FIXME
+//        return ReferenceExpression.create("{" + getName() + ".outputs.connectionString}");
+//    }
+
+//    @Override
+//    public String getValue() {
+//        return "{" + getName() + ".outputs.connectionString}";
+//    }
+
+
 
     @Override
-    public String getValue() {
+    public ReferenceExpression getConnectionStringExpression() {
+        // FIXME duplicated below
+        return ReferenceExpression.create("{" + getName() + ".outputs.connectionString}");
+    }
+
+    @JsonIgnore
+    @Override
+    public String getValueExpression() {
+        // FIXME
         return "{" + getName() + ".outputs.connectionString}";
     }
 }

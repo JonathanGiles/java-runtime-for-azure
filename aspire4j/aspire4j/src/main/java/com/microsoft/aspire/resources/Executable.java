@@ -4,10 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
-import com.microsoft.aspire.resources.properties.Binding;
-import com.microsoft.aspire.resources.properties.EndpointReference;
 import com.microsoft.aspire.resources.traits.ResourceWithArguments;
-import com.microsoft.aspire.resources.traits.ResourceWithBindings;
 import com.microsoft.aspire.resources.traits.ResourceWithEndpoints;
 import com.microsoft.aspire.resources.traits.ResourceWithEnvironment;
 import jakarta.validation.Valid;
@@ -55,7 +52,6 @@ import java.util.*;
 public class Executable<T extends Executable<T>> extends Resource<T>
                                                  implements ResourceWithArguments<T>,
                                                           ResourceWithEnvironment<T>,
-                                                          ResourceWithBindings<T>,
                                                           ResourceWithEndpoints<T> {
 
     @NotNull(message = "Executable.workingDirectory cannot be null")
@@ -71,14 +67,6 @@ public class Executable<T extends Executable<T>> extends Resource<T>
     @JsonProperty("args")
     @Valid
     private final List<String> arguments = new ArrayList<>();
-
-    @JsonProperty("env")
-    @Valid
-    private final Map<String, String> env = new LinkedHashMap<>();
-
-    @JsonProperty("bindings")
-    @Valid
-    private final Map<Binding.Scheme, Binding> bindings = new LinkedHashMap<>();
 
     public Executable(String name) {
         this(name, null, null);
@@ -105,18 +93,6 @@ public class Executable<T extends Executable<T>> extends Resource<T>
     }
 
     @Override
-    public T withEnvironment(String key, String value) {
-        this.env.put(key, value);
-        return self();
-    }
-
-    @Override
-    @JsonIgnore
-    public Map<String, String> getEnvironment() {
-        return Collections.unmodifiableMap(env);
-    }
-
-    @Override
     @JsonIgnore
     public T withArgument(String argument) {
         arguments.add(argument);
@@ -127,25 +103,6 @@ public class Executable<T extends Executable<T>> extends Resource<T>
     @JsonIgnore
     public List<String> getArguments() {
         return Collections.unmodifiableList(arguments);
-    }
-
-    @Override
-    @JsonIgnore
-    public T withBinding(Binding binding) {
-        bindings.put(binding.getScheme(), binding);
-        return self();
-    }
-
-    @Override
-    @JsonIgnore
-    public @Valid Map<Binding.Scheme, Binding> getBindings() {
-        return Collections.unmodifiableMap(bindings);
-    }
-
-    @Override
-    public List<EndpointReference> getEndpoints() {
-        // TODO how do I know which endpoints are available?
-        return List.of();
     }
 
     @Override
