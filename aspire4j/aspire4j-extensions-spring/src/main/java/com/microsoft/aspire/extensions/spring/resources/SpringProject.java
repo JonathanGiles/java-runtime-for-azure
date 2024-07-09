@@ -53,14 +53,19 @@ public class SpringProject extends Container<SpringProject> implements Introspec
         this.strategies = new SpringIntrospector().introspect(this, outputEnvs);
 
         // Add the environment introspected from the project
-        outputEnvs.forEach((k, v) -> withEnvironment(k, v));
+        outputEnvs.forEach((k, v) -> {
+            if (!k.startsWith("BUILD_")) {
+                withEnvironment(k, v);
+            }
+        });
         if (outputEnvs.containsKey("SERVER_PORT")) {
             int serverPort = Integer.parseInt(outputEnvs.get("SERVER_PORT"));
             withHttpEndpoint(serverPort);
-            // FIXME finalize the image name
-            withImage("abc");
         }
 
+        if (outputEnvs.containsKey("BUILD_IMAGE")) {
+            withImage(outputEnvs.get("BUILD_IMAGE"));
+        }
         // but, we also look in the strategies to see if we found a dockerfile strategy, as in that case we transform
         // this entire output from a Spring project resource into a dockerfile resource
         strategies.stream()

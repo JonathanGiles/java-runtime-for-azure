@@ -11,7 +11,9 @@ import com.microsoft.aspire.extensions.spring.resources.SpringProject;
 import org.apache.maven.model.Dependency;
 import org.apache.maven.model.Model;
 import org.apache.maven.model.Plugin;
+import org.apache.maven.model.PluginExecution;
 import org.apache.maven.model.io.xpp3.MavenXpp3Reader;
+import org.codehaus.plexus.util.xml.Xpp3Dom;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -106,9 +108,13 @@ public class SpringIntrospector {
             SpringDeploymentStrategy deploymentStrategy = new SpringDeploymentStrategy(SpringDeploymentStrategy.DeploymentType.MAVEN_POM, 2100);
             boolean dockerPluginFound = false;
             boolean springBootMavenPluginFound = false;
+            String dockerImageName = null;
             File inputFile = new File(pomXmlPath);
             MavenXpp3Reader reader = new MavenXpp3Reader();
             Model model = reader.read(new FileReader(inputFile));
+
+            String artifactId = model.getArtifactId();
+            String version = model.getVersion();
 
             List<Plugin> plugins = model.getBuild().getPlugins();
             for (Plugin plugin : plugins) {
@@ -128,6 +134,16 @@ public class SpringIntrospector {
 
                 if (mavenPluginMatch(plugin, "org.springframework.boot", "spring-boot-maven-plugin")) {
                     springBootMavenPluginFound = true;
+                    dockerImageName = getPluginConfiguration(plugin, "image.name");
+                    if (dockerImageName == null) {
+                        dockerImageName = getPluginConfiguration(plugin, "imageName");
+                    }
+                    if (dockerImageName != null) {
+                        dockerImageName += ":latest"; // FIXME: This is a temporary fix to add the tag "latest
+                        LOGGER.fine("Found Spring Boot Maven Plugin with image name: " + dockerImageName);
+                    } else {
+                        dockerImageName = artifactId + ":" + version;
+                    }
                 }
             }
 
@@ -155,6 +171,7 @@ public class SpringIntrospector {
                     // FIXME We could add more options here, like -Dspring-boot.build-image.imageName=...
                     // https://docs.spring.io/spring-boot/maven-plugin/build-image.html#build-image.customization
                     deploymentStrategy.withCommand("mvn spring-boot:build-image");
+                    outputEnvs.put("BUILD_IMAGE", dockerImageName);
                 } else {
                     String command = "mvn containerise";
                     // command += " --context " + Paths.get(pomXmlPath).getParent();
@@ -164,6 +181,7 @@ public class SpringIntrospector {
                     }
 
                     deploymentStrategy.withCommand(command);
+                    outputEnvs.put("BUILD_IMAGE", artifactId + ":" + version);
                 }
 
                 strategies.add(deploymentStrategy);
@@ -173,6 +191,33 @@ public class SpringIntrospector {
         }
     }
 
+    private static String getPluginConfiguration(Plugin plugin, String propertyName) {
+        Xpp3Dom configuration = (Xpp3Dom) plugin.getConfiguration();
+        String value = getConfiguration(configuration, propertyName.split("\\."), 0);
+        if (value != null) {
+            return value;
+        }
+
+        for (PluginExecution execution : plugin.getExecutions()) {
+            Xpp3Dom execConfiguration = (Xpp3Dom) execution.getConfiguration();
+            value = getConfiguration(execConfiguration, propertyName.split("\\."), 0);
+            if (value != null) {
+                return value;
+            }
+        }
+        return null;
+    }
+
+    private static String getConfiguration(Xpp3Dom dom, String[] properties, int i) {
+        if (dom == null) {
+            return null;
+        }
+        if (i == properties.length - 1) {
+            return dom.getChild(properties[i]).getValue();
+        }
+
+        return getConfiguration(dom.getChild(properties[i]), properties, i + 1);
+    }
 
     private void introspectBuildGradle(SpringProject project, String buildGradlePath, Map<String, String> outputEnvs) {
         // look to see if the pom uses the spring-boot-maven-plugin plugin to generate far jars

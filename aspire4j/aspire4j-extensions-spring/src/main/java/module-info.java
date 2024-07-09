@@ -6,6 +6,7 @@ module com.microsoft.aspire.extensions.spring {
     requires java.xml;
     requires java.logging;
     requires maven.model;
+    requires plexus.utils;
 
     exports com.microsoft.aspire.extensions.spring;
     exports com.microsoft.aspire.extensions.spring.resources;
