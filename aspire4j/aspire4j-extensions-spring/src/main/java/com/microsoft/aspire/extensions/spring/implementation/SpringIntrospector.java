@@ -139,7 +139,9 @@ public class SpringIntrospector {
                         dockerImageName = getPluginConfiguration(plugin, "imageName");
                     }
                     if (dockerImageName != null) {
-                        dockerImageName += ":latest"; // FIXME: This is a temporary fix to add the tag "latest
+                        if (!dockerImageName.contains(":")) {
+                            dockerImageName += ":latest";
+                        }
                         LOGGER.fine("Found Spring Boot Maven Plugin with image name: " + dockerImageName);
                     } else {
                         dockerImageName = artifactId + ":" + version;
