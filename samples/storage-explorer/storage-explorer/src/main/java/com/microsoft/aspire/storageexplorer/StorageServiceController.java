@@ -2,6 +2,7 @@ package com.microsoft.aspire.storageexplorer;
 
 import com.microsoft.aspire.storageexplorer.service.StorageItem;
 import com.microsoft.aspire.storageexplorer.service.StorageService;
+import com.netflix.discovery.EurekaClient;
 import jakarta.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,13 +33,13 @@ public class StorageServiceController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(StorageServiceController.class);
     private final StorageService storageService;
-
-    @Value("${services__dateservice__https__0}")
-    private String dateServiceEndpoint;
+    private final String dateServiceUrl;
 
     @Autowired
-    public StorageServiceController(final StorageService storageService) {
+    public StorageServiceController(final StorageService storageService, final EurekaClient discoveryClient) {
         this.storageService = storageService;
+        this.dateServiceUrl = discoveryClient.getNextServerFromEureka("date-service-spring", false).getHomePageUrl();
+        LOGGER.info("The discovered date service URL is " + dateServiceUrl);
     }
 
     @GetMapping("/")
@@ -51,12 +52,12 @@ public class StorageServiceController {
     }
 
     private void updateTime(Model model) {
-        LOGGER.info("The datetime service endpoint is " + dateServiceEndpoint);
         String lastUpdated = "";
         try {
             RestTemplate restTemplate = new RestTemplate();
-            OffsetDateTime time = restTemplate.getForObject(dateServiceEndpoint + "/time", OffsetDateTime.class);
+            OffsetDateTime time = restTemplate.getForObject(dateServiceUrl + "/time", OffsetDateTime.class);
             if (time != null) {
+                LOGGER.info("The date service time is " + time.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
                 lastUpdated = time.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
             }
         } catch (Exception exception) {
