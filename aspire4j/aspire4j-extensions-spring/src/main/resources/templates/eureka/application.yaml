@@ -2,7 +2,7 @@ spring:
   application:
     name: ${name}
 server:
-  port: ${port?c}
+  port: ${targetPort?c}
 eureka:
   instance:
     hostname: localhost

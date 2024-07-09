@@ -21,9 +21,9 @@ public class StorageExplorerAppHost implements AppHost {
         var blobStorage = azureStorage.addBlobs("storage-explorer-blobs");
 
         // Create Azure OpenAI resources...
-         var openAI = app.withExtension(AzureOpenAIExtension.class)
-             .addAzureOpenAI("openai")
-             .withDeployment(using("gpt-35-turbo", "gpt-35-turbo", "0613"));
+//         var openAI = app.withExtension(AzureOpenAIExtension.class)
+//             .addAzureOpenAI("openai")
+//             .withDeployment(using("gpt-35-turbo", "gpt-35-turbo", "0613"));
 
         var eurekaServiceDiscovery = app.withExtension(SpringExtension.class)
             .addEurekaServiceDiscovery("eureka");
@@ -39,8 +39,8 @@ public class StorageExplorerAppHost implements AppHost {
             .withPath("storage-explorer")
             .withExternalHttpEndpoints()
             .withReference(blobStorage)
-            .withReference(eurekaServiceDiscovery)
-            .withReference(openAI);
+            .withReference(eurekaServiceDiscovery);
+//            .withReference(openAI);
 
         // Old style, with direct reference to dockerfiles
 //        var dateService = app.addDockerFile("dateservice", "date-service/Dockerfile", "date-service")

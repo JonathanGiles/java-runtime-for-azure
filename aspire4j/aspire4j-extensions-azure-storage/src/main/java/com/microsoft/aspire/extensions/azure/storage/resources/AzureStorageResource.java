@@ -4,6 +4,7 @@ import com.microsoft.aspire.DistributedApplication;
 import com.microsoft.aspire.resources.AzureBicepResource;
 import com.microsoft.aspire.resources.ResourceType;
 import com.microsoft.aspire.resources.properties.EndpointReference;
+import com.microsoft.aspire.resources.properties.ReferenceExpression;
 import com.microsoft.aspire.resources.traits.ResourceWithEndpoints;
 import com.microsoft.aspire.utils.templates.TemplateEngine;
 
@@ -14,6 +15,22 @@ import java.util.Map;
 public class AzureStorageResource extends AzureBicepResource<AzureStorageResource>
                                   implements ResourceWithEndpoints<AzureStorageResource> {
     private static final ResourceType AZURE_STORAGE = ResourceType.fromString("azure.bicep.v0");
+
+//    internal ReferenceExpression GetTableConnectionString() => IsEmulator
+//        ? ReferenceExpression.Create($"{AzureStorageEmulatorConnectionString.Create(tablePort: EmulatorTableEndpoint.Port)}")
+//        : ReferenceExpression.Create($"{TableEndpoint}");
+//
+//    internal ReferenceExpression GetQueueConnectionString() => IsEmulator
+//        ? ReferenceExpression.Create($"{AzureStorageEmulatorConnectionString.Create(queuePort: EmulatorQueueEndpoint.Port)}")
+//        : ReferenceExpression.Create($"{QueueEndpoint}");
+//
+//    internal ReferenceExpression GetBlobConnectionString() => IsEmulator
+//        ? ReferenceExpression.Create($"{AzureStorageEmulatorConnectionString.Create(blobPort: EmulatorBlobEndpoint.Port)}")
+//        : ReferenceExpression.Create($"{BlobEndpoint}");
+
+//    static final ReferenceExpression TABLE_CONNECTION_STRING = ReferenceExpression.create("tableEndpoint");
+//    static final ReferenceExpression QUEUE_CONNECTION_STRING = ReferenceExpression.create("queueEndpoint");
+//    static final ReferenceExpression BLOB_CONNECTION_STRING = ReferenceExpression.create("blobEndpoint");
 
     public AzureStorageResource(String name) {
         super(AZURE_STORAGE, name);
@@ -31,12 +48,6 @@ public class AzureStorageResource extends AzureBicepResource<AzureStorageResourc
 
     public AzureStorageTablesResource addTables(String name) {
         return DistributedApplication.getInstance().addResource(new AzureStorageTablesResource(name, this));
-    }
-
-    @Override
-    public List<EndpointReference> getEndpoints() {
-        // TODO how do I know which endpoints are available?
-        return List.of();
     }
 
     @Override

@@ -4,12 +4,8 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
-import com.microsoft.aspire.resources.properties.BindMount;
-import com.microsoft.aspire.resources.properties.Binding;
-import com.microsoft.aspire.resources.properties.EndpointReference;
-import com.microsoft.aspire.resources.properties.Volume;
+import com.microsoft.aspire.resources.properties.*;
 import com.microsoft.aspire.resources.traits.ResourceWithArguments;
-import com.microsoft.aspire.resources.traits.ResourceWithBindings;
 import com.microsoft.aspire.resources.traits.ResourceWithEndpoints;
 import com.microsoft.aspire.resources.traits.ResourceWithEnvironment;
 import jakarta.validation.Valid;
@@ -93,7 +89,6 @@ For example:
 public class Container<T extends Container<T>> extends Resource<T>
                                                implements ResourceWithArguments<T>,
                                                    ResourceWithEnvironment<T>,
-                                                   ResourceWithBindings<T>,
                                                    ResourceWithEndpoints<T> {
 
     @NotNull(message = "Container.image cannot be null")
@@ -111,13 +106,6 @@ public class Container<T extends Container<T>> extends Resource<T>
     @JsonProperty("volumes")
     @Valid
     private final List<Volume> volumes = new ArrayList<>();
-
-    @JsonProperty("env")
-    private final Map<String, String> environment = new LinkedHashMap<>();
-
-    @JsonProperty("bindings")
-    @Valid
-    private final Map<Binding.Scheme, Binding> bindings = new LinkedHashMap<>();
 
     @JsonProperty("bindMounts")
     @Valid
@@ -163,42 +151,10 @@ public class Container<T extends Container<T>> extends Resource<T>
         return self();
     }
 
-    @Override
-    @JsonIgnore
-    public T withEnvironment(String name, String value) {
-        environment.put(name, value);
-        return self();
-    }
-
-    @Override
-    @JsonIgnore
-    public Map<String, String> getEnvironment() {
-        return Collections.unmodifiableMap(environment);
-    }
-
-    @Override
-    @JsonIgnore
-    public T withBinding(Binding binding) {
-        bindings.put(binding.getScheme(), binding);
-        return self();
-    }
-
-    @Override
-    @JsonIgnore
-    public @Valid Map<Binding.Scheme, Binding> getBindings() {
-        return Collections.unmodifiableMap(bindings);
-    }
-
     @JsonIgnore
     public T withBindMount(BindMount bindMount) {
         bindMounts.add(bindMount);
         return self();
-    }
-
-    @Override
-    public List<EndpointReference> getEndpoints() {
-        // TODO how do I know which endpoints are available?
-        return List.of();
     }
 
     @Override

@@ -7,10 +7,7 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.microsoft.aspire.implementation.json.RelativePath;
 import com.microsoft.aspire.implementation.json.RelativePathSerializer;
-import com.microsoft.aspire.resources.properties.Binding;
-import com.microsoft.aspire.resources.properties.EndpointReference;
 import com.microsoft.aspire.resources.traits.ResourceWithArguments;
-import com.microsoft.aspire.resources.traits.ResourceWithBindings;
 import com.microsoft.aspire.resources.traits.ResourceWithEndpoints;
 import com.microsoft.aspire.resources.traits.ResourceWithEnvironment;
 import jakarta.validation.Valid;
@@ -53,7 +50,6 @@ import java.util.*;
 public class Project<T extends Project<T>> extends Resource<T>
                                            implements ResourceWithArguments<T>,
                                                       ResourceWithEnvironment<T>,
-                                                      ResourceWithBindings<T>,
                                                       ResourceWithEndpoints<T> {
 
     @NotNull(message = "Project.path cannot be null")
@@ -63,17 +59,9 @@ public class Project<T extends Project<T>> extends Resource<T>
     @RelativePath
     private String path;
 
-    @JsonProperty("env")
-    @Valid
-    private final Map<String, String> env = new LinkedHashMap<>();
-
     @JsonProperty("args")
     @Valid
     private final List<String> arguments = new ArrayList<>();
-
-    @JsonProperty("bindings")
-    @Valid
-    private final Map<Binding.Scheme, Binding> bindings = new LinkedHashMap<>();
 
     public Project(String name) {
         this(ResourceType.PROJECT, name);
@@ -96,29 +84,9 @@ public class Project<T extends Project<T>> extends Resource<T>
 
     @Override
     @JsonIgnore
-    public T withEnvironment(String key, String value) {
-        this.env.put(key, value);
-        return self();
-    }
-
-    @Override
-    @JsonIgnore
     public T withArgument(String argument) {
         arguments.add(argument);
         return self();
-    }
-
-    @Override
-    @JsonIgnore
-    public T withBinding(Binding binding) {
-        bindings.put(binding.getScheme(), binding);
-        return self();
-    }
-
-    @Override
-    @JsonIgnore
-    public @Valid Map<Binding.Scheme, Binding> getBindings() {
-        return Collections.unmodifiableMap(bindings);
     }
 
     @JsonIgnore
@@ -128,20 +96,8 @@ public class Project<T extends Project<T>> extends Resource<T>
 
     @Override
     @JsonIgnore
-    public final Map<String, String> getEnvironment() {
-        return Collections.unmodifiableMap(env);
-    }
-
-    @Override
-    @JsonIgnore
     public final List<String> getArguments() {
         return Collections.unmodifiableList(arguments);
-    }
-
-    @Override
-    public final List<EndpointReference> getEndpoints() {
-        // TODO how do I know which endpoints are available?
-        return List.of();
     }
 
     @Override

@@ -1,7 +1,7 @@
 package com.microsoft.aspire.extensions.spring.resources;
 
 import com.microsoft.aspire.resources.DockerFile;
-import com.microsoft.aspire.resources.properties.Binding;
+import com.microsoft.aspire.resources.traits.ResourceWithEndpoints;
 import com.microsoft.aspire.resources.traits.ResourceWithTemplate;
 import com.microsoft.aspire.utils.templates.TemplateEngine;
 
@@ -11,14 +11,15 @@ import java.util.List;
 import java.util.Map;
 
 public final class EurekaServiceDiscovery extends DockerFile<EurekaServiceDiscovery>
-                                          implements ResourceWithTemplate<EurekaServiceDiscovery> {
+                                          implements ResourceWithTemplate<EurekaServiceDiscovery>,
+                                                     ResourceWithEndpoints<EurekaServiceDiscovery> {
 
     private final String PROPERTY_NAME = "name";
-    private final String PROPERTY_PORT = "port";
+    private final String PROPERTY_TARGET_PORT = "targetPort";
     private final String PROPERTY_REGISTER_WITH_EUREKA = "registerWithEureka";
     private final String PROPERTY_FETCH_REGISTRY = "fetchRegistry";
 
-    private static final int DEFAULT_PORT = 8761;
+    private static final int DEFAULT_TARGET_PORT = 8761;
 
     private final Map<String, Object> properties;
 
@@ -27,20 +28,18 @@ public final class EurekaServiceDiscovery extends DockerFile<EurekaServiceDiscov
 
         this.properties = new HashMap<>();
         this.properties.put(PROPERTY_NAME, name);
-        this.properties.put(PROPERTY_PORT, DEFAULT_PORT);
+        this.properties.put(PROPERTY_TARGET_PORT, DEFAULT_TARGET_PORT);
         this.properties.put(PROPERTY_REGISTER_WITH_EUREKA, false);
         this.properties.put(PROPERTY_FETCH_REGISTRY, false);
 
-        withPort(DEFAULT_PORT);
+        withPort(DEFAULT_TARGET_PORT);
     }
 
-    public EurekaServiceDiscovery withPort(int port) {
-        this.properties.put(PROPERTY_PORT, port);
+    public EurekaServiceDiscovery withPort(int targetPort) {
+        this.properties.put(PROPERTY_TARGET_PORT, targetPort);
 
-        withBinding(new Binding(Binding.Scheme.HTTP, Binding.Protocol.TCP, Binding.Transport.HTTP)
-            /*.withPort(port)*/.withTargetPort(port).withExternal());
-        withBinding(new Binding(Binding.Scheme.HTTPS, Binding.Protocol.TCP, Binding.Transport.HTTP)
-            /*.withPort(port)*/.withTargetPort(port).withExternal());
+        withHttpEndpoint(targetPort);
+        withHttpsEndpoint(targetPort);
 
         return this;
     }

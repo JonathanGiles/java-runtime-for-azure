@@ -1,7 +1,6 @@
 package com.microsoft.aspire;
 
 import com.microsoft.aspire.resources.*;
-import com.microsoft.aspire.resources.traits.IntrospectiveResource;
 import jakarta.validation.Valid;
 
 import java.io.PrintStream;
