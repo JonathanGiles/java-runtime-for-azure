@@ -7,7 +7,9 @@ import com.microsoft.aspire.extensions.spring.implementation.SpringIntrospector;
 import com.microsoft.aspire.resources.DockerFile;
 import com.microsoft.aspire.resources.Project;
 import com.microsoft.aspire.resources.ResourceType;
-import com.microsoft.aspire.resources.properties.Binding;
+import com.microsoft.aspire.resources.properties.Protocol;
+import com.microsoft.aspire.resources.properties.Scheme;
+import com.microsoft.aspire.resources.properties.Transport;
 import com.microsoft.aspire.resources.traits.IntrospectiveResource;
 import jakarta.validation.Valid;
 
@@ -27,8 +29,10 @@ public class SpringProject extends Project<SpringProject> implements Introspecti
         withEnvironment("spring.application.name", name);
 
         // FIXME this should be removed once the introspector supports discovering the bindings
-        withBinding(new Binding(Binding.Scheme.HTTP, Binding.Protocol.TCP, Binding.Transport.HTTP).withTargetPort(8080));
-        withBinding(new Binding(Binding.Scheme.HTTPS, Binding.Protocol.TCP, Binding.Transport.HTTP).withTargetPort(8080));
+//        withBinding(new Binding(Scheme.HTTP, Protocol.TCP, Transport.HTTP).withTargetPort(8080));
+//        withBinding(new Binding(Scheme.HTTPS, Protocol.TCP, Transport.HTTP).withTargetPort(8080));
+        withHttpEndpoint(8080);
+//        withHttpsEndpoint(8080);
     }
 
     @Override
@@ -49,6 +53,7 @@ public class SpringProject extends Project<SpringProject> implements Introspecti
                   .findFirst().ifPresent(s -> {
             // we need to set the service name (to the existing spring project name), the path to the Dockerfile, and the
             // context name (which is the directory containing the Dockerfile)
+            // FIXME ugly generics
             DockerFile<?> dockerFile = new DockerFile<>(getName());
 
             String dockerFilePath = s.getCommands().get(0);

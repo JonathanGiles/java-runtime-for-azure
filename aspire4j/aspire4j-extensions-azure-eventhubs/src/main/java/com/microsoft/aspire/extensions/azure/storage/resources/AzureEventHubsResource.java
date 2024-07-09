@@ -23,12 +23,6 @@ public class AzureEventHubsResource extends AzureBicepResource<AzureEventHubsRes
 //    }
 
     @Override
-    public List<EndpointReference> getEndpoints() {
-        // TODO how do I know which endpoints are available?
-        return List.of();
-    }
-
-    @Override
     public List<TemplateFileOutput> processTemplate(Path outputPath) {
         final String templatePath = "/templates/bicep/";
         final String outputRootPath = "";
