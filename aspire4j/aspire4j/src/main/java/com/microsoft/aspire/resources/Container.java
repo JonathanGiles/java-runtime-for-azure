@@ -116,7 +116,11 @@ public class Container<T extends Container<T>> extends Resource<T>
     }
 
     public Container(String name, String image) {
-        super(ResourceType.CONTAINER, name);
+        this(ResourceType.CONTAINER, name, image);
+    }
+
+    public Container(ResourceType type, String name, String image) {
+        super(type, name);
         this.image = image;
     }
 

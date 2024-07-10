@@ -21,6 +21,8 @@ module com.microsoft.aspire {
     opens com.microsoft.aspire.implementation.json to com.fasterxml.jackson.databind;
     opens com.microsoft.aspire.implementation to com.fasterxml.jackson.databind;
     opens com.microsoft.aspire.utils to com.fasterxml.jackson.databind;
+    // for the extensions
+    exports com.microsoft.aspire.implementation.json;
 
     uses com.microsoft.aspire.Extension;
 }
