@@ -27,15 +27,16 @@ public class StorageExplorerAppHost implements AppHost {
         var eurekaServiceDiscovery = spring.addEurekaServiceDiscovery("eureka");
 
         // add our first Spring Boot project - a date service that tells us the current date / time
-        var dateService = spring.addSpringProject("date-service-spring")
+        var dateService = spring.addSpringProject("date-service")
                 .withReference(eurekaServiceDiscovery)
                 .withExternalHttpEndpoints();
 
         // and storage explorer - a webapp to upload / download / view resources in a storage blob container
-        var storageExplorer = spring.addSpringProject("storage-explorer-spring")
+        var storageExplorer = spring.addSpringProject("storage-explorer")
             .withExternalHttpEndpoints()
             .withReference(blobStorage)
-            .withReference(eurekaServiceDiscovery);
+            .withReference(eurekaServiceDiscovery)
+            .withOpenTelemetry();
 //            .withReference(openAI);
     }
 
