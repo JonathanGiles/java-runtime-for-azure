@@ -34,10 +34,9 @@ public class AzureOpenAIResource extends AzureBicepResource<AzureOpenAIResource>
     }
 
     @Override
-    public List<TemplateFileOutput> processTemplate(Path outputPath) {
+    public List<TemplateFileOutput> processTemplate() {
         final String templatePath = "/templates/openai/bicep/";
-        final String outputRootPath = "";
-        List<TemplateDescriptor> templateFiles = TemplateDescriptorsBuilder.begin(templatePath, outputRootPath)
+        List<TemplateDescriptor> templateFiles = TemplateDescriptorsBuilder.begin(templatePath)
             .with("openai.module.bicep", "${name}.module.bicep")
             .build();
 

@@ -50,7 +50,6 @@ import java.util.*;
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
 public class DockerFile<T extends DockerFile<T>> extends Resource<T>
                         implements ResourceWithEnvironment<T>, ResourceWithEndpoints<T> { // FIXME Does a DockerFile support endpoints like this?
-//                                   ResourceWithBindings<T> {
 
     @NotNull(message = "DockerFile.path cannot be null")
     @NotEmpty(message = "DockerFile.path cannot be an empty string")
@@ -84,11 +83,23 @@ public class DockerFile<T extends DockerFile<T>> extends Resource<T>
         super(type, name);
     }
 
+    /**
+     * Sets the path to the Dockerfile to be built into a container image. The path must be relative to the root
+     * directory, i.e. from where azd is being executed from.
+     * @param path A path to the Dockerfile, relative to the directory where azd will be executed from.
+     * @return The DockerFile object.
+     */
     public T withPath(String path) {
         this.path = path;
         return self();
     }
 
+    /**
+     * Sets the path to the context that will be used to build a container image. The path must be relative to the root
+     * directory, i.e. from where azd is being executed from.
+     * @param context A path to the context, relative to the directory where azd will be executed from.
+     * @return The DockerFile object.
+     */
     public T withContext(String context) {
         this.context = context;
         return self();

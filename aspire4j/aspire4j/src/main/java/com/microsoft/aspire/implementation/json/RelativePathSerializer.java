@@ -5,33 +5,28 @@ import com.fasterxml.jackson.databind.BeanProperty;
 import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.ser.ContextualSerializer;
+import com.microsoft.aspire.utils.FileUtilities;
 
 import java.io.IOException;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 
+/**
+ * This class exists to transform the user-facing path inputs (which are always relative to the azd execution directory)
+ * into paths that are relative to the output directory. This is necessary because the aspire-manifest.json file is
+ * generated in the output directory, and the paths in the manifest file need to be relative to that.
+ */
 public class RelativePathSerializer extends JsonSerializer<String> implements ContextualSerializer {
 
-    private static final ThreadLocal<Path> outputPath = new ThreadLocal<>();
-    private Path basePath;
-    private boolean isRelativePath;
+    private final Path basePath;
+    private final boolean isRelativePath;
 
     public RelativePathSerializer() {
-        this.basePath = Paths.get(System.getProperty("user.dir"));
-        this.isRelativePath = false;
+        this(null, false);
     }
 
     private RelativePathSerializer(Path basePath, boolean isRelativePath) {
         this.basePath = basePath;
         this.isRelativePath = isRelativePath;
-    }
-
-    public static void setOutputPath(Path path) {
-        outputPath.set(path);
-    }
-
-    public static Path getOutputPath() {
-        return outputPath.get();
     }
 
     @Override
@@ -47,9 +42,8 @@ public class RelativePathSerializer extends JsonSerializer<String> implements Co
             // When the path is output to the aspire-manifest.json file, the path will transform based on the relative
             // location of the output directory to the root directory. This way, when azd picks up the manifest file,
             // the paths remain correct.
-            Path filePath = Paths.get(value).toAbsolutePath();
-            Path relativePath = getOutputPath().toAbsolutePath().relativize(filePath);
-            gen.writeString(relativePath.toString());
+//            gen.writeString(FileUtilities.getOutputRelativePath(value).toString());
+            gen.writeString(FileUtilities.convertRootRelativePathToOutputPath(value).toString());
         } else {
             gen.writeString(value);
         }

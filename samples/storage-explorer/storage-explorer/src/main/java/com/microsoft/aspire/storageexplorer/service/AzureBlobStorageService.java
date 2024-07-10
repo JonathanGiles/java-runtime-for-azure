@@ -8,6 +8,8 @@ import com.azure.storage.blob.BlobContainerClient;
 import com.azure.storage.blob.BlobServiceClient;
 import com.azure.storage.blob.BlobServiceClientBuilder;
 import com.azure.storage.blob.models.BlobHttpHeaders;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -21,15 +23,18 @@ import java.util.stream.Stream;
  */
 @Service
 public class AzureBlobStorageService implements StorageService {
+    private static final Logger LOGGER = LoggerFactory.getLogger(AzureBlobStorageService.class);
+
     private String blobStorageContainerName = "mycontainer";
 
-    @Value("${ENDPOINT}")
+    @Value("${ConnectionStrings__storage-explorer-blobs}")
     private String storageEndpoint;
 
     private BlobContainerClient blobContainerClient;
 
     @Override
     public void init() {
+        LOGGER.info("Using Azure Blob Storage endpoint {}", storageEndpoint);
         if (blobContainerClient != null) {
             return;
         }
@@ -37,7 +42,7 @@ public class AzureBlobStorageService implements StorageService {
         boolean doInit = true;
 
         if ((storageEndpoint == null || storageEndpoint.isEmpty())) {
-            System.err.println("Error: Please set the ENDPOINT property");
+            System.err.println("Error: Please set the ConnectionStrings__storage-explorer-blobs property");
             doInit = false;
         }
 
@@ -64,7 +69,7 @@ public class AzureBlobStorageService implements StorageService {
 
         final String mimeType = URLConnection.guessContentTypeFromName(filename);
         blobClient.setHttpHeaders(new BlobHttpHeaders()
-            .setContentType(mimeType));
+                .setContentType(mimeType));
     }
 
     @Override

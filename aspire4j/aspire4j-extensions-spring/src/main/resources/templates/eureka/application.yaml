@@ -4,6 +4,8 @@ spring:
 server:
   port: ${targetPort?c}
 eureka:
+  instance:
+    hostname: localhost
   client:
     register-with-eureka: ${registerWithEureka?string("true", "false")}
     fetch-registry: ${fetchRegistry?string("true", "false")}

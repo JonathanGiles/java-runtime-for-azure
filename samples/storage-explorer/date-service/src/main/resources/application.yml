@@ -1,0 +1,9 @@
+spring:
+  application:
+    name: date-service-spring
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: ${services__eureka__https__0}/eureka/
+  instance:
+    preferIpAddress: true

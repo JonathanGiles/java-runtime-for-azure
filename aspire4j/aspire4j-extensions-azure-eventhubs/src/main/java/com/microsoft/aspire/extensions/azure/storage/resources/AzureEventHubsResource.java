@@ -23,10 +23,9 @@ public class AzureEventHubsResource extends AzureBicepResource<AzureEventHubsRes
 //    }
 
     @Override
-    public List<TemplateFileOutput> processTemplate(Path outputPath) {
+    public List<TemplateFileOutput> processTemplate() {
         final String templatePath = "/templates/bicep/";
-        final String outputRootPath = "";
-        List<TemplateDescriptor> templateFiles = TemplateDescriptorsBuilder.begin(templatePath, outputRootPath)
+        List<TemplateDescriptor> templateFiles = TemplateDescriptorsBuilder.begin(templatePath)
             .with("eventhubns.module.bicep", "${name}.module.bicep")
             .build();
 
