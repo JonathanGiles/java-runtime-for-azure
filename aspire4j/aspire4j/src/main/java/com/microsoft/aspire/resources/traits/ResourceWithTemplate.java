@@ -14,7 +14,7 @@ import java.util.List;
  */
 public interface ResourceWithTemplate<T extends ResourceWithTemplate<T>> extends SelfAware<T> {
 
-    List<TemplateFileOutput> processTemplate(Path outputPath);
+    List<TemplateFileOutput> processTemplate();
 
     class TemplateDescriptor {
         private final String inputFilename;
@@ -46,6 +46,27 @@ public interface ResourceWithTemplate<T extends ResourceWithTemplate<T>> extends
             this.templateDescriptors = new ArrayList<>();
         }
 
+        /**
+         * Begins the process of specifying template files to be processed, which will be written to the root of the
+         * user-specified output directory by default.
+         * @param templatePath      The path to the template files, relative to the root of the jar file / the resources
+         *                          directory.
+         * @return A new TemplateDescriptorsBuilder instance that can then be used to specify the template files to be
+         * processed.
+         */
+        public static TemplateDescriptorsBuilder begin(String templatePath) {
+            return begin(templatePath, "");
+        }
+
+        /**
+         * Begins the process of specifying template files to be processed.
+         * @param templatePath      The path to the template files, relative to the root of the jar file / the resources
+         *                          directory.
+         * @param outputRootPath    The root path where the output files will be written to, relative to the
+         *                          user-specified output directory.
+         * @return A new TemplateDescriptorsBuilder instance that can then be used to specify the template files to be
+         * processed.
+         */
         public static TemplateDescriptorsBuilder begin(String templatePath, String outputRootPath) {
             return new TemplateDescriptorsBuilder(templatePath, outputRootPath);
         }

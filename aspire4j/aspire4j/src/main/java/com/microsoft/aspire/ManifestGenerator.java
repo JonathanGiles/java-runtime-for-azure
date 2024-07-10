@@ -5,7 +5,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintStream;
-import java.io.PrintWriter;
 import java.nio.file.*;
 import java.util.Set;
 import java.util.logging.Level;
@@ -16,6 +15,7 @@ import com.microsoft.aspire.implementation.json.CustomSerializerModifier;
 import com.microsoft.aspire.implementation.json.RelativePathSerializer;
 import com.microsoft.aspire.resources.traits.ResourceWithLifecycle;
 import com.microsoft.aspire.resources.traits.ResourceWithTemplate;
+import com.microsoft.aspire.utils.FileUtilities;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validation;
 import jakarta.validation.Validator;
@@ -34,6 +34,7 @@ class ManifestGenerator {
         if (!outputDir.exists()) {
             outputDir.mkdirs();
         }
+        FileUtilities.setOutputPath(outputPath);
 
         DistributedApplication app = new DistributedApplication();
         appHost.configureApplication(app);
@@ -46,7 +47,7 @@ class ManifestGenerator {
         app.manifest.getResources().values().stream()
             .filter(r -> r instanceof ResourceWithTemplate<?>)
             .map(r -> (ResourceWithTemplate<?>) r)
-            .map(r -> r.processTemplate(outputPath))
+            .map(ResourceWithTemplate::processTemplate)
             .forEach(templateFiles -> templateFiles.forEach(this::writeTemplateFile));
         LOGGER.info("Templates processed");
     }
@@ -78,9 +79,6 @@ class ManifestGenerator {
             // object is valid, continue processing...
             LOGGER.info("Models validated...Writing manifest to file");
         }
-
-        // Set the outputDir in the RelativePathSerializer
-        RelativePathSerializer.setOutputPath(outputPath);
 
         // Jackson ObjectMapper is used to serialize the AspireManifest object to a JSON string,
         // and write to a file named "aspire-manifest.json".

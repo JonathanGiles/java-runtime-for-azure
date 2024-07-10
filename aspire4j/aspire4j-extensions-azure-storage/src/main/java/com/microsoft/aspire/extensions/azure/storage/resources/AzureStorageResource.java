@@ -51,10 +51,9 @@ public class AzureStorageResource extends AzureBicepResource<AzureStorageResourc
     }
 
     @Override
-    public List<TemplateFileOutput> processTemplate(Path outputPath) {
+    public List<TemplateFileOutput> processTemplate() {
         final String templatePath = "/templates/bicep/";
-        final String outputRootPath = "";
-        List<TemplateDescriptor> templateFiles = TemplateDescriptorsBuilder.begin(templatePath, outputRootPath)
+        List<TemplateDescriptor> templateFiles = TemplateDescriptorsBuilder.begin(templatePath)
             .with("storage.module.bicep", "${name}.module.bicep")
             .build();
 

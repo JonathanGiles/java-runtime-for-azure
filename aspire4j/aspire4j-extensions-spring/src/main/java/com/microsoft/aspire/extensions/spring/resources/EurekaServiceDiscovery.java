@@ -3,6 +3,7 @@ package com.microsoft.aspire.extensions.spring.resources;
 import com.microsoft.aspire.resources.DockerFile;
 import com.microsoft.aspire.resources.traits.ResourceWithEndpoints;
 import com.microsoft.aspire.resources.traits.ResourceWithTemplate;
+import com.microsoft.aspire.utils.FileUtilities;
 import com.microsoft.aspire.utils.templates.TemplateEngine;
 
 import java.nio.file.Path;
@@ -45,7 +46,7 @@ public final class EurekaServiceDiscovery extends DockerFile<EurekaServiceDiscov
     }
 
     @Override
-    public List<TemplateFileOutput> processTemplate(Path outputPath) {
+    public List<TemplateFileOutput> processTemplate() {
         final String templatePath = "/templates/eureka/";
         final String outputRootPath = "eureka/";
         List<TemplateDescriptor> templateFiles = TemplateDescriptorsBuilder.begin(templatePath, outputRootPath)
@@ -57,9 +58,12 @@ public final class EurekaServiceDiscovery extends DockerFile<EurekaServiceDiscov
 
         List<TemplateFileOutput> templateOutput = TemplateEngine.process(EurekaServiceDiscovery.class, templateFiles, properties);
 
-        // FIXME we need a better way of determining the output path of the template
-        withPath("output/" + outputRootPath + "Dockerfile");
-        withContext("output/" + outputRootPath);
+        // Important - as noted in the javadoc - from the perspective of the API below, the paths are relative to the
+        // directory in which azd is running, NOT the output directory. These paths will then be transformed at
+        // serialization time to be relative to the output directory.
+        // This is slightly unfortunate, as we know the correct directory here, but we don't have a way to pass it.
+        withPath(FileUtilities.convertOutputPathToRootRelative(outputRootPath + "Dockerfile").toString());
+        withContext(FileUtilities.convertOutputPathToRootRelative(outputRootPath).toString());
 
         return templateOutput;
     }
