@@ -90,7 +90,7 @@ public class SpringIntrospector {
 
             strategies.add(
                 new SpringDeploymentStrategy(SpringDeploymentStrategy.DeploymentType.DOCKER_FILE, 1000)
-                    .withCommand(properties.get("Dockerfile")));
+                    .withCommand(new String[] { properties.get("Dockerfile") }));
         }
 //        hasDocker |= lookForFile(project, properties, "docker-compose.yaml");
 //        hasDocker |= lookForFile(project, properties, "compose.yaml");
@@ -123,13 +123,13 @@ public class SpringIntrospector {
                     LOGGER.fine("Use the following command to build the Docker image:");
                     LOGGER.fine("mvn package dockerfile:build");
                     dockerPluginFound = true;
-                    deploymentStrategy.withCommand("mvn package dockerfile:build");
+                    deploymentStrategy.withCommand(new String[] { "mvn", "package", "dockerfile:build" });
                 } else if (mavenPluginMatch(plugin, "io.fabric8", "docker-maven-plugin")) {
                     LOGGER.fine("Found Fabric8 Docker Maven Plugin!");
                     LOGGER.fine("Use the following command to build the Docker image:");
                     LOGGER.fine("mvn package docker:build");
                     dockerPluginFound = true;
-                    deploymentStrategy.withCommand("mvn package docker:build");
+                    deploymentStrategy.withCommand(new String[] { "mvn", "package", "docker:build" });
                 }
 
                 if (mavenPluginMatch(plugin, "org.springframework.boot", "spring-boot-maven-plugin")) {
@@ -172,18 +172,19 @@ public class SpringIntrospector {
                     LOGGER.fine("Spring Boot Maven Plugin found in the pom.xml file.");
                     // FIXME We could add more options here, like -Dspring-boot.build-image.imageName=...
                     // https://docs.spring.io/spring-boot/maven-plugin/build-image.html#build-image.customization
-                    deploymentStrategy.withCommand("mvn spring-boot:build-image");
+                    deploymentStrategy.withCommand(new String[] {"mvn", "spring-boot:build-image"});
                     outputEnvs.put("BUILD_IMAGE", dockerImageName);
                 } else {
-                    String command = "mvn containerise";
-                    // command += " --context " + Paths.get(pomXmlPath).getParent();
-                    if (webDependencyFound) {
-                        command += " --port " + DEFAULT_SERVER_PORT;
-                        command += " --env SERVER_PORT=" + DEFAULT_SERVER_PORT;
-                    }
-
-                    deploymentStrategy.withCommand(command);
-                    outputEnvs.put("BUILD_IMAGE", artifactId + ":" + version);
+                    // FIXME this won't work, cause azd will simply execute whichever command we pass
+//                    List<String> command = List.of("mvn", "containerise");
+//                    // command += " --context " + Paths.get(pomXmlPath).getParent();
+//                    if (webDependencyFound) {
+//                        command.add("--port " + DEFAULT_SERVER_PORT);
+//                        command.add("--env SERVER_PORT=" + DEFAULT_SERVER_PORT);
+//                    }
+//
+//                    deploymentStrategy.withCommand(command.toArray(new String[0]));
+//                    outputEnvs.put("BUILD_IMAGE", artifactId + ":" + version);
                 }
 
                 strategies.add(deploymentStrategy);
@@ -239,14 +240,16 @@ public class SpringIntrospector {
                 LOGGER.fine("Found Spring Boot Starter WebFlux dependency!");
                 webDependencyFound = true;
             }
-
-            String command = "gradle containerise";
-            if (webDependencyFound) {
-                command += " --port " + DEFAULT_SERVER_PORT;
-                command += " --env SERVER_PORT=" + DEFAULT_SERVER_PORT;
-            }
-            deploymentStrategy.withCommand(command);
-            strategies.add(deploymentStrategy);
+// FIXME this won't work, cause azd will simply execute whichever command we pass
+//            List<String> command = new ArrayList<>();
+//            command.add("gradle");
+//            command.add("containerise");
+//            if (webDependencyFound) {
+//                command.add("--port " + DEFAULT_SERVER_PORT);
+//                command.add(" --env SERVER_PORT=" + DEFAULT_SERVER_PORT);
+//            }
+//            deploymentStrategy.withCommand(command.toArray(new String[0]));
+//            strategies.add(deploymentStrategy);
         } catch (IOException e) {
             e.printStackTrace();
         }

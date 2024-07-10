@@ -76,7 +76,7 @@ public class SpringProject extends Container<SpringProject> implements Introspec
             // FIXME ugly generics
             DockerFile<?> dockerFile = new DockerFile<>(getName());
 
-            String dockerFilePath = s.getCommands().get(0);
+            String dockerFilePath = s.getCommands().get(0)[0];
             String contextPath = Paths.get(dockerFilePath).getParent().toString();
             this.copyInto(dockerFile);
             dockerFile.withPath(dockerFilePath)

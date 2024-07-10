@@ -14,7 +14,7 @@ public class SpringDeploymentStrategy implements Comparable<SpringDeploymentStra
     }
 
     private final DeploymentType type;
-    private final List<String> commands;
+    private final List<String[]> commands;
     private final int priority;
 
     /**
@@ -32,12 +32,12 @@ public class SpringDeploymentStrategy implements Comparable<SpringDeploymentStra
         return type;
     }
 
-    public SpringDeploymentStrategy withCommand(String command) {
+    public SpringDeploymentStrategy withCommand(String[] command) {
         commands.add(command);
         return this;
     }
 
-    public List<String> getCommands() {
+    public List<String[]> getCommands() {
         return Collections.unmodifiableList(commands);
     }
 
