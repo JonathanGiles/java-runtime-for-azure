@@ -23,8 +23,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.logging.Logger;
@@ -106,89 +106,76 @@ public class SpringIntrospector {
 
         try {
             SpringDeploymentStrategy deploymentStrategy = new SpringDeploymentStrategy(SpringDeploymentStrategy.DeploymentType.MAVEN_POM, 2100);
-            boolean dockerPluginFound = false;
-            boolean springBootMavenPluginFound = false;
-            String dockerImageName = null;
             File inputFile = new File(pomXmlPath);
             MavenXpp3Reader reader = new MavenXpp3Reader();
             Model model = reader.read(new FileReader(inputFile));
 
-            String artifactId = model.getArtifactId();
-            String version = model.getVersion();
-
-            List<Plugin> plugins = model.getBuild().getPlugins();
-            for (Plugin plugin : plugins) {
-                if (mavenPluginMatch(plugin, "com.spotify", "dockerfile-maven-plugin")) {
-                    LOGGER.fine("Found Spotify Dockerfile Maven Plugin!");
-                    LOGGER.fine("Use the following command to build the Docker image:");
-                    LOGGER.fine("mvn package dockerfile:build");
-                    dockerPluginFound = true;
-                    deploymentStrategy.withCommand(new String[] { "mvn", "package", "dockerfile:build" });
-                } else if (mavenPluginMatch(plugin, "io.fabric8", "docker-maven-plugin")) {
-                    LOGGER.fine("Found Fabric8 Docker Maven Plugin!");
-                    LOGGER.fine("Use the following command to build the Docker image:");
-                    LOGGER.fine("mvn package docker:build");
-                    dockerPluginFound = true;
-                    deploymentStrategy.withCommand(new String[] { "mvn", "package", "docker:build" });
-                }
-
-                if (mavenPluginMatch(plugin, "org.springframework.boot", "spring-boot-maven-plugin")) {
-                    springBootMavenPluginFound = true;
-                    dockerImageName = getPluginConfiguration(plugin, "image.name");
-                    if (dockerImageName == null) {
-                        dockerImageName = getPluginConfiguration(plugin, "imageName");
-                    }
-                    if (dockerImageName != null) {
-                        if (!dockerImageName.contains(":")) {
-                            dockerImageName += ":latest";
-                        }
-                        LOGGER.fine("Found Spring Boot Maven Plugin with image name: " + dockerImageName);
-                    } else {
-                        dockerImageName = artifactId + ":" + version;
-                    }
-                }
+            if (findPlugin(model, "com.spotify:dockerfile-maven-plugin").isPresent()) {
+                LOGGER.fine("Found Spotify Dockerfile Maven Plugin!");
+                LOGGER.fine("Use the following command to build the Docker image:");
+                LOGGER.fine("mvn package dockerfile:build");
+                deploymentStrategy.withCommand(new String[] { "mvn", "package", "dockerfile:build" });
+            } else if (findPlugin(model, "io.fabric8:docker-maven-plugin").isPresent()) {
+                LOGGER.fine("Found Fabric8 Docker Maven Plugin!");
+                LOGGER.fine("Use the following command to build the Docker image:");
+                LOGGER.fine("mvn package docker:build");
+                deploymentStrategy.withCommand(new String[] { "mvn", "package", "docker:build" });
             }
 
-            if (!dockerPluginFound) {
-                LOGGER.fine("No Docker plugin found in the pom.xml file.");
+            Optional<Plugin> springBootMavenPluginOptional = findPlugin(model, "org.springframework.boot:spring-boot-maven-plugin");
+            if (springBootMavenPluginOptional.isPresent()) {
+                LOGGER.fine("Found Spring Boot Maven Plugin!");
+                Plugin plugin = springBootMavenPluginOptional.get();
 
-                boolean webDependencyFound = false;
-                List<Dependency> dependencies = model.getDependencies();
-                for (Dependency dependency : dependencies) {
-                    if (mavenDependencyMatch(dependency, "org.springframework.boot", "spring-boot-starter-web")) {
-                        LOGGER.fine("Found Spring Boot Starter Web dependency!");
-                        webDependencyFound = true;
-                    } else if (mavenDependencyMatch(dependency, "org.springframework.boot", "spring-boot-starter-webflux")) {
-                        LOGGER.fine("Found Spring Boot Starter WebFlux dependency!");
-                        webDependencyFound = true;
-                    }
-                }
-
-                if (webDependencyFound) {
+                // detect whether it's a web application
+                if (findDependency(model, "org.springframework.boot:spring-boot-starter-web").isPresent()) {
+                    LOGGER.fine("Found Spring Boot Starter Web dependency!");
+                    outputEnvs.put("SERVER_PORT", DEFAULT_SERVER_PORT);
+                } else if (findDependency(model, "org.springframework.boot:spring-boot-starter-webflux").isPresent()) {
+                    LOGGER.fine("Found Spring Boot Starter WebFlux dependency!");
                     outputEnvs.put("SERVER_PORT", DEFAULT_SERVER_PORT);
                 }
 
-                if (springBootMavenPluginFound) {
-                    LOGGER.fine("Spring Boot Maven Plugin found in the pom.xml file.");
-                    // FIXME We could add more options here, like -Dspring-boot.build-image.imageName=...
-                    // https://docs.spring.io/spring-boot/maven-plugin/build-image.html#build-image.customization
-                    deploymentStrategy.withCommand(new String[] {"mvn", "spring-boot:build-image"});
-                    outputEnvs.put("BUILD_IMAGE", dockerImageName);
-                } else {
-                    // FIXME this won't work, cause azd will simply execute whichever command we pass
-//                    List<String> command = List.of("mvn", "containerise");
-//                    // command += " --context " + Paths.get(pomXmlPath).getParent();
-//                    if (webDependencyFound) {
-//                        command.add("--port " + DEFAULT_SERVER_PORT);
-//                        command.add("--env SERVER_PORT=" + DEFAULT_SERVER_PORT);
-//                    }
-//
-//                    deploymentStrategy.withCommand(command.toArray(new String[0]));
-//                    outputEnvs.put("BUILD_IMAGE", artifactId + ":" + version);
+                // determine the docker image name
+                var dockerImageName = getPluginConfiguration(plugin, "image.name");
+                if (dockerImageName == null) {
+                    dockerImageName = getPluginConfiguration(plugin, "imageName");
                 }
+                if (dockerImageName == null) {
+                    dockerImageName = model.getArtifactId() + ":" + model.getVersion();
+                }
+                if (dockerImageName != null && !dockerImageName.contains(":")) {
+                    dockerImageName += ":latest";
+                }
+                outputEnvs.put("BUILD_IMAGE", dockerImageName);
 
-                strategies.add(deploymentStrategy);
+                // OpenTelemetry Java Agent FIXME could be other APMs
+                if (project.isOpenTelemetryEnabled()) {
+                    String buildpacks = getPluginConfiguration(plugin, "image.buildpacks");
+                    // FIXME this doesn't cover all cases, but it's a start
+                    if (buildpacks == null) {
+                        LOGGER.warning("""
+                                OpenTelemetry is enabled for [%s], it requires the Spring Boot Maven Plugin to be configured with the following:
+                                <configuration>
+                                    <image>
+                                        <buildpacks>
+                                            <buildpack>paketo-buildpacks/java</buildpack>
+                                            <buildpack>gcr.io/paketo-buildpacks/opentelemetry</buildpack>
+                                        </buildpacks>
+                                        <env>
+                                            <BP_OPENTELEMETRY_ENABLED>true</BP_OPENTELEMETRY_ENABLED>
+                                        </env>
+                                    </image>
+                                </configuration>
+                                """.formatted(project.getName()));
+                    }
+                }
+                // FIXME We could add more options here, like -Dspring-boot.build-image.imageName=...
+                // https://docs.spring.io/spring-boot/maven-plugin/build-image.html#build-image.customization
+                deploymentStrategy.withCommand(new String[] {"mvn", "spring-boot:build-image"});
             }
+
+            strategies.add(deploymentStrategy);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -198,6 +185,7 @@ public class SpringIntrospector {
         Xpp3Dom configuration = (Xpp3Dom) plugin.getConfiguration();
         String value = getConfiguration(configuration, propertyName.split("\\."), 0);
         if (value != null) {
+            LOGGER.fine("Found " + propertyName + " with value [" + value + "] in plugin configuration");
             return value;
         }
 
@@ -205,6 +193,7 @@ public class SpringIntrospector {
             Xpp3Dom execConfiguration = (Xpp3Dom) execution.getConfiguration();
             value = getConfiguration(execConfiguration, propertyName.split("\\."), 0);
             if (value != null) {
+                LOGGER.fine("Found " + propertyName + " with value [" + value + "] in plugin execution [" + execution.getId() + "] configuration");
                 return value;
             }
         }
@@ -215,8 +204,15 @@ public class SpringIntrospector {
         if (dom == null) {
             return null;
         }
+        if (i >= dom.getChildCount()) {
+            return null;
+        }
         if (i == properties.length - 1) {
-            return dom.getChild(properties[i]).getValue();
+            Xpp3Dom child = dom.getChild(properties[i]);
+            if (child == null) {
+                return null;
+            }
+            return child.getValue();
         }
 
         return getConfiguration(dom.getChild(properties[i]), properties, i + 1);
@@ -352,7 +348,37 @@ public class SpringIntrospector {
         }
     }
 
+    /**
+     * Find a plugin in the model by its coordinate.
+     * @param model the Maven model
+     * @param coordinate The coordinate of the plugin to find, e.g. "com.spotify:dockerfile-maven-plugin:1.0.0"
+     * @return The plugin if found, otherwise an empty Optional
+     */
+    private static Optional<Plugin> findPlugin(Model model, String coordinate) {
+        if (model == null || coordinate == null) {
+            return Optional.empty();
+        }
+        String[] parts = coordinate.split(":");
+        return model.getBuild().getPlugins().stream()
+                .filter(plugin -> mavenPluginMatch(plugin, parts[0], parts[1]))
+                .findFirst();
+    }
 
+    /**
+     * Find a dependency in the model by its coordinate.
+     * @param model the Maven model
+     * @param coordinate The coordinate of the dependency to find, e.g. "org.springframework.boot:spring-boot-starter-web:5.0.0"
+     * @return The dependency if found, otherwise an empty Optional
+     */
+    private static Optional<Dependency> findDependency(Model model, String coordinate) {
+        if (model == null || coordinate == null) {
+            return Optional.empty();
+        }
+        String[] parts = coordinate.split(":");
+        return model.getDependencies().stream()
+                .filter(dependency -> mavenDependencyMatch(dependency, parts[0], parts[1]))
+                .findFirst();
+    }
 
     private static boolean mavenPluginMatch(Plugin plugin, String groupId, String artifactId) {
         return groupId.equals(plugin.getGroupId()) && artifactId.equals(plugin.getArtifactId());
@@ -362,6 +388,5 @@ public class SpringIntrospector {
     private static boolean mavenDependencyMatch(Dependency dependency, String groupId, String artifactId) {
         return groupId.equals(dependency.getGroupId()) && artifactId.equals(dependency.getArtifactId());
     }
-
 
 }

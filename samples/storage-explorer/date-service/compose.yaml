@@ -1,6 +1,0 @@
-services:
-  date-service:
-    build:
-      dockerfile: Dockerfile
-    ports:
-      - "9090:8080"
