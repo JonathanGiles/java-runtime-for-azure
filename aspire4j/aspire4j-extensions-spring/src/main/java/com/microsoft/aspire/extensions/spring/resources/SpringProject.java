@@ -35,6 +35,9 @@ public class SpringProject extends Container<SpringProject> implements Introspec
     @RelativePath
     private String path;
 
+    @JsonIgnore
+    private boolean openTelemetryEnabled;
+
     public SpringProject(String name) {
         super(SPRING_PROJECT, name, null);
         withEnvironment("spring.application.name", name);
@@ -104,6 +107,17 @@ public class SpringProject extends Container<SpringProject> implements Introspec
     @JsonIgnore
     public final String getPath() {
         return path;
+    }
+
+    @JsonIgnore
+    public SpringProject withOpenTelemetry() {
+        this.openTelemetryEnabled = true;
+        return self();
+    }
+
+    @JsonIgnore
+    public boolean isOpenTelemetryEnabled() {
+        return openTelemetryEnabled;
     }
 
     @Override
