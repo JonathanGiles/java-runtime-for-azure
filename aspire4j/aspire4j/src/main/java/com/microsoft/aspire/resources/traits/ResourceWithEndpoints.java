@@ -3,7 +3,7 @@ package com.microsoft.aspire.resources.traits;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.microsoft.aspire.implementation.ResourceUtilities;
 import com.microsoft.aspire.resources.Resource;
-import com.microsoft.aspire.resources.properties.EndpointReference;
+import com.microsoft.aspire.resources.references.EndpointReference;
 import com.microsoft.aspire.resources.properties.Scheme;
 import com.microsoft.aspire.resources.properties.Transport;
 

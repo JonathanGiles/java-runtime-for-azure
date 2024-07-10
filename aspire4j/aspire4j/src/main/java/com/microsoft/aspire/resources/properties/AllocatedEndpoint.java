@@ -1,5 +1,7 @@
 package com.microsoft.aspire.resources.properties;
 
+import com.microsoft.aspire.resources.annotations.EndpointAnnotation;
+
 import java.util.Objects;
 
 /**

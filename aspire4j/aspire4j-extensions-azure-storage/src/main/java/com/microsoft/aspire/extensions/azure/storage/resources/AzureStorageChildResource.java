@@ -1,9 +1,7 @@
 package com.microsoft.aspire.extensions.azure.storage.resources;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.microsoft.aspire.resources.Resource;
 import com.microsoft.aspire.resources.ResourceType;
-import com.microsoft.aspire.resources.properties.ReferenceExpression;
 import com.microsoft.aspire.resources.traits.ResourceWithConnectionString;
 import com.microsoft.aspire.resources.traits.ResourceWithParent;
 

@@ -1,9 +1,13 @@
-package com.microsoft.aspire.resources.properties;
+package com.microsoft.aspire.resources.annotations;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import com.microsoft.aspire.resources.properties.AllocatedEndpoint;
+import com.microsoft.aspire.resources.properties.Protocol;
+import com.microsoft.aspire.resources.properties.Scheme;
+import com.microsoft.aspire.resources.properties.Transport;
 import com.microsoft.aspire.resources.traits.ResourceAnnotation;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;

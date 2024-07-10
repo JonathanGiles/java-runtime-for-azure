@@ -1,9 +1,10 @@
 package com.microsoft.aspire.resources.traits;
 
 import com.microsoft.aspire.implementation.ResourceUtilities;
+import com.microsoft.aspire.implementation.TemplateStrings;
 import com.microsoft.aspire.resources.Resource;
-import com.microsoft.aspire.resources.properties.ConnectionStringReference;
-import com.microsoft.aspire.resources.properties.EnvironmentCallbackAnnotation;
+import com.microsoft.aspire.resources.references.ConnectionStringReference;
+import com.microsoft.aspire.resources.annotations.EnvironmentCallbackAnnotation;
 
 import static com.microsoft.aspire.implementation.ResourceUtilities.*;
 
@@ -50,7 +51,7 @@ public interface ResourceWithReference<T extends ResourceWithReference<T>> exten
 
             String connectionStringName = rwcs.getConnectionStringEnvironmentVariable();
             if (connectionStringName == null) {
-                connectionStringName = ENV_VAR_CONNECTION_STRING + connectionName;
+                connectionStringName = TemplateStrings.evaluateConnectionString(connectionName);
             }
             final String _connectionStringName = connectionStringName;
 

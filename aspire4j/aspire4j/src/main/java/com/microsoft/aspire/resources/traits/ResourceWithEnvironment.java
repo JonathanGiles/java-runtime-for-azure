@@ -1,9 +1,10 @@
 package com.microsoft.aspire.resources.traits;
 
 import com.microsoft.aspire.implementation.ResourceUtilities;
+import com.microsoft.aspire.implementation.TemplateStrings;
 import com.microsoft.aspire.resources.Resource;
-import com.microsoft.aspire.resources.properties.EndpointReference;
-import com.microsoft.aspire.resources.properties.EnvironmentCallbackAnnotation;
+import com.microsoft.aspire.resources.references.EndpointReference;
+import com.microsoft.aspire.resources.annotations.EnvironmentCallbackAnnotation;
 import com.microsoft.aspire.resources.properties.EnvironmentCallbackContext;
 
 import java.net.MalformedURLException;
@@ -52,8 +53,8 @@ public interface ResourceWithEnvironment<T extends ResourceWithEnvironment<T>>
 //            throw new URISyntaxException(uriString, "The URI absolute path must be \"/\".");
 //        }
 
-        String envVarName = "services__" + name + "__default__0";
-        withEnvironment(envVarName, url.toString());
+//        String envVarName = "services__" + name + "__default__0";
+        withEnvironment(TemplateStrings.evaluateService(name), url.toString());
 
         return self();
     }
@@ -155,7 +156,7 @@ public interface ResourceWithEnvironment<T extends ResourceWithEnvironment<T>>
 
         String resolvedConnectionName = Optional.ofNullable(connectionName).orElse(source.getName());
         String connectionStringName = Optional.ofNullable(source.getConnectionStringEnvironmentVariable())
-            .orElse(ENV_VAR_CONNECTION_STRING + resolvedConnectionName);
+            .orElse(TemplateStrings.evaluateConnectionString(resolvedConnectionName));
 
         // Assuming there's a method to add environment variables in the builder
         withEnvironment(connectionStringName, source.getConnectionString(/*optional*/)); // FIXME maybe optional?

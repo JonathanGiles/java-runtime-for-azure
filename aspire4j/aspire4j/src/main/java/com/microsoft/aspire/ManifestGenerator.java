@@ -11,8 +11,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.fasterxml.jackson.databind.module.SimpleModule;
-import com.microsoft.aspire.implementation.json.CustomSerializerModifier;
-import com.microsoft.aspire.implementation.json.RelativePathSerializer;
+import com.microsoft.aspire.utils.json.CustomSerializerModifier;
 import com.microsoft.aspire.resources.traits.ResourceWithLifecycle;
 import com.microsoft.aspire.resources.traits.ResourceWithTemplate;
 import com.microsoft.aspire.utils.FileUtilities;

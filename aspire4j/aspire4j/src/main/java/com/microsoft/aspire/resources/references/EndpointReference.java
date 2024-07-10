@@ -1,6 +1,11 @@
-package com.microsoft.aspire.resources.properties;
+package com.microsoft.aspire.resources.references;
 
+import com.microsoft.aspire.implementation.TemplateStrings;
 import com.microsoft.aspire.resources.Resource;
+import com.microsoft.aspire.resources.annotations.EndpointAnnotation;
+import com.microsoft.aspire.resources.properties.AllocatedEndpoint;
+import com.microsoft.aspire.resources.properties.EndpointProperty;
+import com.microsoft.aspire.resources.properties.Scheme;
 import com.microsoft.aspire.resources.traits.ManifestExpressionProvider;
 import com.microsoft.aspire.resources.traits.ResourceWithEndpoints;
 import com.microsoft.aspire.resources.traits.ValueProvider;
@@ -64,7 +69,7 @@ public class EndpointReference<T extends Resource<?> & ResourceWithEndpoints<?>>
             case TARGET_PORT -> "targetPort";
         };
 
-        return String.format("{%s.bindings.%s.%s}", resource.getName(), endpointName, prop);
+        return TemplateStrings.evaluateBinding(resource, endpointName, prop);
     }
 
     @Override

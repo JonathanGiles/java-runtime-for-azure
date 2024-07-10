@@ -6,8 +6,8 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.microsoft.aspire.DistributedApplication;
 import com.microsoft.aspire.extensions.spring.implementation.SpringDeploymentStrategy;
 import com.microsoft.aspire.extensions.spring.implementation.SpringIntrospector;
-import com.microsoft.aspire.implementation.json.RelativePath;
-import com.microsoft.aspire.implementation.json.RelativePathSerializer;
+import com.microsoft.aspire.utils.json.RelativePath;
+import com.microsoft.aspire.utils.json.RelativePathSerializer;
 import com.microsoft.aspire.resources.Container;
 import com.microsoft.aspire.resources.DockerFile;
 import com.microsoft.aspire.resources.ResourceType;
@@ -38,6 +38,9 @@ public class SpringProject extends Container<SpringProject> implements Introspec
     public SpringProject(String name) {
         super(SPRING_PROJECT, name, null);
         withEnvironment("spring.application.name", name);
+
+        // establish a convention that a Spring project will have a path that is equal to the name of the project
+        withPath(name);
     }
 
     @Override

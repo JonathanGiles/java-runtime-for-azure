@@ -1,13 +1,9 @@
 package com.microsoft.aspire.extensions.azure.storage.resources;
 
-import com.microsoft.aspire.DistributedApplication;
 import com.microsoft.aspire.resources.AzureBicepResource;
-import com.microsoft.aspire.resources.ResourceType;
-import com.microsoft.aspire.resources.properties.EndpointReference;
 import com.microsoft.aspire.resources.traits.ResourceWithEndpoints;
 import com.microsoft.aspire.utils.templates.TemplateEngine;
 
-import java.nio.file.Path;
 import java.util.List;
 import java.util.Map;
 

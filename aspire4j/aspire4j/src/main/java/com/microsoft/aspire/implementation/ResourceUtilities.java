@@ -1,7 +1,12 @@
 package com.microsoft.aspire.implementation;
 
 import com.microsoft.aspire.resources.Resource;
+import com.microsoft.aspire.resources.annotations.EndpointAnnotation;
+import com.microsoft.aspire.resources.annotations.EndpointReferenceAnnotation;
+import com.microsoft.aspire.resources.annotations.EnvironmentAnnotation;
+import com.microsoft.aspire.resources.annotations.EnvironmentCallbackAnnotation;
 import com.microsoft.aspire.resources.properties.*;
+import com.microsoft.aspire.resources.references.EndpointReference;
 import com.microsoft.aspire.resources.traits.ResourceAnnotation;
 import com.microsoft.aspire.resources.traits.ResourceWithEndpoints;
 import com.microsoft.aspire.resources.traits.ResourceWithEnvironment;
@@ -12,7 +17,6 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class ResourceUtilities {
-    public static final String ENV_VAR_CONNECTION_STRING = "ConnectionStrings__";
 
     private ResourceUtilities() { }
 
@@ -134,11 +138,9 @@ public class ResourceUtilities {
         return context -> {
             final Resource<?> resource = annotation.getResource();
 
-            if (!(resource instanceof ResourceWithEndpoints<?>)) {
+            if (!(resource instanceof ResourceWithEndpoints<?> resourceWithEndpoints)) {
                 throw new RuntimeException("Resource does not have endpoints");
             }
-            ResourceWithEndpoints<?> resourceWithEndpoints = (ResourceWithEndpoints<?>) resource;
-            final String serviceName = resource.getName();
 
             resourceWithEndpoints.getEndpoints().forEach(endpointReference -> {
                 final String endpointName = endpointReference.getEndpointName();
@@ -148,7 +150,7 @@ public class ResourceUtilities {
                 }
 
                 // Add the endpoint, rewriting localhost to the container host if necessary.
-                context.getEnvironmentVariables().put(String.format("services__%s__%s__0", serviceName, endpointName), endpointReference);
+                context.getEnvironmentVariables().put(TemplateStrings.evaluateService(resource, endpointName), endpointReference);
             });
         };
     }

@@ -1,8 +1,7 @@
 package com.microsoft.aspire.resources.traits;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.microsoft.aspire.implementation.json.CustomSerialize;
-import com.microsoft.aspire.resources.properties.ReferenceExpression;
+import com.microsoft.aspire.resources.references.ReferenceExpression;
 
 import java.util.List;
 

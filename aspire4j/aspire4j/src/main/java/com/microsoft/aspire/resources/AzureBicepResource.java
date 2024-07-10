@@ -84,7 +84,7 @@ public abstract class AzureBicepResource<T extends AzureBicepResource<T>>
     @Valid
     @JsonProperty("params")
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
-    private Map<String, String> parameters = new LinkedHashMap<>();
+    private Map<String, Object> parameters = new LinkedHashMap<>();
 
     public AzureBicepResource(String name) {
         this(name, null);
@@ -111,14 +111,14 @@ public abstract class AzureBicepResource<T extends AzureBicepResource<T>>
 
     @Override
     @JsonIgnore
-    public T withParameter(String name, String value) {
+    public T withParameter(String name, Object value) {
         parameters.put(name, value);
         return self();
     }
 
     @Override
     @JsonIgnore
-    public @Valid Map<String, String> getParameters() {
+    public @Valid Map<String, Object> getParameters() {
         return Collections.unmodifiableMap(parameters);
     }
 

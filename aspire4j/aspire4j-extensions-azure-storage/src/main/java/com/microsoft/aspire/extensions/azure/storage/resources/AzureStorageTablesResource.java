@@ -1,7 +1,7 @@
 package com.microsoft.aspire.extensions.azure.storage.resources;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.microsoft.aspire.resources.properties.ReferenceExpression;
+import com.microsoft.aspire.resources.references.ReferenceExpression;
 
 public final class AzureStorageTablesResource extends AzureStorageChildResource {
 

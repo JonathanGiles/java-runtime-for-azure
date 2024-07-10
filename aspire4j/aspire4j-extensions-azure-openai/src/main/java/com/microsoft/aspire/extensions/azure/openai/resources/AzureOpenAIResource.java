@@ -2,12 +2,11 @@ package com.microsoft.aspire.extensions.azure.openai.resources;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.microsoft.aspire.resources.AzureBicepResource;
-import com.microsoft.aspire.resources.properties.ReferenceExpression;
+import com.microsoft.aspire.resources.references.ReferenceExpression;
 import com.microsoft.aspire.resources.traits.ResourceWithConnectionString;
 import com.microsoft.aspire.resources.traits.ResourceWithEndpoints;
 import com.microsoft.aspire.utils.templates.TemplateEngine;
 
-import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;

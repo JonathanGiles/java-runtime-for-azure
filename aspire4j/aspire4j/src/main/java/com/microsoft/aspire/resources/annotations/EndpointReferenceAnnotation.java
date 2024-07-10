@@ -1,4 +1,4 @@
-package com.microsoft.aspire.implementation;
+package com.microsoft.aspire.resources.annotations;
 
 import com.microsoft.aspire.resources.Resource;
 import com.microsoft.aspire.resources.traits.ResourceAnnotation;

@@ -1,6 +1,4 @@
-package com.microsoft.aspire.implementation;
-
-import com.microsoft.aspire.resources.properties.EnvironmentCallbackAnnotation;
+package com.microsoft.aspire.resources.annotations;
 
 import java.util.Objects;
 

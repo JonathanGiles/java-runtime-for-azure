@@ -1,4 +1,4 @@
-package com.microsoft.aspire.implementation.json;
+package com.microsoft.aspire.utils.json;
 
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.BeanDescription;
@@ -8,7 +8,10 @@ import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.ser.BeanSerializerFactory;
 import com.microsoft.aspire.implementation.ResourceUtilities;
 import com.microsoft.aspire.resources.Resource;
+import com.microsoft.aspire.resources.annotations.EndpointAnnotation;
+import com.microsoft.aspire.resources.annotations.EnvironmentCallbackAnnotation;
 import com.microsoft.aspire.resources.properties.*;
+import com.microsoft.aspire.resources.references.ReferenceExpression;
 import com.microsoft.aspire.resources.traits.ManifestExpressionProvider;
 import com.microsoft.aspire.resources.traits.ResourceWithConnectionString;
 import com.microsoft.aspire.resources.traits.ValueWithReferences;

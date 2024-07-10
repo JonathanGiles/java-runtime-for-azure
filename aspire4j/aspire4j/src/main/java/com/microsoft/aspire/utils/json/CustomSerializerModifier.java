@@ -1,4 +1,4 @@
-package com.microsoft.aspire.implementation.json;
+package com.microsoft.aspire.utils.json;
 
 import com.fasterxml.jackson.databind.BeanDescription;
 import com.fasterxml.jackson.databind.JsonSerializer;

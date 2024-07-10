@@ -1,19 +1,15 @@
 package com.microsoft.aspire.resources;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.microsoft.aspire.implementation.json.RelativePath;
-import com.microsoft.aspire.implementation.json.RelativePathSerializer;
+import com.microsoft.aspire.utils.json.RelativePath;
+import com.microsoft.aspire.utils.json.RelativePathSerializer;
 import com.microsoft.aspire.resources.traits.ResourceWithEndpoints;
 import com.microsoft.aspire.resources.traits.ResourceWithEnvironment;
-import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
-
-import java.util.*;
 
 /*
  {

@@ -1,4 +1,4 @@
-package com.microsoft.aspire.resources.properties;
+package com.microsoft.aspire.resources.references;
 
 import com.microsoft.aspire.resources.traits.ValueProvider;
 import com.microsoft.aspire.resources.traits.ValueWithReferences;

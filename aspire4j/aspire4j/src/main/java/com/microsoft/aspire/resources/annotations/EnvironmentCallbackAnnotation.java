@@ -1,12 +1,9 @@
-package com.microsoft.aspire.resources.properties;
+package com.microsoft.aspire.resources.annotations;
 
+import com.microsoft.aspire.resources.properties.EnvironmentCallbackContext;
 import com.microsoft.aspire.resources.traits.ResourceAnnotation;
 
-import java.util.Map;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.CompletionStage;
 import java.util.function.Consumer;
-import java.util.function.Function;
 import java.util.function.Supplier;
 
 /**
