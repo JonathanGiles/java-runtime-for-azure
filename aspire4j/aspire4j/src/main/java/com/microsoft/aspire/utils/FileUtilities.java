@@ -17,8 +17,22 @@ public class FileUtilities {
     public static void setOutputPath(Path outputPath) {
         OUTPUT_PATH_THREAD_LOCAL.set(outputPath);
 
-        // when the output path is set, we calculate the relative path to the execution directory
-        outputRelativePath = Paths.get(EXECUTION_DIR).relativize(outputPath);
+//        // when the output path is set, we calculate the relative path to the execution directory
+//        outputRelativePath = Paths.get(EXECUTION_DIR).relativize(outputPath);
+
+        // Ensure outputPath is absolute
+        Path absoluteOutputPath = outputPath.toAbsolutePath();
+
+        // Ensure executionDirPath is absolute
+        Path executionDirPath = Paths.get(EXECUTION_DIR).toAbsolutePath();
+
+        // Check if both paths share the same root
+        if (!absoluteOutputPath.getRoot().equals(executionDirPath.getRoot())) {
+            throw new IllegalArgumentException("Output path and execution directory do not share the same root");
+        }
+
+        // Calculate the relative path to the execution directory
+        outputRelativePath = executionDirPath.relativize(absoluteOutputPath);
     }
 
     public static Path getOutputPath() {
