@@ -17,7 +17,7 @@ public class SpringExtension implements Extension {
 
     @Override
     public String getDescription() {
-        return "Provides support for working with Spring applications";
+        return "Provides support for working with Spring applications.";
     }
 
     /**

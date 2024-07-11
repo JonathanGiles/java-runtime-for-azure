@@ -29,6 +29,8 @@
         <module>aspire4j-extensions-azure-eventhubs</module>
         <module>aspire4j-extensions-azure-openai</module>
 
+        <module>aspire4j-extensions-dotnet</module>
+
         <module>aspire4j-extensions-spring</module>
     </modules>
 </project>

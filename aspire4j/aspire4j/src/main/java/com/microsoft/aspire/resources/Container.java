@@ -165,4 +165,114 @@ public class Container<T extends Container<T>> extends Resource<T>
     public T self() {
         return (T) this;
     }
+
+    /*
+    {
+        "type": "object",
+        "required": [
+            "name",
+            "target",
+            "readOnly"
+        ],
+        "properties": {
+            "name": {
+                "type": "string",
+                "description": "The name of the volume."
+            },
+            "target": {
+                "type": "string",
+                "description": "The target within the container where the volume is mounted."
+            },
+            "readOnly": {
+                "type": "boolean",
+                "description": "Flag indicating whether the mount is read-only."
+            }
+        },
+        "additionalProperties": false
+    }
+     */
+    public static class Volume {
+        @NotNull(message = "Volume.name cannot be null")
+        @NotEmpty(message = "Volume.name cannot be an empty string")
+        @JsonProperty("name")
+        private String name;
+
+        @NotNull(message = "Volume.target cannot be null")
+        @NotEmpty(message = "Volume.target cannot be an empty string")
+        @JsonProperty("target")
+        private String target;
+
+        @JsonProperty("readOnly")
+        private boolean readOnly;
+
+        public Volume() {
+        }
+
+        public Volume(String name) {
+            this(name, null);
+        }
+
+        public Volume(String name, String target) {
+            this(name, target, false);
+        }
+
+        public Volume(String name, String target, boolean readOnly) {
+            this.name = name;
+            this.target = target;
+            this.readOnly = readOnly;
+        }
+
+        public Volume withName(String name) {
+            this.name = name;
+            return this;
+        }
+
+        public Volume withTarget(String target) {
+            this.target = target;
+            return this;
+        }
+
+        public Volume withReadOnly() {
+            this.readOnly = true;
+            return this;
+        }
+    }
+
+    public static class BindMount {
+        @NotNull(message = "BindMount.source cannot be null")
+        @NotEmpty(message = "BindMount.source cannot be an empty string")
+        @JsonProperty("source")
+        private String source;
+
+        @NotNull(message = "BindMount.target cannot be null")
+        @NotEmpty(message = "BindMount.target cannot be an empty string")
+        @JsonProperty("target")
+        private String target;
+
+        @JsonProperty("readonly")
+        private boolean readonly;
+
+        public BindMount() { }
+
+        public BindMount(String source, String target, boolean readonly) {
+            this.source = source;
+            this.target = target;
+            this.readonly = readonly;
+        }
+
+        public BindMount withSource(String source) {
+            this.source = source;
+            return this;
+        }
+
+        public BindMount withTarget(String target) {
+            this.target = target;
+            return this;
+        }
+
+        public BindMount withReadonly() {
+            this.readonly = true;
+            return this;
+        }
+    }
 }

@@ -6,9 +6,7 @@ import com.microsoft.aspire.resources.Resource;
 import com.microsoft.aspire.resources.references.ConnectionStringReference;
 import com.microsoft.aspire.resources.annotations.EnvironmentCallbackAnnotation;
 
-import static com.microsoft.aspire.implementation.ResourceUtilities.*;
-
-public interface ResourceWithReference<T extends ResourceWithReference<T>> extends SelfAware<T> {
+public interface ResourceWithReference<T extends Resource<T> & ResourceWithReference<T>> extends SelfAware<T> {
 
     default T withReference(Resource<?> resource) {
         // https://learn.microsoft.com/en-us/dotnet/api/aspire.hosting.resourcebuilderextensions.withreference?view=dotnet-aspire-8.0.1#aspire-hosting-resourcebuilderextensions-withreference-1(aspire-hosting-applicationmodel-iresourcebuilder((-0))-aspire-hosting-applicationmodel-iresourcebuilder((aspire-hosting-applicationmodel-iresourcewithconnectionstring))-system-string-system-boolean)

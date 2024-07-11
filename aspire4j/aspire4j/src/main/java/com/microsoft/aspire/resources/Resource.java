@@ -3,6 +3,7 @@ package com.microsoft.aspire.resources;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import com.microsoft.aspire.resources.annotations.ResourceAnnotation;
 import com.microsoft.aspire.utils.json.CustomSerialize;
 import com.microsoft.aspire.utils.json.ResourceSerializer;
 import com.microsoft.aspire.resources.traits.*;

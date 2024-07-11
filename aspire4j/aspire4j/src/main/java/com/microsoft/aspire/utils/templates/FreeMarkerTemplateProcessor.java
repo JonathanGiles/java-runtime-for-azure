@@ -10,6 +10,7 @@ import java.io.StringReader;
 import java.io.StringWriter;
 import java.util.Map;
 
+// Non-public API
 class FreeMarkerTemplateProcessor implements TemplateEngine {
     private static final TemplateEngine INSTANCE = new FreeMarkerTemplateProcessor();
 

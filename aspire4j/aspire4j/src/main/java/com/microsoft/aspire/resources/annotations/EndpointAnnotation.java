@@ -8,7 +8,6 @@ import com.microsoft.aspire.resources.properties.AllocatedEndpoint;
 import com.microsoft.aspire.resources.properties.Protocol;
 import com.microsoft.aspire.resources.properties.Scheme;
 import com.microsoft.aspire.resources.properties.Transport;
-import com.microsoft.aspire.resources.traits.ResourceAnnotation;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;

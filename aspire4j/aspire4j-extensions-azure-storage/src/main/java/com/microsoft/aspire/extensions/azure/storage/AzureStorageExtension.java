@@ -17,7 +17,7 @@ public class AzureStorageExtension implements Extension {
 
     @Override
     public String getDescription() {
-        return "Provides resources for Azure Storage";
+        return "Provides resources for Azure Storage.";
     }
 
     public AzureStorageResource addAzureStorage(String name) {

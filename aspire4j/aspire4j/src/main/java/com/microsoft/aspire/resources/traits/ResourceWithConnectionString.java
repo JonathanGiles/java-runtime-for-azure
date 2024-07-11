@@ -1,11 +1,12 @@
 package com.microsoft.aspire.resources.traits;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.microsoft.aspire.resources.Resource;
 import com.microsoft.aspire.resources.references.ReferenceExpression;
 
 import java.util.List;
 
-public interface ResourceWithConnectionString<T extends ResourceWithConnectionString<T>>
+public interface ResourceWithConnectionString<T extends Resource<T> & ResourceWithConnectionString<T>>
     extends ManifestExpressionProvider, ValueProvider, ValueWithReferences {
 
 //    T withConnectionString(String connectionString);

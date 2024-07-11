@@ -1,11 +1,12 @@
 package com.microsoft.aspire.resources.traits;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.microsoft.aspire.resources.Resource;
 
 import java.util.List;
 
 // TODO update with CommandLineArgsCallbackAnnotation support
-public interface ResourceWithArguments<T extends ResourceWithArguments<T>> extends SelfAware<T> {
+public interface ResourceWithArguments<T extends Resource<T> & ResourceWithArguments<T>> extends SelfAware<T> {
 
     T withArgument(String argument);
 

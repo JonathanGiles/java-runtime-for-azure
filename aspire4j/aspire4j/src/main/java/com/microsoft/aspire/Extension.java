@@ -1,9 +1,5 @@
 package com.microsoft.aspire;
 
-import com.microsoft.aspire.resources.Resource;
-
-import java.util.List;
-
 /**
  * An extension is a collection of resources that can be used to extend the functionality of the Aspire AppHost API.
  */

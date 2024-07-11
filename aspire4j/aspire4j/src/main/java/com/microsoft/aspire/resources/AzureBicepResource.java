@@ -70,6 +70,11 @@ For example:
   }
 },
  */
+
+/**
+ * Represents a {@link Resource} that is deployed using Azure Bicep.
+ * @param <T>
+ */
 @JsonPropertyOrder({"type", "path", "connectionString", "params"})
 public abstract class AzureBicepResource<T extends AzureBicepResource<T>>
                                         extends Resource<T>

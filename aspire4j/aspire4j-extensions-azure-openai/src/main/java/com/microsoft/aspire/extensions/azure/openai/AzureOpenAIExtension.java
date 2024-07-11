@@ -13,7 +13,7 @@ public class AzureOpenAIExtension implements Extension {
 
     @Override
     public String getDescription() {
-        return "Provides resources for Azure OpenAI";
+        return "Provides resources for Azure OpenAI.";
     }
 
     public AzureOpenAIResource addAzureOpenAI(String name) {

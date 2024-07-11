@@ -8,8 +8,16 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+/**
+ * The template engine is responsible for processing templates, replacing placeholders with values from the context.
+ * Templates can be processed from strings or from files.
+ */
 public interface TemplateEngine {
 
+    /**
+     * Returns an instance of the template engine.
+     * @return An instance of the template engine.
+     */
     static TemplateEngine getTemplateEngine() {
         return FreeMarkerTemplateProcessor.getTemplateEngine();
     }

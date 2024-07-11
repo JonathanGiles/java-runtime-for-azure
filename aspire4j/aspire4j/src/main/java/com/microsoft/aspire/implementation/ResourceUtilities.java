@@ -7,7 +7,7 @@ import com.microsoft.aspire.resources.annotations.EnvironmentAnnotation;
 import com.microsoft.aspire.resources.annotations.EnvironmentCallbackAnnotation;
 import com.microsoft.aspire.resources.properties.*;
 import com.microsoft.aspire.resources.references.EndpointReference;
-import com.microsoft.aspire.resources.traits.ResourceAnnotation;
+import com.microsoft.aspire.resources.annotations.ResourceAnnotation;
 import com.microsoft.aspire.resources.traits.ResourceWithEndpoints;
 import com.microsoft.aspire.resources.traits.ResourceWithEnvironment;
 

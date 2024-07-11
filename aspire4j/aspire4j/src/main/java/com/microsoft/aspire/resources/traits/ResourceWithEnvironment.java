@@ -13,9 +13,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.function.Consumer;
 
-import static com.microsoft.aspire.implementation.ResourceUtilities.*;
-
-public interface ResourceWithEnvironment<T extends ResourceWithEnvironment<T>>
+public interface ResourceWithEnvironment<T extends Resource<T> & ResourceWithEnvironment<T>>
                                                     extends ResourceWithReference<T>, SelfAware<T> {
 
     default T withEnvironment(String key, String value) {

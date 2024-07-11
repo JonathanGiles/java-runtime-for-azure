@@ -2,6 +2,10 @@ package com.microsoft.aspire;
 
 import java.nio.file.Path;
 
+/**
+ * The AppHost interface is the primary entry point for users to interact with the Aspire4j framework. It provides
+ * methods for booting the apphost, running it locally, and generating a manifest file for the apphost.
+ */
 public interface AppHost {
 
     /**

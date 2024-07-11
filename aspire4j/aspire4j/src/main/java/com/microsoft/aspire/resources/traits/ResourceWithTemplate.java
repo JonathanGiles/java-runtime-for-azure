@@ -1,5 +1,7 @@
 package com.microsoft.aspire.resources.traits;
 
+import com.microsoft.aspire.resources.Resource;
+
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
@@ -12,7 +14,7 @@ import java.util.List;
  * location specified by the app host user.
  * @param <T>
  */
-public interface ResourceWithTemplate<T extends ResourceWithTemplate<T>> extends SelfAware<T> {
+public interface ResourceWithTemplate<T extends Resource<T> & ResourceWithTemplate<T>> extends SelfAware<T> {
 
     List<TemplateFileOutput> processTemplate();
 

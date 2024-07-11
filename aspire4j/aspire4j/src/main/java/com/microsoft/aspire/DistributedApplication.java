@@ -5,9 +5,18 @@ import jakarta.validation.Valid;
 
 import java.io.PrintStream;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.ServiceLoader;
 
+/**
+ * The DistributedApplication class is the main entry point for creating and configuring distributed applications.
+ * It provides a fluent API for adding resources to the application, and it also provides a way to load extensions
+ * that can be used to extend the functionality of the application.
+ *
+ * @see AppHost
+ * @see Extension
+ */
 public class DistributedApplication {
     private static DistributedApplication INSTANCE;
 
@@ -59,33 +68,6 @@ public class DistributedApplication {
      */
     public void substituteResource(Resource<?> oldResource, Resource<?>... newResources) {
         manifest.substituteResource(oldResource, newResources);
-    }
-
-    /***************************************************************************
-     *
-     * Project
-     *
-     **************************************************************************/
-
-    /**
-     * Add a new project to the distributed application.
-     *
-     * @param project
-     * @return
-     * @param <T>
-     */
-    public <T extends Project<?>> T addProject(T project) {
-        return manifest.addResource(project);
-    }
-
-    /**
-     * Add a new project to the distributed application.
-     *
-     * @param name
-     * @return
-     */
-    public Project<?> addProject(String name) {
-        return manifest.addResource(new Project<>(name));
     }
 
 
@@ -228,7 +210,7 @@ public class DistributedApplication {
      */
     public void printExtensions(PrintStream out) {
         out.println("Available Aspire4J Extensions:");
-        extensions.forEach(e -> {
+        extensions.stream().sorted(Comparator.comparing(Extension::getName)).forEach(e -> {
             out.println("  - " + e.getName() + " (" + e.getClass().getSimpleName() + ".class): " + e.getDescription());
         });
     }

@@ -1,11 +1,18 @@
 package com.microsoft.aspire.resources.traits;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.microsoft.aspire.resources.Resource;
 
 import java.util.Map;
 
-public interface ResourceWithParameters<T extends ResourceWithParameters<T>> extends SelfAware<T> {
+/**
+ * Represents a resource that can have parameters.
+ */
+public interface ResourceWithParameters<T extends Resource<T> & ResourceWithParameters<T>> extends SelfAware<T> {
 
+    /**
+     * Adds a parameter to this resource.
+     */
     T withParameter(String key, Object value);
 
     /**

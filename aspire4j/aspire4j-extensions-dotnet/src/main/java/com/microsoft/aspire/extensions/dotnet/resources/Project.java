@@ -1,10 +1,12 @@
-package com.microsoft.aspire.resources;
+package com.microsoft.aspire.extensions.dotnet.resources;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.microsoft.aspire.resources.Resource;
+import com.microsoft.aspire.resources.ResourceType;
 import com.microsoft.aspire.utils.json.RelativePath;
 import com.microsoft.aspire.utils.json.RelativePathSerializer;
 import com.microsoft.aspire.resources.traits.ResourceWithArguments;
@@ -44,6 +46,11 @@ import java.util.*;
     },
     "additionalProperties": false
 },
+ */
+
+/**
+ * Represents a .NET project resource.
+ * @param <T>
  */
 @JsonPropertyOrder({"type", "path", "args", "env", "bindings"})
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
