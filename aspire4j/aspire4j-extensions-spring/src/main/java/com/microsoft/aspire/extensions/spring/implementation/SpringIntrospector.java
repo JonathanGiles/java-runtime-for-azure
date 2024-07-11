@@ -154,20 +154,8 @@ public class SpringIntrospector {
                     String buildpacks = getPluginConfiguration(plugin, "image.buildpacks");
                     // FIXME this doesn't cover all cases, but it's a start
                     if (buildpacks == null) {
-                        LOGGER.warning("""
-                                OpenTelemetry is enabled for [%s], it requires the Spring Boot Maven Plugin to be configured with the following:
-                                <configuration>
-                                    <image>
-                                        <buildpacks>
-                                            <buildpack>paketo-buildpacks/java</buildpack>
-                                            <buildpack>gcr.io/paketo-buildpacks/opentelemetry</buildpack>
-                                        </buildpacks>
-                                        <env>
-                                            <BP_OPENTELEMETRY_ENABLED>true</BP_OPENTELEMETRY_ENABLED>
-                                        </env>
-                                    </image>
-                                </configuration>
-                                """.formatted(project.getName()));
+                        LOGGER.fine("OpenTelemetry is enabled for [%s], but the Spring Boot Maven Plugin is not configured with buildpacks.".formatted(project.getName()));
+                        outputEnvs.put("BUILD_ADD_OTEL_AGENT", "true");
                     }
                 }
                 // FIXME We could add more options here, like -Dspring-boot.build-image.imageName=...

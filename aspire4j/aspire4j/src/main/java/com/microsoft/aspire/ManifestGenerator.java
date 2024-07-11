@@ -58,7 +58,7 @@ class ManifestGenerator {
         }
 
         // run the precommit lifecycle hook on all resources
-        app.manifest.getResources().values().forEach(ResourceWithLifecycle::onResourcePrecommit);
+        app.manifest.getResources().values().iterator().forEachRemaining(ResourceWithLifecycle::onResourcePrecommit);
 
         LOGGER.info("Validating models...");
         // Firstly, disable the info logging messages that are printed by Hibernate Validator
