@@ -11,6 +11,9 @@ import com.microsoft.aspire.resources.traits.ResourceWithEnvironment;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /*
  {
     "type": "object",
@@ -61,6 +64,9 @@ public class DockerFile<T extends DockerFile<T>> extends Resource<T>
     @RelativePath
     private String context;
 
+    @JsonProperty("buildArgs")
+    private List<String[]> buildArgs;
+    
     public DockerFile(String name) {
         this(name, null, null);
     }
@@ -98,6 +104,14 @@ public class DockerFile<T extends DockerFile<T>> extends Resource<T>
      */
     public T withContext(String context) {
         this.context = context;
+        return self();
+    }
+    
+    public T withBuildArg(String key, String value) {
+        if (buildArgs == null) {
+            buildArgs = new ArrayList<>();
+        }
+        buildArgs.add(new String[] { key, value });
         return self();
     }
 
