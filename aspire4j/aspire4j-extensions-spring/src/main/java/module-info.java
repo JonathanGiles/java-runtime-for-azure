@@ -16,6 +16,8 @@ module com.microsoft.aspire.extensions.spring {
 
     // We conditionally open up the template files to the apphost, so it can write them out
     opens templates.eureka to com.microsoft.aspire;
+    opens templates.opentelemetry to com.microsoft.aspire;
+    exports com.microsoft.aspire.extensions.spring.implementation;
 
     provides com.microsoft.aspire.Extension with SpringExtension;
 }
