@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.microsoft.aspire.resources.annotations.KeyValueAnnotation;
 import com.microsoft.aspire.utils.json.RelativePath;
 import com.microsoft.aspire.utils.json.RelativePathSerializer;
 import com.microsoft.aspire.resources.traits.ResourceWithEndpoints;
@@ -64,9 +65,6 @@ public class DockerFile<T extends DockerFile<T>> extends Resource<T>
     @RelativePath
     private String context;
 
-    @JsonProperty("buildArgs")
-    private List<String[]> buildArgs;
-    
     public DockerFile(String name) {
         this(name, null, null);
     }
@@ -108,10 +106,7 @@ public class DockerFile<T extends DockerFile<T>> extends Resource<T>
     }
     
     public T withBuildArg(String key, String value) {
-        if (buildArgs == null) {
-            buildArgs = new ArrayList<>();
-        }
-        buildArgs.add(new String[] { key, value });
+        withAnnotation(new KeyValueAnnotation("DockerFile_buildArg", key, value));
         return self();
     }
 

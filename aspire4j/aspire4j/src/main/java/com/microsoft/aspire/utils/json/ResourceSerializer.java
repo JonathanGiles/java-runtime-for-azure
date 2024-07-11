@@ -7,9 +7,11 @@ import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.ser.BeanSerializerFactory;
 import com.microsoft.aspire.implementation.ResourceUtilities;
+import com.microsoft.aspire.resources.DockerFile;
 import com.microsoft.aspire.resources.Resource;
 import com.microsoft.aspire.resources.annotations.EndpointAnnotation;
 import com.microsoft.aspire.resources.annotations.EnvironmentCallbackAnnotation;
+import com.microsoft.aspire.resources.annotations.KeyValueAnnotation;
 import com.microsoft.aspire.resources.properties.*;
 import com.microsoft.aspire.resources.references.ReferenceExpression;
 import com.microsoft.aspire.resources.traits.ManifestExpressionProvider;
@@ -43,6 +45,10 @@ public class ResourceSerializer extends JsonSerializer<Resource<?>> {
         writeConnectionString(resource, gen);
         writeEnvironmentVariables(resource, gen);
         writeBindings(resource, gen);
+
+        if (resource instanceof DockerFile<?> dockerResource) {
+            writeBuildArgs(dockerResource, gen);
+        }
 
         gen.writeEndObject();
     }
@@ -105,6 +111,26 @@ public class ResourceSerializer extends JsonSerializer<Resource<?>> {
             }
 
             gen.writeEndObject();
+        }
+    }
+
+    private void writeBuildArgs(DockerFile<?> dockerResource, JsonGenerator gen) throws IOException {
+        writeObjectField("buildArgs",
+            collectKeyValueAnnotations(dockerResource, "DockerFile_buildArg"),
+            gen);
+    }
+
+    private Map<String, Object> collectKeyValueAnnotations(Resource<?> resource, String type) {
+        return resource.getAnnotations().stream()
+            .filter(a -> a instanceof KeyValueAnnotation keyValueAnnotation && type.equals(keyValueAnnotation.getType()))
+            .map(a -> (KeyValueAnnotation) a)
+            .collect(Collectors.toMap(KeyValueAnnotation::getKey, KeyValueAnnotation::getValue));
+    }
+
+    private void writeObjectField(String name, Map<?,?> map, JsonGenerator gen) throws IOException {
+        Objects.requireNonNull(map);
+        if (!map.isEmpty()) {
+            gen.writeObjectField(name, map);
         }
     }
 
