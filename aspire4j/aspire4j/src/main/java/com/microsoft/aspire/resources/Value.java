@@ -7,23 +7,9 @@ import jakarta.validation.constraints.NotEmpty;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-/*
-{
-    "type": "object",
-    "required": [
-        "connectionString"
-    ],
-    "description": "Represents a value resource. Typically used to perform string concatenation (e.g. for connection strings).",
-    "properties": {
-        "type": {
-            "const": "value.v0"
-        },
-        "connectionString": {
-            "$ref": "#/definitions/connectionString"
-        }
-    },
-    "additionalProperties": false
-},
+/**
+ * Represents a value resource. Typically used to perform string concatenation (e.g. for connection strings).
+ * @param <T>
  */
 @JsonPropertyOrder({"connectionString"})
 @JsonInclude(JsonInclude.Include.NON_EMPTY)

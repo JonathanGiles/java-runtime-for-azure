@@ -12,9 +12,6 @@ import com.microsoft.aspire.resources.traits.ResourceWithEnvironment;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 
-import java.util.ArrayList;
-import java.util.List;
-
 /*
  {
     "type": "object",

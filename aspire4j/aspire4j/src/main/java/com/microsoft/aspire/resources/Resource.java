@@ -15,8 +15,29 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * Represents a generic resource within the Aspire4J framework. This abstract class serves as the foundation for all
+ * specific types of resources that can be part of a distributed application, such as containers, executables, values,
+ * and more. Each resource is characterized by a unique type and name, and can be annotated with additional metadata
+ * to provide further context or configuration.
+ * <p>
+ * Resources are the building blocks of an Aspire4J application, allowing developers to define the components that
+ * make up their application in a structured and extensible manner. This class provides common functionality that
+ * all resources share, including lifecycle management, self-awareness for fluent API design, and annotation support.
+ * <p>
+ * Usage example:
  *
- * @param <T>
+ * {@snippet lang="java" :
+ * // Define a new DockerFile resource
+ * DockerFile dockerFile = new DockerFile("MyDockerFile", "./Dockerfile", ".");
+ * // Add the DockerFile to the application
+ * DistributedApplication app = DistributedApplication.getInstance();
+ * app.addResource(dockerFile);
+ * }
+ *
+ * @param <T> The specific type of resource, allowing for fluent method chaining.
+ * @see ResourceType
+ * @see ResourceWithLifecycle
+ * @see SelfAware
  */
 @JsonPropertyOrder({"type", "params"})
 @CustomSerialize(serializer = ResourceSerializer.class)
@@ -42,29 +63,88 @@ public abstract class Resource<T extends Resource<T>> implements ResourceWithLif
         this.annotations = new ArrayList<>();
     }
 
+    /**
+     * Gets the type of this resource. The type is used to categorize resources within the Aspire4J framework,
+     * facilitating type-specific handling and configuration.
+     * <p>
+     * Usage example:
+     *
+     * {@snippet lang="java" :
+     * ResourceType type = resource.getType();
+     * System.out.println("Resource type: " + type);
+     * }
+     *
+     * @return The {@link ResourceType} of this resource.
+     */
     public final ResourceType getType() {
         return type;
     }
 
+    /**
+     * Gets the name of this resource. The name is a unique identifier within the context of the application,
+     * allowing for easy reference and management of the resource.
+     * <p>
+     * Usage example:
+     *
+     * {@snippet lang="java" :
+     * String name = resource.getName();
+     * System.out.println("Resource name: " + name);
+     * }
+     *
+     * @return The name of this resource.
+     */
     public final String getName() {
         return name;
     }
 
     /**
-     * Returns a modifiable list of annotations associated with the resource. Calling
-     * {@code getAnnotations().add(ResoureAnnotation)} is functinally equivalent to calling
-     * {@link #withAnnotation(ResourceAnnotation)}.
-     * @return The list of annotations.
+     * Returns a modifiable list of annotations associated with this resource. Annotations can be used to attach
+     * additional metadata or configuration to a resource, enhancing its functionality or altering its behavior.
+     * <p>
+     * Usage example:
+     *
+     * {@snippet lang="java" :
+     * resource.getAnnotations().add(new ResourceAnnotation("key", "value"));
+     * }
+     *
+     * @return A list of {@link ResourceAnnotation} objects associated with this resource.
      */
     public final List<ResourceAnnotation> getAnnotations() {
         return annotations;
     }
 
+    /**
+     * Adds an annotation to this resource. This method provides a fluent interface for adding annotations,
+     * allowing for easy chaining of configuration methods.
+     * <p>
+     * Usage example:
+     *
+     * {@snippet lang="java" :
+     * resource.withAnnotation(new ResourceAnnotation("key", "value"));
+     * }
+     *
+     * @param annotation The annotation to add to this resource.
+     * @return This resource, to allow for method chaining.
+     */
     public final T withAnnotation(ResourceAnnotation annotation) {
         annotations.add(annotation);
         return self();
     }
 
+    /**
+     * Copies the characteristics and annotations of this resource into another resource. This method is useful
+     * for duplicating or templating resources within an application. Note that this method is currently incomplete
+     * and may not copy all aspects of the resource. It is recommended to review the implementation before use.
+     * <p>
+     * Usage example:
+     *
+     * {@snippet lang="java" :
+     * Resource<?> newResource = new SomeResourceType(...);
+     * existingResource.copyInto(newResource);
+     * }
+     *
+     * @param newResource The resource into which the characteristics and annotations of this resource will be copied.
+     */
     public void copyInto(Resource<?> newResource) {
         // TODO this is incomplete, and I'm not sure we should keep it!
         // look at the traits of this resource, and copy them into the new resource
@@ -93,7 +173,7 @@ public abstract class Resource<T extends Resource<T>> implements ResourceWithLif
     }
 
     /*
-
+    // TODO consider the following
     /// <summary>
     /// Exposes an HTTP endpoint on a resource. This endpoint reference can be retrieved using <see cref="ResourceBuilderExtensions.GetEndpoint{T}(IResourceBuilder{T}, string)"/>.
     /// The endpoint name will be "http" if not specified.
