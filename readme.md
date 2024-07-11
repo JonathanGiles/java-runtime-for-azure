@@ -1,6 +1,6 @@
 # Aspire4J
 
-This is a proof of concept project, which introduces a minimal example of a Java implementation of the Aspire framework. It aims to provide a Java-idiomatic developer experience that mimics the concepts introduced by the Aspire framework for .net. In particular, it introduces the concept of the AppHost, allowing for Java developers to define infrastructure as code, whilst continuing to rely on the existing Java ecosystem frameworks such as Spring, Micronaut, and Quarkus.
+This is a proof of concept project, which introduces a minimal example of a Java implementation of the Aspire framework. For an overview of Aspire, see [.NET Aspire overview](https://learn.microsoft.com/en-us/dotnet/aspire/get-started/aspire-overview). It aims to provide a Java-idiomatic developer experience that mimics the concepts introduced by the Aspire framework for .net. In particular, it introduces the concept of the AppHost, allowing for Java developers to define infrastructure as code, whilst continuing to rely on the existing Java ecosystem frameworks such as Spring, Micronaut, and Quarkus.
 
 This GitHub repository is split into many sub-projects, but they can be broadly categorised as follows:
 
