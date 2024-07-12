@@ -6,6 +6,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.nio.file.*;
+import java.util.HashSet;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -61,7 +62,7 @@ class ManifestGenerator {
         }
 
         // run the precommit lifecycle hook on all resources
-        app.manifest.getResources().values().iterator().forEachRemaining(ResourceWithLifecycle::onResourcePrecommit);
+        callLifecyclePrecommitHook(app);
 
         LOGGER.info("Validating models...");
         // Firstly, disable the info logging messages that are printed by Hibernate Validator
@@ -131,6 +132,26 @@ class ManifestGenerator {
             Files.write(path, templateFile.content().getBytes());
         } catch (IOException e) {
             e.printStackTrace();
+        }
+    }
+
+    private void callLifecyclePrecommitHook(DistributedApplication app) {
+        Set<ResourceWithLifecycle> processedResources = new HashSet<>();
+        Set<ResourceWithLifecycle> currentResources = new HashSet<>(app.manifest.getResources().values());
+
+        while (!currentResources.isEmpty()) {
+            // Create a snapshot of current resources to iterate over
+            Set<ResourceWithLifecycle> snapshot = new HashSet<>(currentResources);
+            for (ResourceWithLifecycle resource : snapshot) {
+                if (!processedResources.contains(resource)) {
+                    resource.onResourcePrecommit();
+                    processedResources.add(resource);
+                }
+                currentResources.remove(resource);
+            }
+            // Update currentResources to include only new resources added during processing
+            currentResources.addAll(app.manifest.getResources().values());
+            currentResources.removeAll(processedResources);
         }
     }
 
