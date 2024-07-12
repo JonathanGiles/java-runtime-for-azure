@@ -9,9 +9,6 @@ import java.util.List;
 public interface ResourceWithConnectionString<T extends Resource<T> & ResourceWithConnectionString<T>>
     extends ManifestExpressionProvider, ValueProvider, ValueWithReferences {
 
-//    T withConnectionString(String connectionString);
-
-
     @Override
     default String getValue() {
         return getConnectionString();

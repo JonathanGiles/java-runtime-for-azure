@@ -64,10 +64,6 @@ public class Project<T extends Project<T>> extends Resource<T>
     @RelativePath
     private String path;
 
-    @JsonProperty("args")
-    @Valid
-    private final List<String> arguments = new ArrayList<>();
-
     public Project(String name) {
         this(ResourceType.PROJECT, name);
     }
@@ -87,22 +83,9 @@ public class Project<T extends Project<T>> extends Resource<T>
         return self();
     }
 
-    @Override
-    @JsonIgnore
-    public T withArgument(String argument) {
-        arguments.add(argument);
-        return self();
-    }
-
     @JsonIgnore
     public final String getPath() {
         return path;
-    }
-
-    @Override
-    @JsonIgnore
-    public final List<String> getArguments() {
-        return Collections.unmodifiableList(arguments);
     }
 
     @Override

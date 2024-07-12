@@ -64,10 +64,6 @@ public class Executable<T extends Executable<T>> extends Resource<T>
     @NotEmpty(message = "Executable.command cannot be an empty string")
     private String command;
 
-    @JsonProperty("args")
-    @Valid
-    private final List<String> arguments = new ArrayList<>();
-
     public Executable(String name) {
         this(name, null, null);
     }
@@ -90,19 +86,6 @@ public class Executable<T extends Executable<T>> extends Resource<T>
     public T withCommand(String command) {
         this.command = command;
         return self();
-    }
-
-    @Override
-    @JsonIgnore
-    public T withArgument(String argument) {
-        arguments.add(argument);
-        return self();
-    }
-
-    @Override
-    @JsonIgnore
-    public List<String> getArguments() {
-        return Collections.unmodifiableList(arguments);
     }
 
     @Override

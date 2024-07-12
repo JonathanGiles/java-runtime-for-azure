@@ -9,12 +9,14 @@ import com.fasterxml.jackson.databind.ser.BeanSerializerFactory;
 import com.microsoft.aspire.implementation.ResourceUtilities;
 import com.microsoft.aspire.resources.DockerFile;
 import com.microsoft.aspire.resources.Resource;
+import com.microsoft.aspire.resources.annotations.ArgsAnnotation;
 import com.microsoft.aspire.resources.annotations.EndpointAnnotation;
 import com.microsoft.aspire.resources.annotations.EnvironmentCallbackAnnotation;
 import com.microsoft.aspire.resources.annotations.KeyValueAnnotation;
 import com.microsoft.aspire.resources.properties.*;
 import com.microsoft.aspire.resources.references.ReferenceExpression;
 import com.microsoft.aspire.resources.traits.ManifestExpressionProvider;
+import com.microsoft.aspire.resources.traits.ResourceWithArguments;
 import com.microsoft.aspire.resources.traits.ResourceWithConnectionString;
 import com.microsoft.aspire.resources.traits.ValueWithReferences;
 
@@ -47,7 +49,11 @@ public class ResourceSerializer extends JsonSerializer<Resource<?>> {
         writeBindings(resource, gen);
 
         if (resource instanceof DockerFile<?> dockerResource) {
-            writeBuildArgs(dockerResource, gen);
+            writeObjectField("buildArgs", collectKeyValueAnnotations(dockerResource, "buildArgs"), gen);
+        }
+
+        if (resource instanceof ResourceWithArguments<?>) {
+            writeObjectField("args", collectValueAnnotations(resource, "args"), gen);
         }
 
         gen.writeEndObject();
@@ -114,10 +120,11 @@ public class ResourceSerializer extends JsonSerializer<Resource<?>> {
         }
     }
 
-    private void writeBuildArgs(DockerFile<?> dockerResource, JsonGenerator gen) throws IOException {
-        writeObjectField("buildArgs",
-            collectKeyValueAnnotations(dockerResource, "DockerFile_buildArg"),
-            gen);
+    private List<Object> collectValueAnnotations(Resource<?> resource, String type) {
+        return resource.getAnnotations().stream()
+            .filter(a -> a instanceof ArgsAnnotation argsAnnotation && type.equals(argsAnnotation.getType()))
+            .map(a -> ((ArgsAnnotation) a).getArgs().stream())
+            .collect(Collectors.toList());
     }
 
     private Map<String, Object> collectKeyValueAnnotations(Resource<?> resource, String type) {
@@ -131,6 +138,13 @@ public class ResourceSerializer extends JsonSerializer<Resource<?>> {
         Objects.requireNonNull(map);
         if (!map.isEmpty()) {
             gen.writeObjectField(name, map);
+        }
+    }
+
+    private void writeObjectField(String name, Collection<?> collection, JsonGenerator gen) throws IOException {
+        Objects.requireNonNull(collection);
+        if (!collection.isEmpty()) {
+            gen.writeObjectField(name, collection);
         }
     }
 

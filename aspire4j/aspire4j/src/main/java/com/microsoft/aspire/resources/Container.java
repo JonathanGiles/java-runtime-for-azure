@@ -99,10 +99,6 @@ public class Container<T extends Container<T>> extends Resource<T>
     @JsonProperty("entrypoint")
     private String entryPoint;
 
-    @JsonProperty("args")
-    @Valid
-    private final List<String> arguments = new ArrayList<>();
-
     @JsonProperty("volumes")
     @Valid
     private final List<Volume> volumes = new ArrayList<>();
@@ -134,19 +130,6 @@ public class Container<T extends Container<T>> extends Resource<T>
     public T withEntryPoint(String entryPoint) {
         this.entryPoint = entryPoint;
         return self();
-    }
-
-    @Override
-    @JsonIgnore
-    public T withArgument(String argument) {
-        arguments.add(argument);
-        return self();
-    }
-
-    @Override
-    @JsonIgnore
-    public List<String> getArguments() {
-        return Collections.unmodifiableList(arguments);
     }
 
     @JsonIgnore

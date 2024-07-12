@@ -103,7 +103,7 @@ public class DockerFile<T extends DockerFile<T>> extends Resource<T>
     }
     
     public T withBuildArg(String key, String value) {
-        withAnnotation(new KeyValueAnnotation("DockerFile_buildArg", key, value));
+        withAnnotation(new KeyValueAnnotation("buildArgs", key, value));
         return self();
     }
 
