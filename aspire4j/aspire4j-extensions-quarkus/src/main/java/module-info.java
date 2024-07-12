@@ -1,6 +1,6 @@
 import com.microsoft.aspire.extensions.quarkus.QuarkusExtension;
 
-module com.microsoft.aspire.extensions.micronaut {
+module com.microsoft.aspire.extensions.quarkus {
     requires transitive com.microsoft.aspire.extensions.microservice.common;
     requires java.logging;
 
