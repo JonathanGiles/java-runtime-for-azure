@@ -31,6 +31,9 @@
 
         <module>aspire4j-extensions-dotnet</module>
 
+        <module>aspire4j-extensions-microservice-common</module>
+        <module>aspire4j-extensions-micronaut</module>
+        <module>aspire4j-extensions-quarkus</module>
         <module>aspire4j-extensions-spring</module>
     </modules>
 </project>

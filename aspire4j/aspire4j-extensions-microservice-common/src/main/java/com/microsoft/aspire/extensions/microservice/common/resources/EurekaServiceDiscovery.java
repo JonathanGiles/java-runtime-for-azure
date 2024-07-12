@@ -1,4 +1,4 @@
-package com.microsoft.aspire.extensions.spring.resources;
+package com.microsoft.aspire.extensions.microservice.common.resources;
 
 import com.microsoft.aspire.resources.DockerFile;
 import com.microsoft.aspire.resources.traits.ResourceWithEndpoints;
@@ -9,7 +9,6 @@ import com.microsoft.aspire.utils.templates.TemplateDescriptorsBuilder;
 import com.microsoft.aspire.utils.templates.TemplateEngine;
 import com.microsoft.aspire.utils.templates.TemplateFileOutput;
 
-import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;

@@ -40,7 +40,8 @@ class ManifestGenerator {
         DistributedApplication app = new DistributedApplication();
         appHost.configureApplication(app);
         processTemplates(app, outputPath);
-        writeManifest(app);
+
+        writeManifestToFile(app);
     }
 
     private void processTemplates(DistributedApplication app, Path outputPath) {
@@ -53,7 +54,7 @@ class ManifestGenerator {
         LOGGER.info("Templates processed");
     }
 
-    private void writeManifest(DistributedApplication app) {
+    private ObjectMapper prepareObjectMapper(DistributedApplication app) {
         if (app.manifest.isEmpty()) {
             LOGGER.info("No configuration received from AppHost...exiting");
             System.exit(-1);
@@ -78,7 +79,7 @@ class ManifestGenerator {
             System.exit(-1);
         } else {
             // object is valid, continue processing...
-            LOGGER.info("Models validated...Writing manifest to file");
+            LOGGER.info("Models validated...");
         }
 
         // Jackson ObjectMapper is used to serialize the AspireManifest object to a JSON string,
@@ -92,9 +93,29 @@ class ManifestGenerator {
 
         printAnnotations(System.out, app);
 
+        return objectMapper;
+    }
+
+    // This is more-or-less for unit testing purposes
+    String writeManifestToSring(DistributedApplication app) {
+        ObjectMapper objectMapper = prepareObjectMapper(app);
+        LOGGER.info("Writing manifest to string");
+        try {
+            return objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(app.manifest);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return "";
+        } finally {
+            LOGGER.info("Manifest written to string");
+        }
+    }
+
+    void writeManifestToFile(DistributedApplication app) {
+        ObjectMapper objectMapper = prepareObjectMapper(app);
+        LOGGER.info("Writing manifest to file");
         try {
             objectMapper.writerWithDefaultPrettyPrinter()
-                    .writeValue(new File(outputPath.toFile(), "aspire-manifest.json"), app.manifest);
+                .writeValue(new File(outputPath.toFile(), "aspire-manifest.json"), app.manifest);
         } catch (IOException e) {
             e.printStackTrace();
         }

@@ -1,10 +1,10 @@
-package com.microsoft.aspire.extensions.spring.implementation;
+package com.microsoft.aspire.extensions.microservice.common.utils;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class SpringDeploymentStrategy implements Comparable<SpringDeploymentStrategy> {
+public class DeploymentStrategy implements Comparable<DeploymentStrategy> {
 
     public enum DeploymentType {
         DOCKER_FILE,
@@ -22,7 +22,7 @@ public class SpringDeploymentStrategy implements Comparable<SpringDeploymentStra
      * @param type
      * @param priority The higher the priority, the higher it goes on the resulting list of possible strategies
      */
-    public SpringDeploymentStrategy(DeploymentType type, int priority) {
+    public DeploymentStrategy(DeploymentType type, int priority) {
         this.type = type;
         this.priority = priority;
         this.commands = new ArrayList<>();
@@ -32,7 +32,7 @@ public class SpringDeploymentStrategy implements Comparable<SpringDeploymentStra
         return type;
     }
 
-    public SpringDeploymentStrategy withCommand(String[] command) {
+    public DeploymentStrategy withCommand(String[] command) {
         commands.add(command);
         return this;
     }
@@ -42,7 +42,7 @@ public class SpringDeploymentStrategy implements Comparable<SpringDeploymentStra
     }
 
     @Override
-    public int compareTo(SpringDeploymentStrategy o) {
+    public int compareTo(DeploymentStrategy o) {
         // Higher priority comes first
         return Integer.compare(priority, o.priority);
     }

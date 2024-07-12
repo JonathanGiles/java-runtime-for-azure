@@ -44,6 +44,16 @@
         </dependency>
         <dependency>
             <groupId>com.microsoft.aspire</groupId>
+            <artifactId>aspire4j-extensions-micronaut</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>com.microsoft.aspire</groupId>
+            <artifactId>aspire4j-extensions-quarkus</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>com.microsoft.aspire</groupId>
             <artifactId>aspire4j-extensions-dotnet</artifactId>
             <version>1.0-SNAPSHOT</version>
         </dependency>

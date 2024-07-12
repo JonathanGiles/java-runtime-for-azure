@@ -1,4 +1,4 @@
-package com.microsoft.aspire.extensions.spring.implementation;
+package com.microsoft.aspire.extensions.microservice.common.utils;
 
 import com.github.javaparser.JavaParser;
 import com.github.javaparser.ast.CompilationUnit;
@@ -7,7 +7,7 @@ import com.github.javaparser.ast.expr.MarkerAnnotationExpr;
 import com.github.javaparser.ast.expr.NormalAnnotationExpr;
 import com.github.javaparser.ast.expr.SingleMemberAnnotationExpr;
 import com.github.javaparser.ast.visitor.VoidVisitorAdapter;
-import com.microsoft.aspire.extensions.spring.resources.SpringProject;
+import com.microsoft.aspire.extensions.microservice.common.resources.MicroserviceProject;
 import org.apache.maven.model.Dependency;
 import org.apache.maven.model.Model;
 import org.apache.maven.model.Plugin;
@@ -32,16 +32,16 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
 
-public class SpringIntrospector {
-    private static final Logger LOGGER = Logger.getLogger(SpringIntrospector.class.getName());
+public class BuildIntrospector {
+    private static final Logger LOGGER = Logger.getLogger(BuildIntrospector.class.getName());
 
-    private final Set<SpringDeploymentStrategy> strategies = new TreeSet<>();
+    private final Set<DeploymentStrategy> strategies = new TreeSet<>();
     private String DEFAULT_SERVER_PORT = "8081";
 
-    public SpringIntrospector() { }
+    public BuildIntrospector() { }
 
-    public Set<SpringDeploymentStrategy> introspect(SpringProject project, Map<String, String> outputEnvs) {
-        LOGGER.info("Beginning introspection of Spring project: " + project.getName());
+    public Set<DeploymentStrategy> introspect(MicroserviceProject project, Map<String, String> outputEnvs) {
+        LOGGER.info("Beginning introspection of project: " + project.getName());
 
         /*
          * This is where we can look at the project and do things like:
@@ -62,7 +62,7 @@ public class SpringIntrospector {
         return strategies;
     }
 
-    private void lookForBuildFiles(SpringProject project, Map<String, String> properties, Map<String, String> outputEnvs) {
+    private void lookForBuildFiles(MicroserviceProject project, Map<String, String> properties, Map<String, String> outputEnvs) {
         LOGGER.fine("Looking for build files in project: " + project.getName());
 
         // Look for a pom.xml file
@@ -89,7 +89,7 @@ public class SpringIntrospector {
             // with this strategy, we can short circuit and just substitute our spring project to instead be a Docker project.
 
             strategies.add(
-                new SpringDeploymentStrategy(SpringDeploymentStrategy.DeploymentType.DOCKER_FILE, 1000)
+                new DeploymentStrategy(DeploymentStrategy.DeploymentType.DOCKER_FILE, 1000)
                     .withCommand(new String[] { properties.get("Dockerfile") }));
         }
 //        hasDocker |= lookForFile(project, properties, "docker-compose.yaml");
@@ -100,12 +100,12 @@ public class SpringIntrospector {
 //        }
     }
 
-    private void introspectPomXml(SpringProject project, String pomXmlPath, Map<String, String> outputEnvs) {
+    private void introspectPomXml(MicroserviceProject project, String pomXmlPath, Map<String, String> outputEnvs) {
         // look to see if the pom uses the spring-boot-maven-plugin plugin to generate far jars
         // Look for dockerfile support in the pom
 
         try {
-            SpringDeploymentStrategy deploymentStrategy = new SpringDeploymentStrategy(SpringDeploymentStrategy.DeploymentType.MAVEN_POM, 2100);
+            DeploymentStrategy deploymentStrategy = new DeploymentStrategy(DeploymentStrategy.DeploymentType.MAVEN_POM, 2100);
             File inputFile = new File(pomXmlPath);
             MavenXpp3Reader reader = new MavenXpp3Reader();
             Model model = reader.read(new FileReader(inputFile));
@@ -206,12 +206,12 @@ public class SpringIntrospector {
         return getConfiguration(dom.getChild(properties[i]), properties, i + 1);
     }
 
-    private void introspectBuildGradle(SpringProject project, String buildGradlePath, Map<String, String> outputEnvs) {
+    private void introspectBuildGradle(MicroserviceProject project, String buildGradlePath, Map<String, String> outputEnvs) {
         // look to see if the pom uses the spring-boot-maven-plugin plugin to generate far jars
         // Look for dockerfile support in the pom
 
         boolean dockerPluginFound = false;
-        SpringDeploymentStrategy deploymentStrategy = new SpringDeploymentStrategy(SpringDeploymentStrategy.DeploymentType.GRADLE_BUILD, 2200);
+        DeploymentStrategy deploymentStrategy = new DeploymentStrategy(DeploymentStrategy.DeploymentType.GRADLE_BUILD, 2200);
 
         String springWebDependency = "org.springframework.boot:spring-boot-starter-web";
         String springWebFluxDependency = "org.springframework.boot:spring-boot-starter-webflux";
@@ -257,7 +257,7 @@ public class SpringIntrospector {
         return false;
     }
 
-    private boolean lookForFile(SpringProject project, Map<String, String> properties, String fileName) {
+    private boolean lookForFile(MicroserviceProject project, Map<String, String> properties, String fileName) {
         if (project.getPath() == null) {
             return false;
         }
@@ -271,7 +271,7 @@ public class SpringIntrospector {
         return false;
     }
 
-    private void introspectJavaFiles(SpringProject project) {
+    private void introspectJavaFiles(MicroserviceProject project) {
         if (project.getPath() == null) {
             return;
         }
