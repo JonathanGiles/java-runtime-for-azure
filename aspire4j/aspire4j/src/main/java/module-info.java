@@ -15,15 +15,10 @@ module com.microsoft.aspire {
     exports com.microsoft.aspire.utils.json;
     exports com.microsoft.aspire.utils.templates;
 
-    opens com.microsoft.aspire.resources to org.hibernate.validator, com.fasterxml.jackson.databind;
-    opens com.microsoft.aspire.resources.properties to org.hibernate.validator, com.fasterxml.jackson.databind;
-    opens com.microsoft.aspire to com.fasterxml.jackson.databind, org.hibernate.validator;
-    opens com.microsoft.aspire.implementation to com.fasterxml.jackson.databind;
-    opens com.microsoft.aspire.utils to com.fasterxml.jackson.databind;
-    opens com.microsoft.aspire.resources.annotations to com.fasterxml.jackson.databind, org.hibernate.validator;
-    opens com.microsoft.aspire.resources.references to com.fasterxml.jackson.databind, org.hibernate.validator;
-    opens com.microsoft.aspire.utils.json to com.fasterxml.jackson.databind;
+    opens com.microsoft.aspire.implementation.utils.json to com.fasterxml.jackson.databind;
 
+    opens com.microsoft.aspire to org.hibernate.validator, com.fasterxml.jackson.databind;
+    opens com.microsoft.aspire.resources to org.hibernate.validator, com.fasterxml.jackson.databind;
 
     uses com.microsoft.aspire.Extension;
 }

@@ -6,7 +6,7 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.microsoft.aspire.resources.annotations.KeyValueAnnotation;
 import com.microsoft.aspire.utils.json.RelativePath;
-import com.microsoft.aspire.utils.json.RelativePathSerializer;
+import com.microsoft.aspire.implementation.utils.json.RelativePathSerializer;
 import com.microsoft.aspire.resources.traits.ResourceWithEndpoints;
 import com.microsoft.aspire.resources.traits.ResourceWithEnvironment;
 import jakarta.validation.constraints.NotEmpty;

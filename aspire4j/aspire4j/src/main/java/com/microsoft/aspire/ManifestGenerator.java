@@ -11,10 +11,12 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.fasterxml.jackson.databind.module.SimpleModule;
-import com.microsoft.aspire.utils.json.CustomSerializerModifier;
+import com.microsoft.aspire.implementation.utils.json.RelativePathModule;
+import com.microsoft.aspire.implementation.utils.json.CustomSerializerModifier;
 import com.microsoft.aspire.resources.traits.ResourceWithLifecycle;
 import com.microsoft.aspire.resources.traits.ResourceWithTemplate;
 import com.microsoft.aspire.utils.FileUtilities;
+import com.microsoft.aspire.utils.templates.TemplateFileOutput;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validation;
 import jakarta.validation.Validator;
@@ -86,6 +88,7 @@ class ManifestGenerator {
         SimpleModule module = new SimpleModule();
         module.setSerializerModifier(new CustomSerializerModifier());
         objectMapper.registerModule(module);
+        objectMapper.registerModule(new RelativePathModule());
 
         printAnnotations(System.out, app);
 
@@ -98,7 +101,7 @@ class ManifestGenerator {
         LOGGER.info("Manifest written to file");
     }
 
-    private void writeTemplateFile(ResourceWithTemplate.TemplateFileOutput templateFile) {
+    private void writeTemplateFile(TemplateFileOutput templateFile) {
         try {
             Path path = Paths.get(outputPath.toString() + "/" + templateFile.filename());
 

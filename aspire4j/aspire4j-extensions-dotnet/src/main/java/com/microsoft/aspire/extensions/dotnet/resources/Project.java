@@ -8,7 +8,6 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.microsoft.aspire.resources.Resource;
 import com.microsoft.aspire.resources.ResourceType;
 import com.microsoft.aspire.utils.json.RelativePath;
-import com.microsoft.aspire.utils.json.RelativePathSerializer;
 import com.microsoft.aspire.resources.traits.ResourceWithArguments;
 import com.microsoft.aspire.resources.traits.ResourceWithEndpoints;
 import com.microsoft.aspire.resources.traits.ResourceWithEnvironment;
@@ -62,7 +61,6 @@ public class Project<T extends Project<T>> extends Resource<T>
     @NotNull(message = "Project.path cannot be null")
     @NotEmpty(message = "Project.path cannot be an empty string")
     @JsonProperty("path")
-    @JsonSerialize(using = RelativePathSerializer.class)
     @RelativePath
     private String path;
 

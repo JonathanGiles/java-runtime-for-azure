@@ -14,6 +14,8 @@ import java.util.Map;
 class FreeMarkerTemplateProcessor implements TemplateEngine {
     private static final TemplateEngine INSTANCE = new FreeMarkerTemplateProcessor();
 
+    private final Configuration CONFIG = new Configuration(Configuration.VERSION_2_3_33);
+
     private FreeMarkerTemplateProcessor() {    }
 
     public static TemplateEngine getTemplateEngine() {
@@ -21,12 +23,11 @@ class FreeMarkerTemplateProcessor implements TemplateEngine {
     }
 
     @Override
-    public String processTemplate(String templateContent, Map<String, Object> context) {
-        Configuration cfg = new Configuration(new Version("2.3.31"));
+    public String process(String templateContent, Map<String, Object> context) {
         StringWriter out = new StringWriter();
 
         try {
-            Template template = new Template("template", new StringReader(templateContent), cfg);
+            Template template = new Template("template", new StringReader(templateContent), CONFIG);
             template.process(context, out);
         } catch (IOException | TemplateException e) {
             throw new RuntimeException(e);

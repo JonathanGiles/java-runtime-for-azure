@@ -4,7 +4,10 @@ import com.microsoft.aspire.resources.DockerFile;
 import com.microsoft.aspire.resources.traits.ResourceWithEndpoints;
 import com.microsoft.aspire.resources.traits.ResourceWithTemplate;
 import com.microsoft.aspire.utils.FileUtilities;
+import com.microsoft.aspire.utils.templates.TemplateDescriptor;
+import com.microsoft.aspire.utils.templates.TemplateDescriptorsBuilder;
 import com.microsoft.aspire.utils.templates.TemplateEngine;
+import com.microsoft.aspire.utils.templates.TemplateFileOutput;
 
 import java.nio.file.Path;
 import java.util.HashMap;
@@ -56,7 +59,8 @@ public final class EurekaServiceDiscovery extends DockerFile<EurekaServiceDiscov
             .with("application.yaml", "src/main/resources/application.yaml")
             .build();
 
-        List<TemplateFileOutput> templateOutput = TemplateEngine.process(EurekaServiceDiscovery.class, templateFiles, properties);
+        List<TemplateFileOutput> templateOutput = TemplateEngine.getTemplateEngine()
+            .process(EurekaServiceDiscovery.class, templateFiles, properties);
 
         // Important - as noted in the javadoc - from the perspective of the API below, the paths are relative to the
         // directory in which azd is running, NOT the output directory. These paths will then be transformed at

@@ -1,9 +1,10 @@
-package com.microsoft.aspire.utils.json;
+package com.microsoft.aspire.implementation.utils.json;
 
 import com.fasterxml.jackson.databind.BeanDescription;
 import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.SerializationConfig;
 import com.fasterxml.jackson.databind.ser.BeanSerializerModifier;
+import com.microsoft.aspire.utils.json.CustomSerialize;
 
 import java.lang.annotation.Annotation;
 

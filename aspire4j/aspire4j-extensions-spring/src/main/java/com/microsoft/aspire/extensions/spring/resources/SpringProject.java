@@ -2,7 +2,6 @@ package com.microsoft.aspire.extensions.spring.resources;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.microsoft.aspire.DistributedApplication;
 import com.microsoft.aspire.extensions.spring.implementation.SpringDeploymentStrategy;
 import com.microsoft.aspire.extensions.spring.implementation.SpringIntrospector;
@@ -13,8 +12,10 @@ import com.microsoft.aspire.resources.traits.IntrospectiveResource;
 import com.microsoft.aspire.resources.traits.ResourceWithTemplate;
 import com.microsoft.aspire.utils.FileUtilities;
 import com.microsoft.aspire.utils.json.RelativePath;
-import com.microsoft.aspire.utils.json.RelativePathSerializer;
+import com.microsoft.aspire.utils.templates.TemplateDescriptor;
+import com.microsoft.aspire.utils.templates.TemplateDescriptorsBuilder;
 import com.microsoft.aspire.utils.templates.TemplateEngine;
+import com.microsoft.aspire.utils.templates.TemplateFileOutput;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
@@ -36,7 +37,6 @@ public class SpringProject extends Container<SpringProject>
     @NotNull(message = "Project.path cannot be null")
     @NotEmpty(message = "Project.path cannot be an empty string")
     @JsonProperty("path")
-    @JsonSerialize(using = RelativePathSerializer.class)
     @RelativePath
     private String path;
 
@@ -177,7 +177,8 @@ public class SpringProject extends Container<SpringProject>
                     .with("JAVA_TOOL_OPTIONS.delim")
                     .build();
 
-            List<TemplateFileOutput> templateOutput = TemplateEngine.process(SpringProject.class, templateFiles, properties);
+            List<TemplateFileOutput> templateOutput = TemplateEngine.getTemplateEngine()
+                .process(SpringProject.class, templateFiles, properties);
 
             // Important - as noted in the javadoc - from the perspective of the API below, the paths are relative to the
             // directory in which azd is running, NOT the output directory. These paths will then be transformed at

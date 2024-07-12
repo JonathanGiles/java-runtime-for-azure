@@ -45,6 +45,6 @@ public class TemplateStrings {
     }
 
     public static String evaluate(String template, Map<String, Object> context) {
-        return TemplateEngine.getTemplateEngine().processTemplate(template, context);
+        return TemplateEngine.getTemplateEngine().process(template, context);
     }
 }

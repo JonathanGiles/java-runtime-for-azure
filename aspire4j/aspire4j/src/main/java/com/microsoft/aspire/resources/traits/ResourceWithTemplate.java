@@ -1,9 +1,8 @@
 package com.microsoft.aspire.resources.traits;
 
 import com.microsoft.aspire.resources.Resource;
+import com.microsoft.aspire.utils.templates.TemplateFileOutput;
 
-import java.nio.file.Path;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -16,78 +15,9 @@ import java.util.List;
  */
 public interface ResourceWithTemplate<T extends Resource<T> & ResourceWithTemplate<T>> extends SelfAware<T> {
 
+    /**
+     * Processes the template associated with this resource.
+     * @return A list of template file outputs.
+     */
     List<TemplateFileOutput> processTemplate();
-
-    class TemplateDescriptor {
-        private final String inputFilename;
-        private final String outputFilename;
-
-        public TemplateDescriptor(String inputFilename, String outputFilename) {
-            this.inputFilename = inputFilename;
-            this.outputFilename = outputFilename;
-        }
-
-        public String getInputFilename() {
-            return inputFilename;
-        }
-
-        public String getOutputFilename() {
-            return outputFilename;
-        }
-    }
-
-    class TemplateDescriptorsBuilder {
-        final String templatePath;
-        final String outputRootPath;
-
-        final List<TemplateDescriptor> templateDescriptors;
-
-        private TemplateDescriptorsBuilder(String templatePath, String outputRootPath) {
-            this.templatePath = templatePath;
-            this.outputRootPath = outputRootPath;
-            this.templateDescriptors = new ArrayList<>();
-        }
-
-        /**
-         * Begins the process of specifying template files to be processed, which will be written to the root of the
-         * user-specified output directory by default.
-         * @param templatePath      The path to the template files, relative to the root of the jar file / the resources
-         *                          directory.
-         * @return A new TemplateDescriptorsBuilder instance that can then be used to specify the template files to be
-         * processed.
-         */
-        public static TemplateDescriptorsBuilder begin(String templatePath) {
-            return begin(templatePath, "");
-        }
-
-        /**
-         * Begins the process of specifying template files to be processed.
-         * @param templatePath      The path to the template files, relative to the root of the jar file / the resources
-         *                          directory.
-         * @param outputRootPath    The root path where the output files will be written to, relative to the
-         *                          user-specified output directory.
-         * @return A new TemplateDescriptorsBuilder instance that can then be used to specify the template files to be
-         * processed.
-         */
-        public static TemplateDescriptorsBuilder begin(String templatePath, String outputRootPath) {
-            return new TemplateDescriptorsBuilder(templatePath, outputRootPath);
-        }
-
-        public TemplateDescriptorsBuilder with(String inputFilename) {
-            templateDescriptors.add(new TemplateDescriptor(templatePath + inputFilename, outputRootPath + inputFilename));
-            return this;
-        }
-
-        public TemplateDescriptorsBuilder with(String inputFilename, String outputFilename) {
-            templateDescriptors.add(new TemplateDescriptor(templatePath + inputFilename, outputRootPath + outputFilename));
-            return this;
-        }
-
-        public List<TemplateDescriptor> build() {
-            return templateDescriptors;
-        }
-    }
-
-    // FIXME at some point string content won't be sufficient, and we will want to support binary content too
-    record TemplateFileOutput(String filename, String content) {    }
 }

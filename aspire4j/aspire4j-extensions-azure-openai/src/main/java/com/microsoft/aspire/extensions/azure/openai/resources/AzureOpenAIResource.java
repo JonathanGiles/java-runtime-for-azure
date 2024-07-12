@@ -5,7 +5,10 @@ import com.microsoft.aspire.resources.AzureBicepResource;
 import com.microsoft.aspire.resources.references.ReferenceExpression;
 import com.microsoft.aspire.resources.traits.ResourceWithConnectionString;
 import com.microsoft.aspire.resources.traits.ResourceWithEndpoints;
+import com.microsoft.aspire.utils.templates.TemplateDescriptor;
+import com.microsoft.aspire.utils.templates.TemplateDescriptorsBuilder;
 import com.microsoft.aspire.utils.templates.TemplateEngine;
+import com.microsoft.aspire.utils.templates.TemplateFileOutput;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -39,9 +42,8 @@ public class AzureOpenAIResource extends AzureBicepResource<AzureOpenAIResource>
             .with("openai.module.bicep", "${name}.module.bicep")
             .build();
 
-        List<TemplateFileOutput> templateOutput = TemplateEngine.process(AzureOpenAIResource.class, templateFiles, Map.of(
-            "name", getName()
-        ));
+        List<TemplateFileOutput> templateOutput = TemplateEngine.getTemplateEngine()
+            .process(AzureOpenAIResource.class, templateFiles, Map.of("name", getName()));
 
         // we know that we need to get the output filename from the first element, and set that as the path
         // FIXME we need a better way of determining the output path of the template

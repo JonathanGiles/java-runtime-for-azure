@@ -5,7 +5,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.microsoft.aspire.resources.annotations.ResourceAnnotation;
 import com.microsoft.aspire.utils.json.CustomSerialize;
-import com.microsoft.aspire.utils.json.ResourceSerializer;
+import com.microsoft.aspire.implementation.utils.json.ResourceSerializer;
 import com.microsoft.aspire.resources.traits.*;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotEmpty;

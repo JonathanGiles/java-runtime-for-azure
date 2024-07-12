@@ -1,4 +1,4 @@
-package com.microsoft.aspire.utils.json;
+package com.microsoft.aspire.implementation.utils.json;
 
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.BeanProperty;
@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.ser.ContextualSerializer;
 import com.microsoft.aspire.utils.FileUtilities;
+import com.microsoft.aspire.utils.json.RelativePath;
 
 import java.io.IOException;
 import java.nio.file.Path;
@@ -42,7 +43,6 @@ public class RelativePathSerializer extends JsonSerializer<String> implements Co
             // When the path is output to the aspire-manifest.json file, the path will transform based on the relative
             // location of the output directory to the root directory. This way, when azd picks up the manifest file,
             // the paths remain correct.
-//            gen.writeString(FileUtilities.getOutputRelativePath(value).toString());
             gen.writeString(FileUtilities.convertRootRelativePathToOutputPath(value).toString());
         } else {
             gen.writeString(value);
