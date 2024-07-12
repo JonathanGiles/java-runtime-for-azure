@@ -91,7 +91,7 @@ class ManifestGenerator {
         objectMapper.registerModule(module);
         objectMapper.registerModule(new RelativePathModule());
 
-        printAnnotations(System.out, app);
+//        printAnnotations(System.out, app);
 
         return objectMapper;
     }
