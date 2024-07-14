@@ -10,7 +10,7 @@ import com.microsoft.aspire.resources.properties.Transport;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public interface ResourceWithEndpoints<T extends Resource<T> & ResourceWithEndpoints<T>> extends SelfAware<T> {
+public interface ResourceWithEndpoints<T extends Resource<T> & ResourceWithEndpoints<T>> extends ResourceTrait<T> {
 
     // TODO enable these
 //    default T withEndpoint(EndpointReference<?> endpointReference) {
@@ -107,6 +107,8 @@ public interface ResourceWithEndpoints<T extends Resource<T> & ResourceWithEndpo
         return self();
     }
 
+    @Override
+    @SuppressWarnings("unchecked")
     default T self() {
         return (T) this;
     }

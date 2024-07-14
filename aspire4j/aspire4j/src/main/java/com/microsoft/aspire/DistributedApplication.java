@@ -4,6 +4,7 @@ import com.microsoft.aspire.resources.*;
 import jakarta.validation.Valid;
 
 import java.io.PrintStream;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -358,8 +359,8 @@ public class DistributedApplication {
      */
     public <T extends Extension> T withExtension(Class<T> extension) {
         try {
-            return extension.newInstance();
-        } catch (InstantiationException | IllegalAccessException e) {
+            return extension.getDeclaredConstructor().newInstance();
+        } catch (InvocationTargetException | NoSuchMethodException | InstantiationException | IllegalAccessException e) {
             throw new RuntimeException("Failed to create a new instance of the extension class", e);
         }
     }

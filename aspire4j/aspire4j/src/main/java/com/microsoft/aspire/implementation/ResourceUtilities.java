@@ -88,11 +88,12 @@ public class ResourceUtilities {
 
         // TODO this is the C# translation
         // Set the environment variable on the resource
-        if (env != null && resource instanceof ResourceWithEndpoints resourceWithEndpoints && resource instanceof ResourceWithEnvironment<?>) {
+        if (env != null && resource instanceof ResourceWithEndpoints<?> resourceWithEndpoints && resource instanceof ResourceWithEnvironment<?>) {
             // TODO
 //            annotation.setTargetPortEnvironmentVariable(env);
 
-            EndpointReference<?> endpointReference = new EndpointReference((Resource<?>) resourceWithEndpoints, annotation);
+            // FIXME unused
+            EndpointReference<?> endpointReference = new EndpointReference<ResourceWithEndpoints<?>>(resourceWithEndpoints, annotation);
 
             resource.withAnnotation(new EnvironmentCallbackAnnotation("targetPortConfig", context -> {
                 // FIXME Shouldn't matter for now, as env is always null

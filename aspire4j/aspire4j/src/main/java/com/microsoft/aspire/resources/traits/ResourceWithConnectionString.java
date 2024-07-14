@@ -7,7 +7,7 @@ import com.microsoft.aspire.resources.references.ReferenceExpression;
 import java.util.List;
 
 public interface ResourceWithConnectionString<T extends Resource<T> & ResourceWithConnectionString<T>>
-    extends ManifestExpressionProvider, ValueProvider, ValueWithReferences {
+    extends ResourceTrait<T>, ManifestExpressionProvider, ValueProvider, ValueWithReferences {
 
     @Override
     default String getValue() {

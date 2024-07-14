@@ -5,13 +5,13 @@ This is a proof of concept project, which introduces a minimal example of a Java
 This GitHub repository is split into many sub-projects, but they can be broadly categorised as follows:
 
 * **Aspire4J**:
-  * `aspire4j`: The core library that provides the AppHost and the ability to define infrastructure as code.
-  * `aspire4j-extensions-*`: Extensions for the Aspire4J library, providing support for Azure, Spring, etc.
-  * `aspire4j-maven-tools`: A Maven archetype that can be used to create new Aspire4J App Hosts.
+  * `/aspire4j`: The core library that provides the AppHost and the ability to define infrastructure as code.
+  * `/extensions/*`: Extensions for the Aspire4J library, providing support for Azure, Spring, etc.
+  * `/aspire4j-maven-tools`: A Maven archetype that can be used to create new Aspire4J App Hosts.
 * **Sample Applications**:
-  * **Storage Explorer**: Refer to the [readme](tree/main/samples/storage-explorer/readme.md) for more information.
+  * **Storage Explorer**: Refer to the [StorageExplorerReadme] for more information.
 
-In this way, the file of most interest is the `StorageExplorerAppHost` file, which defines the infrastructure as code.
+In this way, the file of most interest is the [StorageExplorerAppHost] file, which defines the infrastructure as code.
 
 ## Getting Started
 
@@ -43,3 +43,6 @@ mvn archetype:generate \
 
 4. Follow the prompts to create your new Aspire4J project.
 5. You will see a new directory created in your project with the name you provided in the prompt. Inside this directory you will find a new `AspireAppHost` Java class that you can use to define your infrastructure as code.
+
+[StorageExplorerReadme]: /JonathanGiles/aspire4j/blob/main/samples/storage-explorer/readme.md
+[StorageExplorerAppHost]: /JonathanGiles/aspire4j/blob/main/samples/storage-explorer/storage-explorer-apphost/src/main/java/com/microsoft/aspire/storageexplorer/StorageExplorerAppHost.java

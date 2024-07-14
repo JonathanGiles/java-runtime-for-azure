@@ -7,6 +7,7 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.microsoft.aspire.resources.traits.ResourceWithArguments;
 import com.microsoft.aspire.resources.traits.ResourceWithEndpoints;
 import com.microsoft.aspire.resources.traits.ResourceWithEnvironment;
+import com.microsoft.aspire.resources.traits.ResourceWithReference;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
@@ -50,9 +51,7 @@ import java.util.*;
 @JsonPropertyOrder({"type", "workingDirectory", "command", "args", "env", "bindings"})
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
 public class Executable<T extends Executable<T>> extends Resource<T>
-                                                 implements ResourceWithArguments<T>,
-                                                          ResourceWithEnvironment<T>,
-                                                          ResourceWithEndpoints<T> {
+         implements ResourceWithArguments<T>, ResourceWithEnvironment<T>, ResourceWithEndpoints<T>, ResourceWithReference<T> {
 
     @NotNull(message = "Executable.workingDirectory cannot be null")
     @NotEmpty(message = "Executable.workingDirectory cannot be an empty string")
@@ -89,6 +88,7 @@ public class Executable<T extends Executable<T>> extends Resource<T>
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public T self() {
         return (T) this;
     }

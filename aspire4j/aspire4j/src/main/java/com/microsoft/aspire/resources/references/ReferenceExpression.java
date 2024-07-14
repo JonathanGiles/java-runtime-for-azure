@@ -82,7 +82,7 @@ public class ReferenceExpression implements ValueProvider, ValueWithReferences {
         String[] values = valueProviders.stream()
             .map(ValueProvider::getValue)
             .toArray(String[]::new);
-        return String.format(format, values);
+        return String.format(format, (Object) values);
     }
 
     // TODO this is not complete!

@@ -73,7 +73,9 @@ For example:
 
 /**
  * Represents a {@link Resource} that is deployed using Azure Bicep.
- * @param <T>
+ * @param <T> The specific type of the resource, which may or may not be a subtype of this class. This allows for
+ *           method chaining, even when using a subtype, when used in conjunction with the API on
+ *           {@link com.microsoft.aspire.resources.traits.SelfAware}.
  */
 @JsonPropertyOrder({"type", "path", "connectionString", "params"})
 public abstract class AzureBicepResource<T extends AzureBicepResource<T>>
@@ -128,6 +130,7 @@ public abstract class AzureBicepResource<T extends AzureBicepResource<T>>
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public T self() {
         return (T) this;
     }

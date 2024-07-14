@@ -4,7 +4,7 @@ import com.microsoft.aspire.implementation.ResourceUtilities;
 import com.microsoft.aspire.resources.Resource;
 import com.microsoft.aspire.resources.annotations.ArgsAnnotation;
 
-public interface ResourceWithArguments<T extends Resource<T> & ResourceWithArguments<T>> extends SelfAware<T> {
+public interface ResourceWithArguments<T extends Resource<T> & ResourceWithArguments<T>>  extends ResourceTrait<T> {
 
     default T withArgument(String argument) {
         ResourceUtilities.applyAnnotation(self(), ArgsAnnotation.createArgs(argument));

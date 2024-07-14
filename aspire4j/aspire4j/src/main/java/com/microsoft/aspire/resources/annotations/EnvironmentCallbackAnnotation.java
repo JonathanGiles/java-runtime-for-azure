@@ -18,7 +18,7 @@ public class EnvironmentCallbackAnnotation implements ResourceAnnotation {
      * Initializes a new instance of the {@code EnvironmentCallbackAnnotation} class with the specified name and callback function.
      *
      * @param name     The name of the environment variable to set.
-     * @param callback The callback function that returns the value to set the environment variable to.
+     * @param supplier The callback function that returns the value to set the environment variable to.
      */
     public EnvironmentCallbackAnnotation(final String name, final Supplier<String> supplier) {
         if (name == null || supplier == null) {

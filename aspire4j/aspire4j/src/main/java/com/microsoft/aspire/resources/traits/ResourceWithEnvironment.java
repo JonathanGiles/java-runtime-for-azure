@@ -8,16 +8,16 @@ import com.microsoft.aspire.resources.annotations.EnvironmentCallbackAnnotation;
 import com.microsoft.aspire.resources.properties.EnvironmentCallbackContext;
 
 import java.net.MalformedURLException;
+import java.net.URI;
 import java.net.URL;
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.Consumer;
 
-public interface ResourceWithEnvironment<T extends Resource<T> & ResourceWithEnvironment<T>>
-                                                    extends ResourceWithReference<T>, SelfAware<T> {
+public interface ResourceWithEnvironment<T extends Resource<T> & ResourceWithEnvironment<T>> extends ResourceTrait<T> {
 
     default T withEnvironment(String key, String value) {
-        ResourceUtilities.withEnvironment((Resource<?>) self(), key, value);
+        ResourceUtilities.withEnvironment(self(), key, value);
         return self();
     }
 
@@ -32,43 +32,38 @@ public interface ResourceWithEnvironment<T extends Resource<T> & ResourceWithEnv
      * Injects service discovery information as environment variables from the URI into the destination resource,
      * using the name as the service name. The URI will be injected using the format "services__{name}__default__0={uri}."
      *
-     * @param builder The resource builder where the service discovery information will be injected.
      * @param name    The name of the service.
-     * @param uri     The URI of the service.
-     * @param <TDestination> The type of the destination resource, which must implement ResourceWithEnvironment.
-     * @return The builder instance for chaining.
-     * @throws URISyntaxException If the URI is not absolute or if the absolute path is not "/".
+     * @param url     The URL of the service.
+     * @return The resource configured with the specified reference.
+     * @throws MalformedURLException If the URI is not absolute or if the absolute path is not "/".
      */
-    default T withReference(String name, String urlString) throws MalformedURLException {
-        URL url = new URL(urlString);
+    default T withReference(String name, String url) throws MalformedURLException {
+        URL _url = URI.create(url).toURL();
 
-        // TODO enable
-//        if (!url.isAbsolute()) {
-//            throw new URISyntaxException(uriString, "The URI for service reference must be absolute.");
-//        }
-//
-//        if (!url.getPath().equals("/")) {
-//            throw new URISyntaxException(uriString, "The URI absolute path must be \"/\".");
-//        }
+        if (_url.getProtocol() == null) {
+            throw new MalformedURLException("The URL must have a protocol, indicating it is absolute.");
+        }
 
-//        String envVarName = "services__" + name + "__default__0";
-        withEnvironment(TemplateStrings.evaluateService(name), url.toString());
+        if (!_url.getPath().equals("/")) {
+            throw new MalformedURLException("The URL absolute path must be \"/\".");
+        }
+
+        withEnvironment(TemplateStrings.evaluateService(name), _url.toString());
 
         return self();
     }
 
 
     /**
-     * Injects service discovery information from the specified endpoint into the project resource using the source resource's name as the service name.
-     * Each endpoint will be injected using the format "services__{sourceResourceName}__{endpointName}__{endpointIndex}={uriString}."
+     * Injects service discovery information from the specified endpoint into the resource using the source
+     * resource's name as the service name. Each endpoint will be injected using the format
+     * "services__{sourceResourceName}__{endpointName}__{endpointIndex}={uriString}."
      *
-     * @param builder           The resource builder where the service discovery information will be injected.
      * @param endpointReference The endpoint from which to extract the URL.
-     * @param <TDestination>    The type of the destination resource, which must implement ResourceWithEnvironment.
-     * @return The builder instance for chaining.
+     * @return The resource configured with the specified reference.
      */
-    default <R extends Resource<?> & ResourceWithEnvironment<?>> T withReference(R resource, EndpointReference<?> endpointReference) {
-        ResourceUtilities.applyEndpoints(resource, endpointReference.getResource(), endpointReference.getEndpointName());
+    default <R extends Resource<?> & ResourceWithEnvironment<?>> T withReference(EndpointReference<?> endpointReference) {
+        ResourceUtilities.applyEndpoints(self(), endpointReference.getResource(), endpointReference.getEndpointName());
         return self();
     }
 
@@ -138,16 +133,13 @@ public interface ResourceWithEnvironment<T extends Resource<T> & ResourceWithEnv
      * environment variables). If a connection string is not found on the resource, the configuration system will be
      * queried for a connection string using the resource's name.
      * </p>
-     * @param source The resource where connection string will be injected.
+     *
      * @param source The resource from which to extract the connection string.
      * @param connectionName An override of the source resource's name for the connection string. The resulting connection
      *                       string will be "ConnectionStrings__connectionName" if this is not null.
      * @param optional true to allow a missing connection string; false to throw an exception if the connection string is
      *                 not found.
-     * @return A reference to the builder.
-     * @throws DistributedApplicationException Throws an exception if the connection string resolves to null. It can be null
-     *                                         if the resource has no connection string, and if the configuration has no
-     *                                         connection string for the source resource.
+     * @return The resource configured with the specified reference.
      */
     default <R extends Resource<?> & ResourceWithConnectionString<?>> T withReference(
         R source, String connectionName, boolean optional) {
@@ -163,7 +155,7 @@ public interface ResourceWithEnvironment<T extends Resource<T> & ResourceWithEnv
     }
 
     default T withEnvironment(Consumer<EnvironmentCallbackContext> callback) {
-        ResourceUtilities.applyAnnotation((Resource<?>) self(), new EnvironmentCallbackAnnotation("Unknown callback", callback));
+        ResourceUtilities.applyAnnotation(self(), new EnvironmentCallbackAnnotation("Unknown callback", callback));
         return self();
     }
 

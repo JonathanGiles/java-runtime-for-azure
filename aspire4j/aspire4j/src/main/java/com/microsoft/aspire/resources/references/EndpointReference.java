@@ -18,7 +18,7 @@ import java.util.Optional;
  * An EndpointReference is a core Aspire type used for keeping track of endpoint details in expressions. Simple literal
  * values cannot be used because endpoints are not known until containers are launched.
  */
-public class EndpointReference<T extends Resource<?> & ResourceWithEndpoints<?>>
+public class EndpointReference<T extends ResourceWithEndpoints<?>>
                 implements ValueProvider, ValueWithReferences, ManifestExpressionProvider {
 
     private final String endpointName;
@@ -69,7 +69,7 @@ public class EndpointReference<T extends Resource<?> & ResourceWithEndpoints<?>>
             case TARGET_PORT -> "targetPort";
         };
 
-        return TemplateStrings.evaluateBinding(resource, endpointName, prop);
+        return TemplateStrings.evaluateBinding(resource.self(), endpointName, prop);
     }
 
     @Override

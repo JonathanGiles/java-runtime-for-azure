@@ -8,7 +8,7 @@ import java.util.Map;
 /**
  * Represents a resource that can have parameters.
  */
-public interface ResourceWithParameters<T extends Resource<T> & ResourceWithParameters<T>> extends SelfAware<T> {
+public interface ResourceWithParameters<T extends Resource<T> & ResourceWithParameters<T>> extends ResourceTrait<T> {
 
     /**
      * Adds a parameter to this resource.

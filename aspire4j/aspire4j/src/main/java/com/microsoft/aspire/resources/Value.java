@@ -9,7 +9,9 @@ import java.util.Map;
 
 /**
  * Represents a value resource. Typically used to perform string concatenation (e.g. for connection strings).
- * @param <T>
+ * @param <T> The specific type of the resource, which may or may not be a subtype of this class. This allows for
+ *            method chaining, even when using a subtype, when used in conjunction with the API on
+ *            {@link com.microsoft.aspire.resources.traits.SelfAware}.
  */
 @JsonPropertyOrder({"connectionString"})
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
@@ -35,6 +37,7 @@ public class Value<T extends Value<T>> extends Resource<T> implements SelfAware<
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public T self() {
         return (T) this;
     }

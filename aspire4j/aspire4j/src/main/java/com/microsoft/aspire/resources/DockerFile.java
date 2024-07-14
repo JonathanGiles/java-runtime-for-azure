@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.microsoft.aspire.resources.annotations.KeyValueAnnotation;
+import com.microsoft.aspire.resources.traits.ResourceWithReference;
 import com.microsoft.aspire.utils.json.RelativePath;
 import com.microsoft.aspire.implementation.utils.json.RelativePathSerializer;
 import com.microsoft.aspire.resources.traits.ResourceWithEndpoints;
@@ -43,10 +44,18 @@ import jakarta.validation.constraints.NotNull;
     "additionalProperties": false
 },
  */
+
+/**
+ * A resource that represents a Dockerfile that will be built into a container during deployment.
+ *
+ * @param <T> The specific type of the resource, which may or may not be a subtype of this class. This allows for
+ *           method chaining, even when using a subtype, when used in conjunction with the API on
+ *           {@link com.microsoft.aspire.resources.traits.SelfAware}.
+ */
 @JsonPropertyOrder({"type", "path", "context", "env", "bindings"})
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
 public class DockerFile<T extends DockerFile<T>> extends Resource<T>
-                        implements ResourceWithEnvironment<T>, ResourceWithEndpoints<T> { // FIXME Does a DockerFile support endpoints like this?
+        implements ResourceWithEnvironment<T>, ResourceWithEndpoints<T>, ResourceWithReference<T> { // FIXME Does a DockerFile support endpoints like this?
 
     @NotNull(message = "DockerFile.path cannot be null")
     @NotEmpty(message = "DockerFile.path cannot be an empty string")
@@ -108,6 +117,7 @@ public class DockerFile<T extends DockerFile<T>> extends Resource<T>
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public T self() {
         return (T) this;
     }

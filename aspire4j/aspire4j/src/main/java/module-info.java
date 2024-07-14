@@ -1,7 +1,7 @@
 module com.microsoft.aspire {
     requires transitive com.fasterxml.jackson.databind;
     requires transitive jakarta.validation;
-    requires transitive org.hibernate.validator;
+    requires org.hibernate.validator;
     requires java.logging;
     requires freemarker;
 

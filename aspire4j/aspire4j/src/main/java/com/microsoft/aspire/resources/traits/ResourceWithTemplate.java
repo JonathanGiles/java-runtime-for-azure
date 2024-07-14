@@ -13,7 +13,7 @@ import java.util.List;
  * location specified by the app host user.
  * @param <T>
  */
-public interface ResourceWithTemplate<T extends Resource<T> & ResourceWithTemplate<T>> extends SelfAware<T> {
+public interface ResourceWithTemplate<T extends Resource<T> & ResourceWithTemplate<T>> extends ResourceTrait<T> {
 
     /**
      * Processes the template associated with this resource.

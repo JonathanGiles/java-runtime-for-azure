@@ -24,16 +24,33 @@
         <module>aspire4j</module>
         <module>aspire4j-maven-tools</module>
 
-        <module>aspire4j-extensions-azure</module>
-        <module>aspire4j-extensions-azure-storage</module>
-        <module>aspire4j-extensions-azure-eventhubs</module>
-        <module>aspire4j-extensions-azure-openai</module>
+        <module>extensions/azure/azure</module>
+        <module>extensions/azure/storage</module>
+        <module>extensions/azure/eventhubs</module>
+        <module>extensions/azure/openai</module>
 
-        <module>aspire4j-extensions-dotnet</module>
+        <module>extensions/dotnet</module>
 
-        <module>aspire4j-extensions-microservice-common</module>
-        <module>aspire4j-extensions-micronaut</module>
-        <module>aspire4j-extensions-quarkus</module>
-        <module>aspire4j-extensions-spring</module>
+        <module>extensions/microservice-common</module>
+        <module>extensions/micronaut</module>
+        <module>extensions/quarkus</module>
+        <module>extensions/spring</module>
     </modules>
+
+    <build>
+        <plugins>
+            <!-- Javadoc -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>3.6.3</version>
+                <configuration>
+                    <failOnError>false</failOnError>
+                    <failOnWarnings>false</failOnWarnings>
+                    <additionalJOption>-Xdoclint:none</additionalJOption>
+                </configuration>
+            </plugin>
+
+        </plugins>
+    </build>
 </project>

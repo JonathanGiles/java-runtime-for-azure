@@ -12,7 +12,7 @@ import java.util.List;
 /**
  * Represents a reference to a connection string.
  */
-public class ConnectionStringReference<T extends Resource<?> & ResourceWithConnectionString<?>>
+public class ConnectionStringReference<T extends ResourceWithConnectionString<?>>
                                             implements ManifestExpressionProvider, ValueProvider, ValueWithReferences {
 
     private final T resource;
@@ -64,7 +64,7 @@ public class ConnectionStringReference<T extends Resource<?> & ResourceWithConne
     public String getValue() {
         String value = resource.getValue();
         if (value == null || value.isEmpty() && !optional) {
-            throw new RuntimeException("The connection string for the resource '" + resource.getName() + "' is not available.");
+            throw new RuntimeException("The connection string for the resource '" + resource.self().getName() + "' is not available.");
         }
         return value;
     }

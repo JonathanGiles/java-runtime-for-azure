@@ -34,7 +34,9 @@ import java.util.List;
  * app.addResource(dockerFile);
  * }
  *
- * @param <T> The specific type of resource, allowing for fluent method chaining.
+ * @param <T> The specific type of the resource, which may or may not be a subtype of this class. This allows for
+ *           method chaining, even when using a subtype, when used in conjunction with the API on
+ *           {@link com.microsoft.aspire.resources.traits.SelfAware}.
  * @see ResourceType
  * @see ResourceWithLifecycle
  * @see SelfAware

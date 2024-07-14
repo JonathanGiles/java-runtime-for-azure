@@ -8,6 +8,7 @@ import com.microsoft.aspire.resources.properties.*;
 import com.microsoft.aspire.resources.traits.ResourceWithArguments;
 import com.microsoft.aspire.resources.traits.ResourceWithEndpoints;
 import com.microsoft.aspire.resources.traits.ResourceWithEnvironment;
+import com.microsoft.aspire.resources.traits.ResourceWithReference;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
@@ -84,12 +85,17 @@ For example:
   }
 }
  */
+
+/**
+ * Represents a generic container resource.
+ * @param <T> The specific type of the resource, which may or may not be a subtype of this class. This allows for
+ *            method chaining, even when using a subtype, when used in conjunction with the API on
+ *            {@link com.microsoft.aspire.resources.traits.SelfAware}.
+ */
 @JsonPropertyOrder({"type", "image", "entrypoint", "args", "connectionString", "env", "bindings", "bindMounts", "volumes"})
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
 public class Container<T extends Container<T>> extends Resource<T>
-                                               implements ResourceWithArguments<T>,
-                                                   ResourceWithEnvironment<T>,
-                                                   ResourceWithEndpoints<T> {
+       implements ResourceWithArguments<T>, ResourceWithEnvironment<T>, ResourceWithEndpoints<T>, ResourceWithReference<T> {
 
     @NotNull(message = "Container.image cannot be null")
     @NotEmpty(message = "Container.image cannot be an empty string")
@@ -145,6 +151,7 @@ public class Container<T extends Container<T>> extends Resource<T>
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public T self() {
         return (T) this;
     }

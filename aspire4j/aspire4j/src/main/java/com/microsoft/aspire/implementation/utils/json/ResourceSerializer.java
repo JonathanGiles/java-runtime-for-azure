@@ -36,7 +36,7 @@ public class ResourceSerializer extends JsonSerializer<Resource<?>> {
         Class<?> actualClass = resource.getClass();
         JavaType javaType = provider.constructType(actualClass);
         BeanDescription beanDesc = provider.getConfig().introspect(javaType);
-        JsonSerializer<Object> serializer = BeanSerializerFactory.instance.findBeanSerializer(provider, javaType, beanDesc);
+        JsonSerializer<Object> serializer = BeanSerializerFactory.instance.findBeanOrAddOnSerializer(provider, javaType, beanDesc, true);
 
         // Serialize the object using the serializer for the actual class
         serializer.unwrappingSerializer(null).serialize(resource, gen, provider);
