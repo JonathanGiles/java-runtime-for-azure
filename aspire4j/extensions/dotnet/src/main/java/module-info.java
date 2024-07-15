@@ -1,5 +1,8 @@
 import com.microsoft.aspire.extensions.dotnet.DotnetExtension;
 
+/**
+ * An Aspire extension providing support for .NET Projects.
+ */
 module com.microsoft.aspire.extensions.dotnet {
     requires transitive com.microsoft.aspire;
     requires java.logging;

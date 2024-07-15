@@ -1,13 +1,9 @@
 package com.microsoft.aspire.implementation;
 
 import com.microsoft.aspire.resources.Resource;
-import com.microsoft.aspire.resources.annotations.EndpointAnnotation;
-import com.microsoft.aspire.resources.annotations.EndpointReferenceAnnotation;
-import com.microsoft.aspire.resources.annotations.EnvironmentAnnotation;
-import com.microsoft.aspire.resources.annotations.EnvironmentCallbackAnnotation;
+import com.microsoft.aspire.resources.annotations.*;
 import com.microsoft.aspire.resources.properties.*;
 import com.microsoft.aspire.resources.references.EndpointReference;
-import com.microsoft.aspire.resources.annotations.ResourceAnnotation;
 import com.microsoft.aspire.resources.traits.ResourceWithEndpoints;
 import com.microsoft.aspire.resources.traits.ResourceWithEnvironment;
 

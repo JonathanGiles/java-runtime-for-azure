@@ -1,5 +1,8 @@
 import com.microsoft.aspire.extensions.micronaut.MicronautExtension;
 
+/**
+ * An Aspire extension providing support for <a href="https://micronaut.io">Micronaut</a> projects.
+ */
 module com.microsoft.aspire.extensions.micronaut {
     requires transitive com.microsoft.aspire.extensions.microservice.common;
     requires java.logging;

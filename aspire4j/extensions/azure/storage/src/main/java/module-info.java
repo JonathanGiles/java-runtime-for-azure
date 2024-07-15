@@ -1,5 +1,8 @@
 import com.microsoft.aspire.extensions.azure.storage.AzureStorageExtension;
 
+/**
+ * An Aspire extension providing support for Azure Storage.
+ */
 module com.microsoft.aspire.extensions.azure.storage {
     requires transitive com.microsoft.aspire;
 

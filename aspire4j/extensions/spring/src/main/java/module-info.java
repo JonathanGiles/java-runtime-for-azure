@@ -1,5 +1,8 @@
 import com.microsoft.aspire.extensions.spring.SpringExtension;
 
+/**
+ * An Aspire extension providing support for <a href="https://spring.io">Spring</a> projects.
+ */
 module com.microsoft.aspire.extensions.spring {
     requires transitive com.microsoft.aspire.extensions.microservice.common;
 

@@ -1,3 +1,6 @@
+/**
+ * The core module of the Aspire framework, with APIs for specifying and running Aspire resources.
+ */
 module com.microsoft.aspire {
     requires transitive com.fasterxml.jackson.databind;
     requires transitive jakarta.validation;

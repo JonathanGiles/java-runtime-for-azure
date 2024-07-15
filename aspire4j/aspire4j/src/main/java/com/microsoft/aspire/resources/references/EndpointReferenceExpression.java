@@ -1,6 +1,5 @@
 package com.microsoft.aspire.resources.references;
 
-import com.microsoft.aspire.resources.properties.EndpointProperty;
 import com.microsoft.aspire.resources.traits.ManifestExpressionProvider;
 import com.microsoft.aspire.resources.traits.ValueProvider;
 import com.microsoft.aspire.resources.traits.ValueWithReferences;

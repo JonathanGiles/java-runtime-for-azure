@@ -1,3 +1,6 @@
+/**
+ * An Aspire extension providing the common support for microservice libraries (such as Spring, Micronaut, and Quarkus).
+ */
 module com.microsoft.aspire.extensions.microservice.common {
     requires transitive com.microsoft.aspire;
     requires com.github.javaparser.core;

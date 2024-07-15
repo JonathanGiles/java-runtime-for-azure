@@ -1,5 +1,8 @@
 import com.microsoft.aspire.extensions.quarkus.QuarkusExtension;
 
+/**
+ * An Aspire extension providing support for <a href="https://quarkus.io">Quarkus</a> projects.
+ */
 module com.microsoft.aspire.extensions.quarkus {
     requires transitive com.microsoft.aspire.extensions.microservice.common;
     requires java.logging;

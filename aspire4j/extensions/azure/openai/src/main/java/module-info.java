@@ -1,5 +1,8 @@
 import com.microsoft.aspire.extensions.azure.openai.AzureOpenAIExtension;
 
+/**
+ * An Aspire extension providing support for Azure OpenAI.
+ */
 module com.microsoft.aspire.extensions.azure.openai {
     requires transitive com.microsoft.aspire;
 

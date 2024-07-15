@@ -1,4 +1,4 @@
-package com.microsoft.aspire.resources.properties;
+package com.microsoft.aspire.resources.references;
 
 /**
  * Represents the properties of an endpoint that can be referenced.

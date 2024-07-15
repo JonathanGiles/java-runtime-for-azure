@@ -56,6 +56,7 @@ import java.util.*;
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
 public class Project<T extends Project<T>> extends Resource<T>
            implements ResourceWithArguments<T>, ResourceWithEnvironment<T>, ResourceWithEndpoints<T>, ResourceWithReference<T> {
+    public static final ResourceType PROJECT = ResourceType.fromString("project.v0");
 
     @NotNull(message = "Project.path cannot be null")
     @NotEmpty(message = "Project.path cannot be an empty string")
@@ -64,7 +65,7 @@ public class Project<T extends Project<T>> extends Resource<T>
     private String path;
 
     public Project(String name) {
-        this(ResourceType.PROJECT, name);
+        this(PROJECT, name);
     }
 
     protected Project(ResourceType type, String name) {

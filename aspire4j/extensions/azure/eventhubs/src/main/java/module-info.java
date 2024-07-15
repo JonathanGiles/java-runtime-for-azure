@@ -1,5 +1,8 @@
 import com.microsoft.aspire.extensions.azure.eventhubs.AzureEventHubsExtension;
 
+/**
+ * An Aspire extension providing support for Azure Event Hubs.
+ */
 module com.microsoft.aspire.extensions.azure.eventhubs {
     requires transitive com.microsoft.aspire;
 

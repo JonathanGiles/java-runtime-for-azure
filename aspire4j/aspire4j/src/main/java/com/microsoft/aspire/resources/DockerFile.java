@@ -103,6 +103,7 @@ public class DockerFile<T extends DockerFile<T>> extends Resource<T>
     /**
      * Sets the path to the context that will be used to build a container image. The path must be relative to the root
      * directory, i.e. from where azd is being executed from.
+     *
      * @param context A path to the context, relative to the directory where azd will be executed from.
      * @return The DockerFile object.
      */

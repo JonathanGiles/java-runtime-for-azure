@@ -5,7 +5,7 @@ import com.microsoft.aspire.implementation.TemplateStrings;
 import com.microsoft.aspire.resources.Resource;
 import com.microsoft.aspire.resources.references.EndpointReference;
 import com.microsoft.aspire.resources.annotations.EnvironmentCallbackAnnotation;
-import com.microsoft.aspire.resources.properties.EnvironmentCallbackContext;
+import com.microsoft.aspire.resources.annotations.EnvironmentCallbackContext;
 
 import java.net.MalformedURLException;
 import java.net.URI;

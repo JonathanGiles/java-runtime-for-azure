@@ -1,4 +1,4 @@
-package com.microsoft.aspire.resources.properties;
+package com.microsoft.aspire.resources.annotations;
 
 import java.util.Collections;
 import java.util.Map;

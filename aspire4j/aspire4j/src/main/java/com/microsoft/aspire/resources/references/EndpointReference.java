@@ -1,10 +1,8 @@
 package com.microsoft.aspire.resources.references;
 
 import com.microsoft.aspire.implementation.TemplateStrings;
-import com.microsoft.aspire.resources.Resource;
 import com.microsoft.aspire.resources.annotations.EndpointAnnotation;
 import com.microsoft.aspire.resources.properties.AllocatedEndpoint;
-import com.microsoft.aspire.resources.properties.EndpointProperty;
 import com.microsoft.aspire.resources.properties.Scheme;
 import com.microsoft.aspire.resources.traits.ManifestExpressionProvider;
 import com.microsoft.aspire.resources.traits.ResourceWithEndpoints;

@@ -1,7 +1,5 @@
 package com.microsoft.aspire.resources.annotations;
 
-import com.microsoft.aspire.resources.properties.EnvironmentCallbackContext;
-
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
