@@ -29,3 +29,14 @@ jobs:
 
     - name: Build with Maven
       run: mvn clean install
+
+    - name: Build Aspire4J JavaDoc
+      run: mvn -f aspire4j/pom.xml clean javadoc:aggregate
+
+    - name: Upload JavaDoc to Azure Blob Storage
+      uses: bacongobbler/azure-blob-storage-upload@v3.0.0
+      with:
+        source_dir: 'aspire4j/target/site/apidocs'
+        container_name: '$web'
+        connection_string: ${{ secrets.AZURE_BLOB_STORAGE_CONNECTION_STRING }}
+        sync: 'true'
