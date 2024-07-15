@@ -28,21 +28,8 @@ Feedback is welcome!
 
 ## Using Aspire4J
 
-If you want to use Aspire4J in your Java microservice projects, you can! Here's how you can create your own Aspire App Host:
+If you want to use Aspire4J in your Java microservice projects, you can! Refer to the [Aspire4J Maven Tools sub-project][Aspire4JMavenToolsReadme] for more information.
 
-1. Clone this repository onto your machine.
-2. From the root of the repository, run `mvn -f aspire4j/aspire4j-maven-tools clean install`.
-3. Go to your existing Java project and run the following:
-
-```shell
-mvn archetype:generate \
-  -DarchetypeGroupId=com.microsoft.aspire \
-  -DarchetypeArtifactId=aspire4j-maven-tools \
-  -DarchetypeVersion=1.0-SNAPSHOT
-```
-
-4. Follow the prompts to create your new Aspire4J project.
-5. You will see a new directory created in your project with the name you provided in the prompt. Inside this directory you will find a new `AspireAppHost` Java class that you can use to define your infrastructure as code.
-
-[StorageExplorerReadme]: /JonathanGiles/aspire4j/blob/main/samples/storage-explorer/readme.md
-[StorageExplorerAppHost]: /JonathanGiles/aspire4j/blob/main/samples/storage-explorer/storage-explorer-apphost/src/main/java/com/microsoft/aspire/storageexplorer/StorageExplorerAppHost.java
+[Aspire4JMavenToolsReadme]: aspire4j/aspire4j-maven-tools/readme.md
+[StorageExplorerReadme]: samples/storage-explorer/readme.md
+[StorageExplorerAppHost]: samples/storage-explorer/storage-explorer-apphost/src/main/java/com/microsoft/aspire/storageexplorer/StorageExplorerAppHost.java
