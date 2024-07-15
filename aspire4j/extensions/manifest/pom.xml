@@ -19,6 +19,11 @@
         <manifold.version>2024.1.23</manifold.version>
     </properties>
 
+    <modules>
+        <module>azure/storage-ext</module>
+        <module>spring-ext</module>
+    </modules>
+
     <dependencies>
         <dependency>
             <groupId>systems.manifold</groupId>
