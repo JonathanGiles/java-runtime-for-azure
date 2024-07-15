@@ -5,6 +5,7 @@ import com.microsoft.aspire.extensions.spring.SpringExtension;
  */
 module com.microsoft.aspire.extensions.spring {
     requires transitive com.microsoft.aspire.extensions.microservice.common;
+    requires manifold.ext.rt;
 
     exports com.microsoft.aspire.extensions.spring;
     exports com.microsoft.aspire.extensions.spring.resources;

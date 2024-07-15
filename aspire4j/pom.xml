@@ -35,6 +35,10 @@
         <module>extensions/micronaut</module>
         <module>extensions/quarkus</module>
         <module>extensions/spring</module>
+
+        <!-- manifest extension libraries -->
+        <module>extensions/manifest/azure/storage-ext</module>
+        <module>extensions/manifest/spring-ext</module>
     </modules>
 
     <build>

@@ -34,12 +34,12 @@
         </dependency>
         <dependency>
             <groupId>com.microsoft.aspire</groupId>
-            <artifactId>aspire4j-extensions-azure-storage</artifactId>
+            <artifactId>aspire4j-extensions-azure-storage-ext</artifactId>
             <version>1.0-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>com.microsoft.aspire</groupId>
-            <artifactId>aspire4j-extensions-spring</artifactId>
+            <artifactId>aspire4j-extensions-spring-ext</artifactId>
             <version>1.0-SNAPSHOT</version>
         </dependency>
         <dependency>
