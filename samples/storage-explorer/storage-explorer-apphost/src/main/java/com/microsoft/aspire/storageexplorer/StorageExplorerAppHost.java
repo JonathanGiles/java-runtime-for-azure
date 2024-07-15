@@ -38,7 +38,6 @@ public class StorageExplorerAppHost implements AppHost {
             .withReference(eurekaServiceDiscovery)
             .withOpenTelemetry();
 //            .withReference(openAI);
-
     }
 
     public static void main(String[] args) {

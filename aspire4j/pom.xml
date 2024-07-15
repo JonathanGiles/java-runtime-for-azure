@@ -36,8 +36,8 @@
         <module>extensions/quarkus</module>
         <module>extensions/spring</module>
 
-        <!-- manifest extension libraries -->
-        <module>extensions/manifest</module>
+        <!-- manifold extension libraries -->
+        <module>extensions/manifold</module>
     </modules>
 
     <build>
@@ -53,7 +53,6 @@
                     <additionalJOption>-Xdoclint:none</additionalJOption>
                 </configuration>
             </plugin>
-
         </plugins>
     </build>
 </project>
