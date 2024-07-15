@@ -4,6 +4,7 @@
  */
 module com.microsoft.aspire.extensions.manifest.azure.storage {
     requires transitive com.microsoft.aspire.extensions.azure.storage;
+    requires manifold.rt;
     requires manifold.ext.rt;
 
     exports azure.storage.manifest.extensions.com.microsoft.aspire.DistributedApplication;
