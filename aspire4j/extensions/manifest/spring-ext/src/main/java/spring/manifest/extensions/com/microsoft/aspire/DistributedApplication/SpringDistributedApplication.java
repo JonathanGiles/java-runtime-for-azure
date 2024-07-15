@@ -1,4 +1,4 @@
-package azure.storage.manifest.extensions.com.microsoft.aspire.DistributedApplication;
+package spring.manifest.extensions.com.microsoft.aspire.DistributedApplication;
 
 import com.microsoft.aspire.extensions.microservice.common.resources.EurekaServiceDiscovery;
 import com.microsoft.aspire.extensions.spring.resources.SpringProject;

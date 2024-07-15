@@ -7,5 +7,5 @@ module com.microsoft.aspire.extensions.manifest.spring {
     requires manifold.rt;
     requires manifold.ext.rt;
 
-    exports azure.storage.manifest.extensions.com.microsoft.aspire.DistributedApplication;
+    exports spring.manifest.extensions.com.microsoft.aspire.DistributedApplication;
 }
