@@ -14,7 +14,7 @@ public class QuarkusExtension extends MicroserviceExtension {
      * @param name The name of the Quarkus project.
      * @return A new {@link QuarkusProject} instance that can be used to configure the project.
      */
-    public QuarkusProject addMicronautProject(String name) {
+    public QuarkusProject addQuarkusProject(String name) {
         return DistributedApplication.getInstance().addResource(new QuarkusProject(name));
     }
 }
