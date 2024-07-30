@@ -1,0 +1,30 @@
+<archetype-descriptor name="azure-runtime-maven-archetype">
+    <requiredProperties>
+        <requiredProperty key="moduleId">
+            <defaultValue>${artifactId.replaceAll("-", "")}</defaultValue>
+        </requiredProperty>
+        <requiredProperty key="includeAzure">
+            <defaultValue>true</defaultValue>
+        </requiredProperty>
+        <requiredProperty key="includeSpring">
+            <defaultValue>true</defaultValue>
+        </requiredProperty>
+    </requiredProperties>
+    <fileSets>
+        <fileSet filtered="true" packaged="true" encoding="UTF-8">
+            <directory>src/main/java</directory>
+            <includes>
+                <include>**/*.java</include>
+            </includes>
+            <excludes>
+                <exclude>**/module-info.java</exclude>
+            </excludes>
+        </fileSet>
+        <fileSet filtered="true" encoding="UTF-8">
+            <directory>src/main/java</directory>
+            <includes>
+                <include>module-info.java</include>
+            </includes>
+        </fileSet>
+    </fileSets>
+</archetype-descriptor>

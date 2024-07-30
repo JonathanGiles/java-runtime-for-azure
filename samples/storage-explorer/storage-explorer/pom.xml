@@ -8,11 +8,10 @@
         <version>3.3.1</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
-    <groupId>com.microsoft.aspire</groupId>
+    <groupId>com.azure.example</groupId>
     <artifactId>storage-explorer</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>Azure Storage Explorer</name>
-    <description>Demo application for Azure Storage Explorer using Aspire4J</description>
     <url/>
     <licenses>
         <license/>

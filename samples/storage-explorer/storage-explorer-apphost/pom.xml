@@ -4,7 +4,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.microsoft.aspire</groupId>
+    <groupId>com.azure.example</groupId>
     <artifactId>storage-explorer-apphost</artifactId>
     <version>1.0-SNAPSHOT</version>
 
@@ -12,49 +12,49 @@
         <maven.compiler.source>21</maven.compiler.source>
         <maven.compiler.target>21</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <mainClass>com.microsoft.aspire.storageexplorer.StorageExplorerAppHost</mainClass>
+        <mainClass>com.azure.example.storageexplorer.StorageExplorerAppHost</mainClass>
 
         <!-- This is the property that azd init looks for -->
-        <aspire.isAppHost>true</aspire.isAppHost>
+        <azure.isAppHost>true</azure.isAppHost>
     </properties>
 
     <dependencies>
-        <!-- dependency on aspire4j -->
+        <!-- dependency on azure-runtime -->
         <dependency>
-            <groupId>com.microsoft.aspire</groupId>
-            <artifactId>aspire4j</artifactId>
+            <groupId>com.azure</groupId>
+            <artifactId>azure-runtime</artifactId>
             <version>1.0-SNAPSHOT</version>
         </dependency>
 
-        <!-- and we want to have some Aspire4J extensions too -->
+        <!-- and we want to have some azure-runtime extensions too -->
         <dependency>
-            <groupId>com.microsoft.aspire</groupId>
-            <artifactId>aspire4j-extensions-azure-openai</artifactId>
+            <groupId>com.azure</groupId>
+            <artifactId>azure-runtime-extensions-azure-openai</artifactId>
             <version>1.0-SNAPSHOT</version>
         </dependency>
         <dependency>
-            <groupId>com.microsoft.aspire</groupId>
-            <artifactId>aspire4j-extensions-azure-storage-ext</artifactId>
+            <groupId>com.azure</groupId>
+            <artifactId>azure-runtime-extensions-azure-storage-ext</artifactId>
             <version>1.0-SNAPSHOT</version>
         </dependency>
         <dependency>
-            <groupId>com.microsoft.aspire</groupId>
-            <artifactId>aspire4j-extensions-spring-ext</artifactId>
+            <groupId>com.azure</groupId>
+            <artifactId>azure-runtime-extensions-spring-ext</artifactId>
             <version>1.0-SNAPSHOT</version>
         </dependency>
         <dependency>
-            <groupId>com.microsoft.aspire</groupId>
-            <artifactId>aspire4j-extensions-micronaut</artifactId>
+            <groupId>com.azure</groupId>
+            <artifactId>azure-runtime-extensions-micronaut</artifactId>
             <version>1.0-SNAPSHOT</version>
         </dependency>
         <dependency>
-            <groupId>com.microsoft.aspire</groupId>
-            <artifactId>aspire4j-extensions-quarkus</artifactId>
+            <groupId>com.azure</groupId>
+            <artifactId>azure-runtime-extensions-quarkus</artifactId>
             <version>1.0-SNAPSHOT</version>
         </dependency>
         <dependency>
-            <groupId>com.microsoft.aspire</groupId>
-            <artifactId>aspire4j-extensions-dotnet</artifactId>
+            <groupId>com.azure</groupId>
+            <artifactId>azure-runtime-extensions-dotnet</artifactId>
             <version>1.0-SNAPSHOT</version>
         </dependency>
     </dependencies>

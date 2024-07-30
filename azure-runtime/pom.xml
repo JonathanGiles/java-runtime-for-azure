@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>com.azure</groupId>
+        <artifactId>azure-runtime-parent</artifactId>
+        <version>1.0-SNAPSHOT</version>
+    </parent>
+
+    <artifactId>azure-runtime-sdk-parent</artifactId>
+    <version>1.0-SNAPSHOT</version>
+    <packaging>pom</packaging>
+
+    <properties>
+        <maven.compiler.source>21</maven.compiler.source>
+        <maven.compiler.target>21</maven.compiler.target>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    </properties>
+
+    <modules>
+        <module>azure-runtime</module>
+        <module>azure-runtime-maven-tools</module>
+
+        <module>extensions/azure/azure</module>
+        <module>extensions/azure/storage</module>
+        <module>extensions/azure/eventhubs</module>
+        <module>extensions/azure/openai</module>
+
+        <module>extensions/dotnet</module>
+
+        <module>extensions/microservice-common</module>
+        <module>extensions/micronaut</module>
+        <module>extensions/quarkus</module>
+        <module>extensions/spring</module>
+
+        <!-- manifold extension libraries -->
+        <module>extensions/manifold</module>
+    </modules>
+
+    <build>
+        <plugins>
+            <!-- Javadoc -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>3.6.3</version>
+                <configuration>
+                    <failOnError>false</failOnError>
+                    <failOnWarnings>false</failOnWarnings>
+                    <additionalJOption>-Xdoclint:none</additionalJOption>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+</project>

@@ -1,8 +1,8 @@
 module storage.explorer.apphost {
-    requires com.microsoft.aspire;
+    requires com.azure.runtime.host;
 
-    requires com.microsoft.aspire.extensions.azure.openai;
-    requires com.microsoft.aspire.extensions.azure.storage;
-    requires com.microsoft.aspire.extensions.spring;
+    requires com.azure.runtime.host.extensions.azure.openai;
+    requires com.azure.runtime.host.extensions.azure.storage;
+    requires com.azure.runtime.host.extensions.spring;
     requires java.logging;
 }
